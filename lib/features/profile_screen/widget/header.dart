@@ -1,0 +1,78 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+
+import '../../../config/app_colors/app_colors_light.dart';
+import '../../../config/app_icons/app_assets_jpg.dart';
+import '../../../config/app_route/route_names.dart';
+import '../../../config/app_theme/app_theme.dart';
+import '../../../config/widgets/customButton.dart';
+class HeaderProfile extends StatelessWidget {
+  const HeaderProfile({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 15,right: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 80.w,
+                height: 80.h,
+                child: CircleAvatar(
+                  backgroundImage: AssetImage(AppAssetsJpg.imagePerson,),
+                  radius: 50,
+                ),
+              ),
+              Column(
+                children: [
+                  Text("12",style: appThemeData.textTheme.displaySmall,),
+                  Text("Posts",style: appThemeData.textTheme.titleMedium,),
+
+                ],
+              ),
+              Column(
+                children: [
+                  Text("87",style: appThemeData.textTheme.displaySmall,),
+                  Text("Peopli",style: appThemeData.textTheme.titleMedium,),
+
+                ],
+              ),
+              IconButton(onPressed: (){}, icon: Icon(Icons.more_vert)),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 15,right: 15,top: 2),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 125.w,
+                child: Column(
+
+                  children: [
+                    SizedBox(width: double.infinity,  child: Text("Sofia J. West",style: appThemeData.textTheme.headlineLarge,textAlign: TextAlign.start,)),
+                    SizedBox(width: double.infinity, child: Text("wise president of France",style: appThemeData.textTheme.bodyLarge,textAlign: TextAlign.start,)),
+                    SizedBox(width: double.infinity, child: Text("1975 - now",style: appThemeData.textTheme.bodyLarge,textAlign: TextAlign.start,)),
+                    SizedBox(width: double.infinity, child: Text("Avenue 13, Bond Pavilion ...",style: appThemeData.textTheme.bodyLarge,textAlign: TextAlign.start,maxLines: 1,)),
+
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 23),
+                child: CustomElevatedButton(onPressed: (){Get.toNamed(NamedRoute.routeEditProfiletScreen);}, textColor: AppLightColor.strokePositive, color: AppLightColor.withColor, title: "Edit Profile", height: 27.h, width: 96.w),
+              )
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}
