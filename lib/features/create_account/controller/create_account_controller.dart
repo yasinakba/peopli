@@ -26,6 +26,7 @@ class CreateAccountController extends GetxController {
   TextEditingController familyController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController dateTimeController = TextEditingController();
 
   List listData=["Elementary","Diploma",'Bachelors degree','Masters degree','P.H.D'];
   List listJobs=["Teacher","Employee","manual worker",'Actor','Singer','programmer','The architect','politician'];
@@ -44,7 +45,7 @@ class CreateAccountController extends GetxController {
     try {
       final response = await dio.post(
         "https://api.peopli.ir/Api/register?displayName=displayName&username=username&password=password&avatar=avatar.png&cityId=1&educationId=1",
-        data: {
+        queryParameters: {
           "displayName": nameController.text+familyController.text,
           "username": userNameController.text,
           "password":passwordController.text,
@@ -159,11 +160,15 @@ class CreateAccountController extends GetxController {
         actions:[
           GetBuilder<LocationController>(
           id: 'country',
-          initState: (state) {
-            Get.lazyPut(()=>LocationController());
-         selectedCountry  = Get.find<LocationController>().countryList[0];
-          },
-          builder: (controller) {
+            initState: (state) {
+              Get.lazyPut(()=>LocationController());
+              final controller = Get.find<LocationController>();
+              if (controller.countryList.isNotEmpty) {
+                selectedCountry = controller.countryList[0];
+              }
+            },
+
+            builder: (controller) {
             return Container(
               height: 100.h,
               child: Center(
@@ -209,7 +214,11 @@ class CreateAccountController extends GetxController {
             id: 'city',
             initState: (state) {
               Get.lazyPut(()=>LocationController());
-              selectedCity=Get.find<LocationController>().cityList[0];
+              final controller = Get.find<LocationController>();
+              getCity();
+              if (controller.cityList.isNotEmpty) {
+                selectedCity = controller.cityList[0];
+              }
             },
             builder: (controller) {
               return Container(
@@ -255,15 +264,32 @@ class CreateAccountController extends GetxController {
           ),
           Align(
               alignment: Alignment.center,
-              child: CustomElevatedButton(onPressed: (){}, textColor: AppLightColor.withColor, color: AppLightColor.textBlueColor, title: "Save", height: 40.h, width: 120.w))
+              child: CustomElevatedButton(onPressed: (){
+                Get.back();
+              }, textColor: AppLightColor.withColor, color: AppLightColor.textBlueColor, title: "Save", height: 40.h, width: 120.w))
         ]
     ));
 
 
 
   }
-
-
+  List<String> cityNames = [];
+  List<CityEntity> cityList = [];
+  Future<void> getCity() async {
+    try {
+      final response = await dio.get(
+        "https://api.peopli.ir/Api/admin/Countries/cities?page=1&take=15&sortBy=latest&countryId=${selectedCountry.id}",
+      );
+      if(response.statusCode == 200){
+        List<dynamic> data = response.data['data']['cities'];
+        cityList.addAll(data.map((item) => CityEntity.fromJson(item)));
+        cityNames.addAll(cityList.map((item) =>item.name??''));
+        update(['city']);
+      }
+    } on DioException catch (e) {
+      print("GET error: ${e.response?.statusCode} - ${e.message}");
+    }
+  }
 
 
 

@@ -10,6 +10,7 @@ import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_route/route_names.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/customButton.dart';
+import '../add_memory/widget/textFild_memory.dart';
 import '../create_person/widget/textField_create.dart';
 import '../edit_profile/widget/textField_create_account.dart';
 import 'controller/create_account_controller.dart';
@@ -102,9 +103,9 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                 child: TextFieldCreateAccount(labelText: 'Password', controller: controller.passwordController,),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(top: 5),
-                                child: TextFieldCreate(labelText: 'Date of birth'),
-                              ),
+                                padding: const EdgeInsets.only(left: 35,top: 25),
+                                child: InkWell(child: TextFiildMemory(labelText: '2024/02/02', iconT: Icon(Icons.date_range_outlined),onPressed: () {  }, controller: controller.dateTimeController,)),
+                              )
 
 
                             ],

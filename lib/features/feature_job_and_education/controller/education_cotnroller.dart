@@ -13,9 +13,9 @@ class EducationController extends GetxController{
   Future<void> getEducation() async {
     try {
       final response = await dio.get(
-        "https://api.peopli.ir/Api/admin/Countries?page=1&take=15&sortBy=latest",
+        "https://api.peopli.ir/Api/Faces/face-educations?page=1&take=15&sortBy=latest",
       );
-      List<dynamic> data = response.data['data']['cities'];
+      List<dynamic> data = response.data['data']['educations'];
       educationList.addAll(data.map((item) => EducationEntity.fromJson(item)));
       educationName.addAll(educationList.map((e) => e.name ?? ''));
     } on DioException catch (e) {

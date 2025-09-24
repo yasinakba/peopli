@@ -16,10 +16,12 @@ class LocationController extends GetxController{
       final response = await dio.get(
         "https://api.peopli.ir/Api/admin/Countries?page=1&take=15&sortBy=latest",
       );
+      if(response.statusCode== 200){
       List<dynamic> data = response.data['data']['countries'];
       countryList.addAll(data.map((item) => CountryEntity.fromJson(item)));
       countryName.addAll(countryList.map((item)=> item.name??''));
       update(['country']);
+      }
     } on DioException catch (e) {
       print("GET error: ${e.response?.statusCode} - ${e.message}");
     }
@@ -27,12 +29,14 @@ class LocationController extends GetxController{
   Future<void> getCity() async {
     try {
       final response = await dio.get(
-        "https://api.peopli.ir/Api/admin/Countries?page=1&take=15&sortBy=latest",
+        "https://api.peopli.ir/Api/admin/Countries/cities?page=1&take=15&sortBy=latest&countryId=209",
       );
+      if(response.statusCode == 200){
       List<dynamic> data = response.data['data']['cities'];
       cityList.addAll(data.map((item) => CityEntity.fromJson(item)));
       cityNames.addAll(cityList.map((item) =>item.name??''));
       update(['city']);
+      }
     } on DioException catch (e) {
       print("GET error: ${e.response?.statusCode} - ${e.message}");
     }

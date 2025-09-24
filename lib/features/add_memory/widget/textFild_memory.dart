@@ -6,9 +6,10 @@ import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_theme/app_theme.dart';
 
 class TextFiildMemory extends StatelessWidget {
-  TextFiildMemory({required this.labelText,required this.iconT,required this.onPressed});
+  TextFiildMemory({required this.controller, required this.labelText,required this.iconT,required this.onPressed});
   String labelText;
   Icon iconT;
+  TextEditingController controller;
   void Function() onPressed;
 
 
