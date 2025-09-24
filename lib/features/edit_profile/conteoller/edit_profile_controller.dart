@@ -14,6 +14,8 @@ import '../../create_person/widget/location.dart';
 
 
 class EditProfileController extends GetxController {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController familyController = TextEditingController();
   List listData=["Elementary","Diploma",'Bachelors degree','Masters degree','P.H.D'];
   List listJobs=["Teacher","Employee","manual worker",'Actor','Singer','programmer','The architect','politician'];
   int selectedRadio = 0;

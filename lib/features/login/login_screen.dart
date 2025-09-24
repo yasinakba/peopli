@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:frino_icons/frino_icons.dart';
 import 'package:get/get.dart';
 import 'package:test_test_test/features/login/controller/login_controller.dart';
 import 'package:test_test_test/features/splashscreen/controllers/login_controller.dart';
@@ -78,12 +79,17 @@ class LoginScreen extends StatelessWidget {
                       border: Border.all(
                           width: 1, color: AppLightColor.fillButton)),
                   child: TextFormField(
+                    obscureText: controller.obSecureText,
                     controller:controller.passwordController,
                     style: TextStyle(
                         height: 1,
                         fontWeight: FontWeight.bold,
                         color: Colors.blue),
                     decoration: InputDecoration(
+                      suffixIcon: IconButton(onPressed: () {
+                        controller.obSecureText = !controller.obSecureText;
+                        controller.update();
+                      }, icon: Icon(controller.obSecureText?FrinoIcons.f_eye:FrinoIcons.f_eye_slash)),
                       filled: true,
                       labelText: 'Password',
                       labelStyle: appThemeData.textTheme.bodyLarge,

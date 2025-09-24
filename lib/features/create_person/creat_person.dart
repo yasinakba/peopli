@@ -17,19 +17,16 @@ import 'controller/create_perxon_controller.dart';
 
 class CreatePersonScreen extends GetView<CreatePersonController> {
   final CreatePersonController createPersonController = Get.put(CreatePersonController());
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GetBuilder<CreatePersonController>(builder: (controller) =>ListView(
         children: [
-          //CircleImage
           Padding(
             padding: const EdgeInsets.only(top: 10,bottom: 5),
             child: Align(
                 alignment: Alignment.center,
                 child: GetBuilder<CreatePersonController>(builder: (controller) {
-
                   return Container(
                     height: 100.h,
                     width: 100.w,
@@ -55,7 +52,6 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                     children: [
                       Row(
                         children: [
-
                           InkWell(
                             onTap: (){controller.updateLAnguage(0);},
                             child: Text("EN",style: controller.textStyleEn(0),),
@@ -77,7 +73,6 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                         child: Text("Add Photos",style: appThemeData.textTheme.bodyLarge,),
                       ),
                     ],
-
                   ),
                 ),
                 //textField

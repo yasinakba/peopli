@@ -31,7 +31,6 @@ class TextFiildMemory extends StatelessWidget {
         ),
 
       ),
-
     );
   }
 }

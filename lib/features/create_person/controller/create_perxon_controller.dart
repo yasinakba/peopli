@@ -137,7 +137,7 @@ class CreatePersonController extends GetxController {
       id: 'country',
       initState: (state) {
         Get.lazyPut(() => LocationController(),);
-       selectedCity= Get.find<LocationController>().cityList[0];
+       selectedCity= LocationController.cityList[0];
       },
       builder: (controller) {
         return Container(
@@ -181,20 +181,8 @@ class CreatePersonController extends GetxController {
         );
       },
     ));
-
-
-
   }
-
-
-
-
-
-
-
-
-
-
+  
 
   JobEntity? selectedJob;
   openDialogJobs(context){

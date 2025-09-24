@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:test_test_test/features/add_memory/widget/negativ_pasetiv.dart';
 import 'package:test_test_test/features/add_memory/widget/textFild_memory.dart';
 
@@ -9,6 +10,7 @@ import '../../config/app_icons/app_assets_jpg.dart';
 import '../../config/app_route/route_names.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/customButton.dart';
+import '../feature_getlocation_fromgps/controller/get_location_controller.dart';
 import 'controller/add_memory_controller.dart';
 
 class AddMemoryScreen extends GetView<AddMemoryController> {
@@ -34,6 +36,9 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
       body: ListView(
         children: [
           GetBuilder<AddMemoryController>(
+            initState: (state) {
+              Get.lazyPut(() => GetLocationController());
+            },
             builder: (controller) => Column(
               children: [
                 //divider
@@ -139,7 +144,9 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                         child: TextFiildMemory(
                           labelText: 'Location',
                           iconT: Icon(Icons.location_on),
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.find<GetLocationController>().getUserLocation();
+                          },
                           controller: controller.locationController,
                         ),
                       ),
@@ -147,31 +154,52 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                   ],
                 ),
                 //Date
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20, top: 20),
-                      child: Text(
-                        "Date: ",
-                        style: appThemeData.textTheme.bodyLarge,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 35, top: 25),
-                      child: InkWell(
-                        child: TextFiildMemory(
-                          labelText: '2024/02/02',
-                          iconT: Icon(Icons.date_range_outlined),
-                          onPressed: () {
-                     controller.pickBirthDate(context);
-                          },
-                          controller: controller.dateController,
+                Padding(
+                  padding: EdgeInsetsDirectional.only(end: 23.w, top: 10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text('Date:', style: appThemeData.textTheme.bodyLarge),
+                      Container(
+                        width: 260.w,
+                        height: 32.h,
+                        padding: EdgeInsetsDirectional.only(start: 10.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25),
+                          border: Border.all(color: Colors.black),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              controller.selectedDate != null
+                                  ? DateFormat(
+                                      'yyyy/MM/dd – HH:mm',
+                                    ).format(controller.selectedDate!)
+                                  : "No date selected",
+                              style: appThemeData.textTheme.bodySmall,
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                controller.pickDateTime(context);
+                              },
+                              icon: Icon(
+                                Icons.calendar_today,
+                                size: 15,
+                                color: Colors.grey,
+                              ),
+                              color: Colors.blue,
+                            ),
+                            // SizedBox(width: 10),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+
                 //Subject
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_route/route_names.dart';
@@ -29,13 +30,11 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
             GetBuilder<CreateAccountController>(builder:(controller) => Padding(
               padding: const EdgeInsets.only(top: 100),
               child: Column(
-
-
                 children: [
                   Align(
                     alignment: Alignment.center,
                     child: Container(
-                      height: 100.h,
+                      height: 115.h,
                       width: 100.w,
                       decoration: BoxDecoration(
                         color: AppLightColor.elipsFill,
@@ -83,7 +82,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                         ),
                         //textField
                         SizedBox(
-                          height: 200.h,
+                          height: 220.h,
                           child: Column(
                             children: [
                               Padding(
@@ -100,14 +99,45 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 5),
-                                child: TextFieldCreateAccount(labelText: 'Password', controller: controller.passwordController,),
+                                child: TextFieldCreateAccount(labelText: 'Password', controller: controller.passwordController,obsecure: true,),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 35,top: 25),
-                                child: InkWell(child: TextFiildMemory(labelText: '2024/02/02', iconT: Icon(Icons.date_range_outlined),onPressed: () {  }, controller: controller.dateTimeController,)),
-                              )
-
-
+                                padding: EdgeInsetsDirectional.only(top: 10),
+                                child: Container(
+                                  width: 360.w,
+                                  height: 32.h,
+                                  padding: EdgeInsetsDirectional.only(start: 10.w),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(25),
+                                    border: Border.all(color: Colors.black),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        controller.selectedDate != null
+                                            ? DateFormat(
+                                          'yyyy/MM/dd – HH:mm',
+                                        ).format(controller.selectedDate!)
+                                            : "No date selected",
+                                        style: appThemeData.textTheme.bodySmall,
+                                      ),
+                                      IconButton(
+                                        onPressed: () {
+                                          controller.pickDateTime(context);
+                                        },
+                                        icon: Icon(
+                                          Icons.calendar_today,
+                                          size: 15,
+                                          color: Colors.grey,
+                                        ),
+                                        color: Colors.blue,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -130,7 +160,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 15, top: 5),
                                   child: Text(
-                                    "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France",
+                                  "${CreateAccountController.selectedCountry.name} ${CreateAccountController.selectedCity.name??"(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France"}",
                                     maxLines: 2,
                                     style: appThemeData.textTheme.bodySmall,
                                   ),
@@ -148,11 +178,46 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                             )
                           ],
                         ),
+                        SizedBox(
+                            width: double.infinity,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 30, left: 10),
+                              child: Text(
+                                "Education",
+                                style: appThemeData.textTheme.bodyLarge,
+                              ),
+                            )),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                                width: 220.w,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 15, top: 5),
+                                  child: Text(
+                                   CreateAccountController.selectedEducation.name ?? "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France",
+                                    maxLines: 2,
+                                    style: appThemeData.textTheme.bodySmall,
+                                  ),
+                                )),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: InkWell(
+                                onTap: (){CreateAccountController.openDialogEducation(context);},
+                                child: Text(
+                                  'Add',
+                                  style: appThemeData.textTheme.labelLarge!
+                                      .copyWith(color: AppLightColor.fillButton),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
 
                         Padding(
                           padding: const EdgeInsets.only(top: 30),
                           child: CustomElevatedButton(onPressed: (){
-                            Get.toNamed(NamedRoute.routeLoginScreen);
+                            controller.signUp();
                           }, textColor: AppLightColor.withColor, color: AppLightColor.textBlueColor, title: "Create", height: 40.h, width: 300.w),
                         ),
                       ],

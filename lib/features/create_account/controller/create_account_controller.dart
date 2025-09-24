@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/features/feature_job_and_education/entity/education_entity.dart';
+import 'package:test_test_test/features/feature_job_and_education/entity/job_entity.dart';
 import 'package:test_test_test/features/feature_location/entity/city_entity.dart';
 import 'package:test_test_test/features/feature_location/entity/country_entity.dart';
 
@@ -18,6 +20,7 @@ import '../../../config/app_theme/app_theme.dart';
 import '../../../config/widgets/customButton.dart';
 import '../../create_person/widget/location.dart';
 import '../../feature_job_and_education/controller/education_cotnroller.dart';
+import '../../feature_job_and_education/controller/job_controller.dart';
 import '../../feature_location/controller/location_controller.dart';
 
 
@@ -28,9 +31,7 @@ class CreateAccountController extends GetxController {
   TextEditingController passwordController = TextEditingController();
   TextEditingController dateTimeController = TextEditingController();
 
-  List listData=["Elementary","Diploma",'Bachelors degree','Masters degree','P.H.D'];
-  List listJobs=["Teacher","Employee","manual worker",'Actor','Singer','programmer','The architect','politician'];
-  int selectedRadio = 0;
+   int selectedRadio = 0;
   int selectedLanguage = 0;
   File? pickedFile;
   String education="";
@@ -44,24 +45,54 @@ class CreateAccountController extends GetxController {
   Future<void> signUp() async {
     try {
       final response = await dio.post(
-        "https://api.peopli.ir/Api/register?displayName=displayName&username=username&password=password&avatar=avatar.png&cityId=1&educationId=1",
+        "https://api.peopli.ir/Api/register",
         queryParameters: {
           "displayName": nameController.text+familyController.text,
           "username": userNameController.text,
           "password":passwordController.text,
           "avatar": pickedFile!.path,
-          "birthDate": 1,
-          "cityId": 1,
-          "education": 1,
+          "birthDate": selectedDate,
+          "cityId": selectedCity.id,
+          "educationId": selectedEducation.id,
         },
       );
+      print(response.data);
+      SharedPreferences preferences =await SharedPreferences.getInstance();
+      if(response.statusCode == 200 && response.data['status'] == 'ok'){
+        preferences.setString('token', response.data['data']);
+        Get.toNamed(NamedRoute.routeHomeScreen);
+      }else{
+        Get.showSnackbar(GetSnackBar(title: 'Error',message: response.data['data'],));
+      }
       print("POST success: ${response.data}");
     } on DioException catch (e) {
       print("POST error: ${e.response?.statusCode} - ${e.message}");
     }
   }
 
+  DateTime? selectedDate;
 
+  void pickDateTime(context) async {
+    DateTime now = DateTime.now();
+    DateTime initialDate = DateTime(now.year - 18); // default: 18 years ago
+    DateTime firstDate = DateTime(1900); // earliest selectable year
+    DateTime lastDate = now; // latest selectable date: today
+
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
+      helpText: "Select your birth date",
+    );
+
+    if (picked != null && picked != selectedDate) {
+      selectedDate = picked;
+      dateTimeController.text = picked.toString();
+      update();
+      print("Selected birth date: $picked");
+    }
+  }
 
   updateLAnguage(int index) {
     selectedLanguage = index;
@@ -81,15 +112,14 @@ class CreateAccountController extends GetxController {
 
   uploadImage() async {
     final  picker = ImagePicker();
-// Pick an image.
    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
     pickedFile=File(pickedImage!.path);
     update();
   }
 
 
- late EducationEntity selectedEducation;
-  openDialog(context){
+ static late EducationEntity selectedEducation;
+ static openDialogEducation(context){
       showDialog(context: context, builder: (context)=>GetBuilder<EducationController>(initState: (state) {
         Get.lazyPut(()=>EducationController());
         selectedEducation = Get.find<EducationController>().educationList[0];
@@ -147,8 +177,8 @@ class CreateAccountController extends GetxController {
       }));}
 
 
-   late CountryEntity selectedCountry;
-   late CityEntity selectedCity;
+ static late CountryEntity selectedCountry;
+ static late CityEntity selectedCity;
     //location
   openDialogLocation(context){
     showDialog(context: context, builder: (context)=>AlertDialog(
@@ -160,28 +190,28 @@ class CreateAccountController extends GetxController {
         actions:[
           GetBuilder<LocationController>(
           id: 'country',
-            initState: (state) {
-              Get.lazyPut(()=>LocationController());
-              final controller = Get.find<LocationController>();
-              if (controller.countryList.isNotEmpty) {
-                selectedCountry = controller.countryList[0];
-              }
-            },
-
             builder: (controller) {
-            return Container(
+            return  Container(
               height: 100.h,
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(15),
-                  child: DropdownSearch<String>(
+                  child: DropdownSearch<CountryEntity>(
+                    items: controller.countryList,
+                    selectedItem: selectedCountry,
+                    itemAsString: (CountryEntity? country) => country?.name ?? "",
+                    compareFn: (CountryEntity? a, CountryEntity? b) => a?.id == b?.id, // 👈 lets DropdownSearch know equality
+                    onChanged: (value) {
+                      selectedCountry = value!;
+                      Get.lazyPut(() => LocationController(),);
+                     Get.find<LocationController>().getCity(selectedCountry.id); // load cities for selected country
+                    },
                     popupProps: PopupProps.menu(
                       showSelectedItems: true,
                       showSearchBox: true,
                       searchFieldProps: TextFieldProps(
                         decoration: InputDecoration(
                           hintText: "search country",
-                          helperStyle: appThemeData.textTheme.bodySmall,
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
                             borderRadius: BorderRadius.circular(20),
@@ -189,10 +219,7 @@ class CreateAccountController extends GetxController {
                         ),
                       ),
                     ),
-                    items: controller.countryName,
-                    onChanged: print,
-                    selectedItem: selectedCountry.name ?? '',
-                    dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownDecoratorProps: DropDownDecoratorProps( // 👈 must be here, not inside searchFieldProps
                       dropdownSearchDecoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
@@ -213,12 +240,6 @@ class CreateAccountController extends GetxController {
           GetBuilder<LocationController>(
             id: 'city',
             initState: (state) {
-              Get.lazyPut(()=>LocationController());
-              final controller = Get.find<LocationController>();
-              getCity();
-              if (controller.cityList.isNotEmpty) {
-                selectedCity = controller.cityList[0];
-              }
             },
             builder: (controller) {
               return Container(
@@ -226,7 +247,7 @@ class CreateAccountController extends GetxController {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.all(15),
-                    child: DropdownSearch<String>(
+                    child: DropdownSearch<CityEntity>(
                       popupProps: PopupProps.menu(
                         showSelectedItems: true,
                         showSearchBox: true,
@@ -241,9 +262,11 @@ class CreateAccountController extends GetxController {
                           ),
                         ),
                       ),
-                      items: controller.cityNames,
+                      items: LocationController.cityList,
                       onChanged: print,
-                      selectedItem: selectedCity.name ?? '',
+                      selectedItem: selectedCity,
+                      itemAsString: (CityEntity? city) => city!.name ??'',
+                      compareFn: (CityEntity? a,CityEntity? b)=>a?.id == b?.id,
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
@@ -273,23 +296,6 @@ class CreateAccountController extends GetxController {
 
 
   }
-  List<String> cityNames = [];
-  List<CityEntity> cityList = [];
-  Future<void> getCity() async {
-    try {
-      final response = await dio.get(
-        "https://api.peopli.ir/Api/admin/Countries/cities?page=1&take=15&sortBy=latest&countryId=${selectedCountry.id}",
-      );
-      if(response.statusCode == 200){
-        List<dynamic> data = response.data['data']['cities'];
-        cityList.addAll(data.map((item) => CityEntity.fromJson(item)));
-        cityNames.addAll(cityList.map((item) =>item.name??''));
-        update(['city']);
-      }
-    } on DioException catch (e) {
-      print("GET error: ${e.response?.statusCode} - ${e.message}");
-    }
-  }
 
 
 
@@ -298,9 +304,9 @@ class CreateAccountController extends GetxController {
 
 
 
+ static late JobEntity selectedJob;
 
-
-  openDialogJobs(context){
+ static openDialogJob(context){
     showDialog(context: context, builder: (context)=>AlertDialog(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10.0))
@@ -308,43 +314,61 @@ class CreateAccountController extends GetxController {
         title: Text("Jobs",style: appThemeData.textTheme.headlineSmall,),
         backgroundColor: AppLightColor.backgoundPost,
 
-        actions:[Container(
-          height: 300.0, // Change as per your requirement
-          width: 300.0, // Change as per your requirement
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: listJobs.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Column(
-                children: [
-                  ListTile(
-                    leading: Icon(Icons.person_add,color: AppLightColor.fillButton,),
-                    subtitle: Text("Please select the desired degree",style: appThemeData.textTheme.bodyMedium,),
-                    onTap: (){
-                      jobs=listJobs[index];
-                      Get.back();
-                      update();
-                    },
-                    title:Text(listJobs[index],style: appThemeData.textTheme.headlineSmall),
-                    selectedColor: AppLightColor.elipsFill,
-                    focusColor: AppLightColor.strokePositive,
+        actions:[GetBuilder<JobDropDownController>(initState:(state) {
+          Get.lazyPut(() => JobDropDownController(),);
+         selectedJob = Get.find<JobDropDownController>().jobList[0];
+        },builder: (controller) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))
+            ),
+            title: Text("Jobs", style: appThemeData.textTheme.headlineSmall,),
+            backgroundColor: AppLightColor.backgoundPost,
+
+            actions: [Container(
+              height: 300.0, // Change as per your requirement
+              width: 300.0, // Change as per your requirement
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: controller.jobList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: [
+                      ListTile(
+                        leading: Icon(Icons.person_add, color: AppLightColor
+                            .fillButton,),
+                        subtitle: Text(
+                          "Please select the desired degree", style: appThemeData
+                            .textTheme.bodyMedium,),
+                        onTap: () {
+                          selectedJob = controller.jobList[index];
+                          Get.back();
+                          controller.update();
+                        },
+                        title: Text(controller.jobList[index].name??'failed', style: appThemeData.textTheme
+                            .headlineSmall),
+                        selectedColor: AppLightColor.elipsFill,
+                        focusColor: AppLightColor.strokePositive,
 
 
-                  ),
-                  //divider
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Container(
-                      width: double.infinity,
-                      height: 1,
-                      color: AppLightColor.strokePositive,
-                    ),
-                  )
-                ],
-              );
-            },
-          ),
-        )]
+                      ),
+                      //divider
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Container(
+                          width: double.infinity,
+                          height: 1,
+                          color: AppLightColor.strokePositive,
+                        ),
+                      )
+                    ],
+                  );
+                },
+              ),
+            ),
+            ],
+          );
+        })]
     ));
 
 

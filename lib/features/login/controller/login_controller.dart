@@ -11,6 +11,7 @@ import '../../../config/app_route/route_names.dart';
 class LoginController extends GetxController{
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool obSecureText = false;
   final dio = Dio();
   @override
   void onInit() {
@@ -23,7 +24,7 @@ class LoginController extends GetxController{
 
     // Defer API calls until the next frame
     Future.delayed(Duration.zero, () {
-      Get.find<LocationController>().getCity();
+      Get.find<LocationController>().getCity(null);
       Get.find<LocationController>().getCountry();
       Get.find<JobDropDownController>().getJob();
       Get.find<EducationController>().getEducation();
@@ -54,7 +55,7 @@ class LoginController extends GetxController{
         print("Login success: ${response.data}");
         Get.toNamed(NamedRoute.routeHomeScreen);
       } else {
-        print("Login failed: ${response.data}");
+        Get.showSnackbar(GetSnackBar(title: 'Error',message: response.data['data'],duration: Duration(seconds: 2)));
       }
     } on DioException catch (e) {
       print("POST error: ${e.response?.statusCode} - ${e.message}");

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
 import 'package:test_test_test/features/feature_job_and_education/entity/education_entity.dart';
 
 import '../entity/job_entity.dart';
@@ -20,6 +21,8 @@ class JobDropDownController extends GetxController{
       List<dynamic> data = response.data['data']['jobs'];
       jobList.addAll(data.map((item) => JobEntity.fromJson(item)));
       jobName.addAll(jobList.map((item)=> item.name??''));
+      CreateAccountController.selectedJob = jobList[0];
+      update();
       }
     } on DioException catch (e) {
       print("GET error: ${e.response?.statusCode} - ${e.message}");

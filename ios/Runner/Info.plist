@@ -47,3 +47,7 @@
 	<true/>
 </dict>
 </plist>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>We need your location to show your current position.</string>
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>We need your location to provide location-based services.</string>

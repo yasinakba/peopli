@@ -12,7 +12,8 @@ final dateController = TextEditingController();
 final subjectController = TextEditingController();
 final typeController = TextEditingController();
 final locationController = TextEditingController();
-
+ double latitude = 0.0;
+ double longitude = 0.0;
 int selectedRadio=0;
 File? pickedFile;
   @override
@@ -32,12 +33,12 @@ final dio = Dio();
       'lat':'',
       'lng':'',
       'media':pickedFile!.path,
-      'date':dateController.text,
+      'date':"${selectedDate!.month}/${selectedDate!.day}/${selectedDate!.year}",
     });
   }
 DateTime? selectedDate;
 
-void pickBirthDate(context) async {
+void pickDateTime(context) async {
   DateTime now = DateTime.now();
   DateTime initialDate = DateTime(now.year - 18); // default: 18 years ago
   DateTime firstDate = DateTime(1900); // earliest selectable year
@@ -65,7 +66,7 @@ Widget build(BuildContext context) {
     body: Center(
       child: ElevatedButton(
         onPressed: () {
-          pickBirthDate(context);
+          pickDateTime(context);
         },
         child: Text(
           selectedDate == null
