@@ -87,19 +87,19 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(top: 10),
-                                child: TextFieldCreateAccount(labelText: 'name'),
+                                child: TextFieldCreateAccount(labelText: 'name', controller: controller.nameController,),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 5),
-                                child: TextFieldCreateAccount(labelText: 'family'),
+                                child: TextFieldCreateAccount(labelText: 'family', controller: controller.familyController,),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 5),
-                                child: TextFieldCreateAccount(labelText: 'UserNAme'),
+                                child: TextFieldCreateAccount(labelText: 'UserNAme', controller: controller.userNameController,),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 5),
-                                child: TextFieldCreateAccount(labelText: 'Password',),
+                                child: TextFieldCreateAccount(labelText: 'Password', controller: controller.passwordController,),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 5),

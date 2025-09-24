@@ -49,7 +49,7 @@ class InformationPerson extends GetView<CreatePersonController> {
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: InkWell(
-                    onTap: (){controller.openDialogLocation(context);},
+                    onTap: (){controller.openDialogLocationCountry(context);},
                     child: Text(
                       'Add',
                       style: appThemeData.textTheme.labelLarge!
@@ -68,7 +68,7 @@ class InformationPerson extends GetView<CreatePersonController> {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10, left: 10),
                     child: InkWell(
-                      onTap: (){controller.openDialog(context);},
+                      onTap: (){controller.openDialogEducation(context);},
                       child: Text(
                         "Education :",
                         style: appThemeData.textTheme.bodyLarge,
@@ -93,7 +93,7 @@ class InformationPerson extends GetView<CreatePersonController> {
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: InkWell(
-                      onTap: (){controller.openDialog(context);},
+                      onTap: (){controller.openDialogEducation(context);},
                       child: Text(
                         'Add',
                         style: appThemeData.textTheme.labelLarge!

@@ -16,7 +16,7 @@ import 'controller/create_perxon_controller.dart';
 
 
 class CreatePersonScreen extends GetView<CreatePersonController> {
-  const CreatePersonScreen({Key? key}) : super(key: key);
+  final CreatePersonController createPersonController = Get.put(CreatePersonController());
 
   @override
   Widget build(BuildContext context) {
@@ -87,19 +87,19 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 10),
-                        child: TextFieldCreate(labelText: 'name'),
+                        child: TextFieldCreate(labelText: 'userName', controller: controller.nameController,),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5),
-                        child: TextFieldCreate(labelText: 'family name'),
+                        child: TextFieldCreate(labelText: 'family name', controller: controller.familyNameController,),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5),
-                        child: TextFieldCreate(labelText: 'Known as',),
+                        child: TextFieldCreate(labelText: 'Known as', controller: controller.knowAsController,),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5),
-                        child: TextFieldCreate(labelText: 'Date of birth'),
+                        child: TextFieldCreate(labelText: 'Date of birth', controller: controller.nameController,),
                       ),
                     ],
                   ),

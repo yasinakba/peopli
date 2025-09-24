@@ -5,8 +5,9 @@ import 'package:get/get.dart';
 import '../../../config/app_theme/app_theme.dart';
 
 class TextFieldCreate extends StatelessWidget {
- TextFieldCreate({required this.labelText});
+ TextFieldCreate({super.key, required this.labelText,required this.controller});
   String labelText;
+  TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class TextFieldCreate extends StatelessWidget {
       width: 290.w,
       height: 32.h,
       child: TextFormField(
-
+        controller: controller,
         decoration: InputDecoration(border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(25)),
         ),
