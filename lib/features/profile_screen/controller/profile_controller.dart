@@ -11,7 +11,8 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    readMemories();
+    getCurrentAccount();
+
     scrollMemoryController.addListener(() {
       if (scrollMemoryController.position.pixels >=
           scrollMemoryController.position.maxScrollExtent) {
@@ -45,7 +46,8 @@ class ProfileController extends GetxController {
         currentUser.add(user); // if currentUser is a List<User>
         update();
         debugPrint("✅ currentUser updated: ${currentUser.length} users");
-        preferences.setInt('UserId', currentUser.first.id);
+        preferences.setInt('userId', currentUser.first.id);
+        readMemories();
         update();
       } else {
         debugPrint(

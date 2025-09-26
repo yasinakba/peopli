@@ -217,7 +217,7 @@ class CreateAccountController extends GetxController {
  static late CountryEntity selectedCountry;
  static late CityEntity selectedCity;
     //location
-  openDialogLocation(context){
+ static openDialogLocation(context){
     showDialog(context: context, builder: (context)=>AlertDialog(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10.0))

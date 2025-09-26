@@ -7,11 +7,11 @@ import '../../../config/app_theme/app_theme.dart';
 
 class TextFieldCreateAccount extends StatelessWidget {
   TextFieldCreateAccount(
-      {super.key, required this.labelText, required this.controller});
+      {super.key, required this.labelText, required this.controller,this.obSecure});
 
   String labelText;
   TextEditingController controller;
-  RxBool obsecure = true.obs;
+  RxBool? obSecure;
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +20,14 @@ class TextFieldCreateAccount extends StatelessWidget {
       height: 30.h,
       child: Obx(() {
         return TextFormField(
-          obscureText: obsecure.value,
+          obscureText:obSecure==null?false:obSecure!.value,
           controller: controller,
           decoration: InputDecoration(border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(25)),
           ),
-              prefix: IconButton(onPressed: () {
-                obsecure.value = !obsecure.value;
-              }, icon: Icon(obsecure.value?Icons.remove_red_eye_rounded:FrinoIcons.f_eye_slash)),
+              suffixIcon: IconButton(onPressed: () {
+                obSecure!.value = !obSecure!.value;
+              }, icon: Icon(obSecure == null?null:obSecure!.value?FrinoIcons.f_eye:FrinoIcons.f_eye_slash)),
               labelText: labelText,
               labelStyle: (appThemeData.textTheme.bodySmall)
 

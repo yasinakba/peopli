@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
 
 import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_icons/app_assets_jpg.dart';
@@ -118,23 +120,62 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                     controller: controller.familyController,
                                   ),
                                 ),
-                                // Padding(
-                                //   padding: const EdgeInsets.only(top: 5),
-                                //   child: TextFieldCreateAccount(labelText: 'UserNAme'),
-                                // ),
-                                // Padding(
-                                //   padding: const EdgeInsets.only(top: 5),
-                                //   child: TextFieldCreateAccount(labelText: 'Password',),
-                                // ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 5),
-                                  child: TextFieldCreate(
-                                    labelText: 'Date of birth',
+                                  child: TextFieldCreateAccount(labelText: 'UserNAme', controller: controller.emailController,),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5),
+                                  child: TextFieldCreateAccount(labelText: 'Password', controller: controller.passwordController,obSecure: true.obs,),
+                                ),
+                                Padding(
+                                  padding: EdgeInsetsDirectional.only(top: 10),
+                                  child: Container(
+                                    width: 360.w,
+                                    height: 32.h,
+                                    padding: EdgeInsetsDirectional.only(
+                                      start: 10.w,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(25),
+                                      border: Border.all(color: Colors.black),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          controller.selectedDate != null
+                                              ? DateFormat(
+                                            'yyyy/MM/dd – HH:mm',
+                                          ).format(
+                                            controller.selectedDate!,
+                                          )
+                                              : "No date selected",
+                                          style:
+                                          appThemeData.textTheme.bodySmall,
+                                        ),
+                                        IconButton(
+                                          onPressed: () {
+                                            controller.pickDateTime(context);
+                                          },
+                                          icon: Icon(
+                                            Icons.calendar_today,
+                                            size: 15,
+                                            color: Colors.grey,
+                                          ),
+                                          color: Colors.blue,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
+
                               ],
                             ),
                           ),
+
 
                           //location
                           SizedBox(
@@ -147,6 +188,17 @@ class EditProfileScreen extends GetView<EditProfileController> {
                               ),
                             ),
                           ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 5, left: 10),
+                              child: Text(
+                                "Education :",
+                                style: appThemeData.textTheme.bodyLarge,
+                              ),
+                            ),
+                          ),
+
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -158,7 +210,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                     top: 5,
                                   ),
                                   child: Text(
-                                    "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France",
+                                   CreateAccountController.selectedEducation.name ?? "No selectedEducation",
                                     maxLines: 2,
                                     style: appThemeData.textTheme.bodySmall,
                                   ),
@@ -168,7 +220,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                 padding: const EdgeInsets.only(right: 10),
                                 child: InkWell(
                                   onTap: () {
-                                    controller.openDialogLocation(context);
+                                    CreateAccountController.openDialogEducation(context);
                                   },
                                   child: Text(
                                     'Add',
