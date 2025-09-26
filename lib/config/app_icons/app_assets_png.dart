@@ -11,6 +11,7 @@ class AppAssetsPng {
   static const String  iconLHeart='$iconPath/heart.png';
   static const String  iconShare='$iconPath/share.png';
   static const String  iconPlus='$iconPath/plus 3.png';
+  static const String  iconPerson='$iconPath/person.png';
   static const String  logo='$iconPath/Logo.png';
   static const String  logo1='$iconPath/Logo.gif';
 

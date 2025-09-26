@@ -1,43 +1,62 @@
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:test_test_test/features/add_memory/controller/add_memory_controller.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import '../../feature_location/controller/location_controller.dart';
 
 class GetLocationController extends GetxController {
   var locationText = "Unknown".obs;
-
-  Future<Position?> getUserLocation() async {
-    // Check if location services are enabled
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      print("Location services are disabled.");
-      return null;
-    }
-
-    // Check permission
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        print("Location permission denied");
-        return null;
+  Future<void> getLocationFromGPS(AddMemoryController controller) async {
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      // Check service
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        print("❌ Location services are disabled.");
+        return;
       }
+
+      // Request permission
+      var status = await Permission.location.request();
+
+      if (status.isDenied) {
+        print("❌ Location permission denied by user.");
+        return;
+      }
+
+      if (status.isPermanentlyDenied) {
+        print("❌ Permission permanently denied, opening settings...");
+        await openAppSettings();
+        return;
+      }
+
+      // ✅ Get current location
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      controller.latitude = position.latitude;
+      controller.longitude = position.longitude;
+
+      // ✅ Convert to human-readable address
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+        localeIdentifier: "en", // force English
+      );
+
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        controller.locationController.text =
+        "${place.street}, ${place.locality}, ${place
+            .administrativeArea}, ${place.country}";
+        Get.find<AddMemoryController>().update();
+      }
+    } else {
+      await Geolocator.requestPermission();
+
     }
-
-    if (permission == LocationPermission.deniedForever) {
-      print("Location permissions are permanently denied");
-      return null;
-    }
-
-    // Get current position
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    print("Latitude: ${position.latitude}, Longitude: ${position.longitude}");
-    Get.lazyPut(() => AddMemoryController(),);
-    Get.find<AddMemoryController>().locationController.text = locationText.value;
-    Get.find<AddMemoryController>().latitude = position.latitude;
-    Get.find<AddMemoryController>().longitude = position.longitude;
-
-    return position;
-  }
-}
+  }}

@@ -19,26 +19,31 @@ class HomeScreen extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: CustomeAppBar(),
-        body: GetBuilder<HomeController>(
-          builder: (c) => Stack(
-            children: [
-              PageView(
-                  // index: controller.currentIndex,
-                controller: controller.pageController,
-                onPageChanged: controller.updateIndexNav,
-                children: [
-                  FirstScreen(),
-                  SearchScreen(),
-                  CreatePersonScreen(),
-                  HeartScreen(),
-                 ProfileScreen()
-                ],
-              ),
-              Align(
-                  alignment: Alignment.bottomCenter,
-                  child: NavigationBarWidget()
-              ),
-            ],
+        body: WillPopScope(
+          onWillPop: () async{
+            return false;
+          },
+          child: GetBuilder<HomeController>(
+            builder: (c) => Stack(
+              children: [
+                PageView(
+                    // index: controller.currentIndex,
+                  controller: controller.pageController,
+                  onPageChanged: controller.updateIndexNav,
+                  children: [
+                    FirstScreen(),
+                    SearchScreen(),
+                    CreatePersonScreen(),
+                    HeartScreen(),
+                   ProfileScreen()
+                  ],
+                ),
+                Align(
+                    alignment: Alignment.bottomCenter,
+                    child: NavigationBarWidget()
+                ),
+              ],
+            ),
           ),
         ));
   }

@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
+import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/first_screen/widget/list_view_profile.dart';
 import 'package:test_test_test/features/first_screen/widget/post_first_screen.dart';
+import '';
 
 import '../../config/app_colors/app_colors_light.dart';
 
 
 class FirstScreen extends StatelessWidget {
-  const FirstScreen({Key? key}) : super(key: key);
+  FirstController firstController = Get.put(FirstController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
+      body: GetBuilder<FirstController>(builder: (controller) {
+        return Column(
           children: [
-
             //divider
             Container(
               width: double.infinity,
@@ -36,27 +40,26 @@ class FirstScreen extends StatelessWidget {
               color: AppLightColor.cancelButtonFill,
             ),
 
-
-
             Expanded(
               child: ListView.builder(
                 scrollDirection: Axis.vertical,
-                itemCount: 4,
-                itemBuilder:(context, index) {
-
-                return  Padding(
-                  padding:  EdgeInsets.only(top: 10,right: 10,left: 10,bottom: index==3?60:10),
-                  child: PostFirstScreen(),
-                );
-
+                itemCount: controller.memoryList.length,
+                itemBuilder: (context, index) {
+                  MemoryEntity memory = controller.memoryList[index];
+                  return Padding(
+                    padding: EdgeInsets.only(top: 10,
+                        right: 10,
+                        left: 10,
+                        bottom: index == 3 ? 60 : 10),
+                    child: PostFirstScreen(memory),
+                  );
                 },
-
-
-      ),
+              ),
             ),
           ],
-        )
-    ,
+        );
+      })
+      ,
     );
   }
 }

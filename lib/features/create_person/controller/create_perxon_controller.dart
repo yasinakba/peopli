@@ -29,7 +29,7 @@ class CreatePersonController extends GetxController {
    TextEditingController nameController = TextEditingController();
    TextEditingController familyNameController = TextEditingController();
    TextEditingController knowAsController = TextEditingController();
-   // TextEditingController nameController = TextEditingController();
+   TextEditingController locationController = TextEditingController();
    int selectedRadio = 0;
   int selectedLanguage = 0;
   File? pickedFile;

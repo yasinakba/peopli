@@ -43,32 +43,69 @@ class CreateAccountController extends GetxController {
   }
   final dio = Dio();
   Future<void> signUp() async {
+    // ✅ Step 1: Input validation
+    if (nameController.text.isEmpty ||
+        familyController.text.isEmpty ||
+        userNameController.text.isEmpty ||
+        passwordController.text.isEmpty ||
+        pickedFile == null ||
+        selectedDate == null ||
+        selectedCity == null ||
+        selectedEducation == null) {
+      Get.showSnackbar(
+        const GetSnackBar(
+          title: 'Validation Error',
+          message: 'Please fill all required fields!',
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return; // Stop execution if validation fails
+    }
+
     try {
+      // ✅ Step 2: API request
       final response = await dio.post(
         "https://api.peopli.ir/Api/register",
         queryParameters: {
-          "displayName": nameController.text+familyController.text,
+          "displayName": "${nameController.text} ${familyController.text}",
           "username": userNameController.text,
-          "password":passwordController.text,
+          "password": passwordController.text,
           "avatar": pickedFile!.path,
-          "birthDate": selectedDate,
+          "birthDate": selectedDate.toString(), // make sure API accepts String
           "cityId": selectedCity.id,
           "educationId": selectedEducation.id,
         },
       );
+
       print(response.data);
-      SharedPreferences preferences =await SharedPreferences.getInstance();
-      if(response.statusCode == 200 && response.data['status'] == 'ok'){
-        preferences.setString('token', response.data['data']);
+
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+
+      // ✅ Step 3: Success / Error handling
+      if (response.statusCode == 200 && response.data['status'] == 'ok') {
+        await preferences.setString('token', response.data['data']);
         Get.toNamed(NamedRoute.routeHomeScreen);
-      }else{
-        Get.showSnackbar(GetSnackBar(title: 'Error',message: response.data['data'],));
+      } else {
+        Get.showSnackbar(
+          GetSnackBar(
+            title: 'Error',
+            message: response.data['data'] ?? 'Registration failed',
+            duration: const Duration(seconds: 3),
+          ),
+        );
       }
-      print("POST success: ${response.data}");
     } on DioException catch (e) {
       print("POST error: ${e.response?.statusCode} - ${e.message}");
+      Get.showSnackbar(
+        GetSnackBar(
+          title: 'Error',
+          message: 'Something went wrong: ${e.message}',
+          duration: const Duration(seconds: 3),
+        ),
+      );
     }
   }
+
 
   DateTime? selectedDate;
 

@@ -11,7 +11,7 @@ class AddMemoryController extends GetxController{
 final dateController = TextEditingController();
 final subjectController = TextEditingController();
 final typeController = TextEditingController();
-final locationController = TextEditingController();
+TextEditingController locationController = TextEditingController();
  double latitude = 0.0;
  double longitude = 0.0;
 int selectedRadio=0;

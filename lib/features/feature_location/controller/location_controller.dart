@@ -23,7 +23,7 @@ class LocationController extends GetxController{
       countryName.addAll(countryList.map((item)=> item.name??''));
       CreateAccountController.selectedCountry = countryList[0];
       update();
-      // update(['country']);
+      update(['country']);
       }
     } on DioException catch (e) {
       print("GET error: ${e.response?.statusCode} - ${e.message}");

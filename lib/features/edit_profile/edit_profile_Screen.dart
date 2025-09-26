@@ -8,7 +8,7 @@ import '../../config/app_icons/app_assets_jpg.dart';
 import '../../config/app_route/route_names.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/customButton.dart';
-import '../create_account/widget/custom_password_controller.dart';
+import '../create_account/widget/custom_textField.dart';
 import '../create_person/widget/textField_create.dart';
 import 'conteoller/edit_profile_controller.dart';
 

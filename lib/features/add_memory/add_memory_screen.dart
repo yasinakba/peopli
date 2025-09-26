@@ -145,7 +145,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                           labelText: 'Location',
                           iconT: Icon(Icons.location_on),
                           onPressed: () {
-                            Get.find<GetLocationController>().getUserLocation();
+                            Get.find<GetLocationController>().getLocationFromGPS(controller);
                           },
                           controller: controller.locationController,
                         ),
@@ -155,12 +155,13 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                 ),
                 //Date
                 Padding(
-                  padding: EdgeInsetsDirectional.only(end: 23.w, top: 10),
+                  padding: const EdgeInsets.only(left: 20, top: 10),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Spacer(),
                       Text('Date:', style: appThemeData.textTheme.bodyLarge),
+                      Spacer(flex: 2,),
                       Container(
                         width: 260.w,
                         height: 32.h,
@@ -192,10 +193,10 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                               ),
                               color: Colors.blue,
                             ),
-                            // SizedBox(width: 10),
                           ],
                         ),
                       ),
+                           Spacer(),
                     ],
                   ),
                 ),

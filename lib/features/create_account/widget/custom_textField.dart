@@ -11,7 +11,7 @@ class TextFieldCreateAccount extends StatelessWidget {
 
   String labelText;
   TextEditingController controller;
-  RxBool obsecure = false.obs;
+  RxBool obsecure = true.obs;
 
   @override
   Widget build(BuildContext context) {

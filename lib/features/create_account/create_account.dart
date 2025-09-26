@@ -4,15 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../../config/app_colors/app_colors_light.dart';
-import '../../config/app_route/route_names.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/customButton.dart';
-import '../add_memory/widget/textFild_memory.dart';
-import '../create_person/widget/textField_create.dart';
 import '../edit_profile/widget/textField_create_account.dart';
 import 'controller/create_account_controller.dart';
 
@@ -39,7 +37,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                       decoration: BoxDecoration(
                         color: AppLightColor.elipsFill,
                         image: controller.pickedFile==null?null:DecorationImage(image: FileImage(controller.pickedFile!),fit: BoxFit.cover),
-                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                        shape: BoxShape.circle
                       ),
                     ),
                   ),
@@ -55,7 +53,6 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                             children: [
                               Row(
                                 children: [
-
                                   InkWell(
                                     onTap: (){controller.updateLAnguage(0);},
                                     child: Text("EN",style: controller.textStyleEn(0),),

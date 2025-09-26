@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/features/feature_job_and_education/controller/education_cotnroller.dart';
 import 'package:test_test_test/features/feature_job_and_education/controller/job_controller.dart';
@@ -11,7 +12,11 @@ import '../../../config/app_route/route_names.dart';
 class LoginController extends GetxController{
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  bool obSecureText = false;
+  bool obSecureText = true;
+
+  share() async {
+    await Share.share("com.example.peopli");
+  }
   final dio = Dio();
   @override
   void onInit() {
