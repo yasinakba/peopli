@@ -1,15 +1,17 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:test_test_test/features/profile_screen/entity/user_entity.dart';
 
-import '../../first_screen/entity/memory_entity.dart';
+import '../first_screen/entity/memory_entity.dart';
 
-class ProfileController extends GetxController {
-  final dio = Dio();
+class HeartController extends GetxController{
+  List<MemoryEntity> memoryList = [];
+  int memoryPage = 1;
+  ScrollController scrollMemoryController = ScrollController();
   @override
   void onInit() {
+    // TODO: implement onInit
     super.onInit();
     readMemories();
     scrollMemoryController.addListener(() {
@@ -20,48 +22,7 @@ class ProfileController extends GetxController {
       }
     });
   }
-  Future<void> getCurrentAccount() async {
-    try {
-      final preferences = await SharedPreferences.getInstance();
-      final token = preferences.getString('token');
-
-      if (token == null) {
-        debugPrint("⚠️ No token found in SharedPreferences");
-        return;
-      }
-
-      final response = await dio.get(
-        'https://api.peopli.ir/Api/Account',
-        queryParameters: {
-          'token': token,
-        },
-      );
-
-      debugPrint("✅ Response received: ${response.data}");
-
-      if (response.statusCode == 200 && response.data['status'] == 'ok') {
-        final data = response.data['data'] as Map<String, dynamic>;
-        final user = User.fromJson(data);
-        currentUser.add(user); // if currentUser is a List<User>
-        update();
-        debugPrint("✅ currentUser updated: ${currentUser.length} users");
-        preferences.setInt('UserId', currentUser.first.id);
-        update();
-      } else {
-        debugPrint(
-            "❌ Error: ${response.statusCode} -> ${response.statusMessage}");
-      }
-    } catch (e, stacktrace) {
-      debugPrint("🔥 Exception while fetching account: $e");
-      debugPrint(stacktrace.toString());
-    }
-  }
-  List<MemoryEntity> memoryList = [];
-  int memoryPage = 1;
-  ScrollController scrollMemoryController = ScrollController();
-  late TabController tabController;
-  List<User> currentUser = [];
-
+  final dio = Dio();
   Future<void> readMemories() async {
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -73,7 +34,12 @@ class ProfileController extends GetxController {
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Memories?token=$token&page=1&take=15&sortBy=latest&userId=${currentUser.first.id}',
+        'https://api.peopli.ir/Api/Memories/likes?token=$token&page=1&take=15&sortBy=latest',
+        options: Options(
+          headers: {
+            // 'Accept': 'application/json',
+          },
+        ),
       );
       if (response.statusCode == 200 && response.data['status'] == 'ok') {
         // ✅ Success
@@ -101,7 +67,7 @@ class ProfileController extends GetxController {
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Memories?token=$token&page=$memoryPage&take=15&sortBy=latest&userId=${currentUser.first.id}',
+        'https://api.peopli.ir/Api/Memories/likes?token=$token&page=$memoryPage&take=15&sortBy=latest',
         options: Options(
           headers: {
             'Accept': 'application/json',

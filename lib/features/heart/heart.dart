@@ -40,7 +40,7 @@ class HeartScreen extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      //famous
+                      //hearfamous
                       Padding(
                         padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
                         child: InkWell(

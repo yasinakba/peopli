@@ -12,9 +12,10 @@ import '../../feature_location/controller/location_controller.dart';
 
 class FirstController extends GetxController {
   final dio = Dio();
-  int page = 1;
+  int memoryPage = 1;
   List<MemoryEntity> memoryList = [];
-  ScrollController scrollController = ScrollController();
+  ScrollController scrollMemoryController = ScrollController();
+  ScrollController scrollFaceController = ScrollController();
 
   @override
  void onInit() {
@@ -33,6 +34,20 @@ class FirstController extends GetxController {
       Get.find<JobDropDownController>().getJob();
       Get.find<EducationController>().getEducation();
       Get.find<ProfileController>().getCurrentAccount();
+    });
+    scrollMemoryController.addListener(() {
+      if (scrollMemoryController.position.pixels >=
+          scrollMemoryController.position.maxScrollExtent) {
+        memoryPage++;
+        readMoreMemories();
+      }
+    });
+    scrollFaceController.addListener(() {
+      if (scrollFaceController.position.pixels >=
+          scrollFaceController.position.maxScrollExtent) {
+        facePage++;
+        readMoreFace();
+      }
     });
   }
 
@@ -89,7 +104,7 @@ class FirstController extends GetxController {
         'https://api.peopli.ir/Api/Memories',
         queryParameters: {
           'token':token,
-          'page': page,
+          'page': memoryPage,
           'take': 15,
           'sortBy': 'closet',
         },
@@ -116,7 +131,7 @@ class FirstController extends GetxController {
   }
   List<CommentEntity> commentList = [];
   int commentPage = 1;
-  Future<void> getComment(memoryId) async{
+  Future<void> readComment(memoryId) async{
     commentList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -150,4 +165,74 @@ class FirstController extends GetxController {
       debugPrint(stacktrace.toString());
     }
   }
+  List<CommentEntity> faceList = [];
+  int facePage = 1;
+  Future<void> getFace() async{
+    faceList.clear();
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final token = preferences.getString('token');
+
+      if (token == null) {
+        debugPrint("⚠️ No token found in SharedPreferences");
+        return;
+      }
+
+      final response = await dio.get(
+        'https://api.peopli.ir/Api/Faces?token=$token&page=1&take=15&sortBy=closest',
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // ✅ Success
+        List<dynamic> data = response.data['data']['comments'];
+        commentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
+        debugPrint("Comments: ${response.data}");
+        update();
+      } else {
+        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+      }
+    } catch (e, stacktrace) {
+      debugPrint("🔥 Exception while fetching memories: $e");
+      debugPrint(stacktrace.toString());
+    }
+  }
+  Future<void> readMoreFace() async{
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final token = preferences.getString('token');
+
+      if (token == null) {
+        debugPrint("⚠️ No token found in SharedPreferences");
+        return;
+      }
+
+      final response = await dio.get(
+        'https://api.peopli.ir/Api/Faces?token=$token&page=$facePage&take=15&sortBy=closest',
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // ✅ Success
+        List<dynamic> data = response.data['data']['comments'];
+        commentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
+        debugPrint("Comments: ${response.data}");
+        update();
+      } else {
+        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+      }
+    } catch (e, stacktrace) {
+      debugPrint("🔥 Exception while fetching memories: $e");
+      debugPrint(stacktrace.toString());
+    }
+  }
+
 }

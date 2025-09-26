@@ -54,7 +54,7 @@ class PostFirstScreen extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           child: SingleChildScrollView(
-            controller: controller.scrollController,
+            controller: controller.scrollMemoryController,
             child: Column(
               children: [
                 //famous

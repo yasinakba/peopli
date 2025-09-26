@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:test_test_test/config/app_route/binding/heart_binding.dart';
 import 'package:test_test_test/config/app_route/route_names.dart';
 import '../../features/add_memory/add_memory_screen.dart';
 import '../../features/create_account/create_account.dart';
@@ -30,7 +31,7 @@ import 'binding/splash_binding.dart';
 class Pages{
   static List<GetPage<dynamic>>pages=[
     GetPage(name:NamedRoute.routeSplashScreen, page: () =>SplashScreen(),binding:SplashBinding()),
-    GetPage(name: NamedRoute.routeHomeScreen, page: () =>HomeScreen(),bindings: [HomeBinding(),FirstBinding(),SearchBinding(),CreatePersonBinding(),ProfileBinding()]),
+    GetPage(name: NamedRoute.routeHomeScreen, page: () =>HomeScreen(),bindings: [HomeBinding(),FirstBinding(),SearchBinding(),CreatePersonBinding(),ProfileBinding(),HeartBinding()]),
     GetPage(name: NamedRoute.routePersonScreen, page: () =>PersonScreen(),bindings:[PersonBinding(),CreatePersonBinding()] ),
     GetPage(name: NamedRoute.routePersonEditScreen, page: () =>EditPersonScreen(),bindings: [PersonEditBinding(),PersonBinding()]),
     GetPage(name: NamedRoute.routeAddMemoryScreen, page: () =>AddMemoryScreen(),binding: AddMemoryBinding()),

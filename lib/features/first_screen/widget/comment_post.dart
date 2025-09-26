@@ -22,7 +22,7 @@ class CommentPost extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<FirstController>(
       initState: (state) {
-        firstController.getComment(memoryEntity.id);
+        firstController.readComment(memoryEntity.id);
       },
       builder: (controller) {
         return Column(
