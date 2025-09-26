@@ -157,7 +157,7 @@ class CreateAccountController extends GetxController {
 
  static late EducationEntity selectedEducation;
  static openDialogEducation(context){
-      showDialog(context: context, builder: (context)=>GetBuilder<EducationController>(initState: (state) {
+      showDialog(context: context, builder: (context)=>GetBuilder<EducationController>(id:'education',initState: (state) {
         Get.lazyPut(()=>EducationController());
         selectedEducation = Get.find<EducationController>().educationList[0];
       },builder: (controller) {
@@ -185,8 +185,8 @@ class CreateAccountController extends GetxController {
                             .textTheme.bodyMedium,),
                         onTap: () {
                           selectedEducation = controller.educationList[index];
+                          controller.update(['education']);
                           Get.back();
-                          controller.update();
                         },
                         title: Text(controller.educationList[index].name??'failed', style: appThemeData.textTheme
                             .headlineSmall),
@@ -242,6 +242,7 @@ class CreateAccountController extends GetxController {
                       selectedCountry = value!;
                       Get.lazyPut(() => LocationController(),);
                      Get.find<LocationController>().getCity(selectedCountry.id); // load cities for selected country
+
                     },
                     popupProps: PopupProps.menu(
                       showSelectedItems: true,
@@ -300,7 +301,11 @@ class CreateAccountController extends GetxController {
                         ),
                       ),
                       items: LocationController.cityList,
-                      onChanged: print,
+                      onChanged: (value) {
+                        print;
+                        selectedCity = value!;
+                        controller.update();
+                      },
                       selectedItem: selectedCity,
                       itemAsString: (CityEntity? city) => city!.name ??'',
                       compareFn: (CityEntity? a,CityEntity? b)=>a?.id == b?.id,

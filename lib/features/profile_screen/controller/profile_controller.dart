@@ -42,9 +42,8 @@ class ProfileController extends GetxController {
 
       if (response.statusCode == 200 && response.data['status'] == 'ok') {
         final data = response.data['data'] as Map<String, dynamic>;
-        final user = User.fromJson(data);
+        final user = UserEntity.fromJson(data);
         currentUser.add(user); // if currentUser is a List<User>
-        update();
         debugPrint("✅ currentUser updated: ${currentUser.length} users");
         preferences.setInt('userId', currentUser.first.id);
         readMemories();
@@ -62,7 +61,7 @@ class ProfileController extends GetxController {
   int memoryPage = 1;
   ScrollController scrollMemoryController = ScrollController();
   late TabController tabController;
-  List<User> currentUser = [];
+  List<UserEntity> currentUser = [];
 
   Future<void> readMemories() async {
     try {

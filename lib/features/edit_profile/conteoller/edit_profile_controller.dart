@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +7,9 @@ import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
+import 'package:test_test_test/features/feature_job_and_education/controller/education_cotnroller.dart';
+import 'package:test_test_test/features/first_screen/entity/comment_entity.dart';
+import 'package:test_test_test/features/profile_screen/entity/user_entity.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_route/route_names.dart';
@@ -15,42 +17,86 @@ import '../../../config/app_theme/app_theme.dart';
 import '../../../config/widgets/customButton.dart';
 import '../../create_person/widget/location.dart';
 
-
 class EditProfileController extends GetxController {
-
+  UserEntity currentUser = Get.arguments;
   @override
   void onInit() {
     super.onInit();
-
+   fillProperties();
   }
-  TextEditingController nameController = TextEditingController();
-  TextEditingController familyController = TextEditingController();
+
+  TextEditingController displayController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController dateTimeController = TextEditingController();
-  List listData=["Elementary","Diploma",'Bachelors degree','Masters degree','P.H.D'];
-  List listJobs=["Teacher","Employee","manual worker",'Actor','Singer','programmer','The architect','politician'];
   int selectedRadio = 0;
   int selectedLanguage = 0;
   File? pickedFile;
-  String education="";
-  String jobs="";
+  String education = "";
+  String jobs = "";
   final dio = Dio();
 
-  Future<void> editProfile()async{
+  fillProperties() {
+    Get.lazyPut(() => CreateAccountController());
+    Get.lazyPut(() => EducationController());
+
+    if (currentUser != null) {
+      displayController.text = currentUser.displayName;
+      userNameController.text = currentUser.username;
+      emailController.text = currentUser.email ?? "";
+      selectedDate = currentUser.birthdate;
+
+      if (currentUser.birthdate != null) {
+        final bd = currentUser.birthdate!;
+        dateTimeController.text = "${bd.year}/${bd.month}/${bd.day}";
+      } else {
+        dateTimeController.clear();
+      }
+
+      final educationCtrl = Get.find<EducationController>();
+      final selected = educationCtrl.educationList.firstWhereOrNull(
+            (element) => element.id == currentUser.educationId,
+      );
+      if (selected != null) {
+        CreateAccountController.selectedEducation = selected;
+      }
+
+      update();
+      Get.find<CreateAccountController>().update();
+      Get.find<EducationController>().update();
+    }
+  }
+
+  Future<void> editProfile() async {
+    if (userNameController.text == null ||
+        displayController.text == null ||
+        pickedFile!.path == null || emailController.text == null ||
+        CreateAccountController.selectedCity.id == null ||
+        selectedDate == null ||
+        CreateAccountController.selectedEducation.id == null) {
+      Get.showSnackbar(GetSnackBar(title: 'Error',message: 'fulfilment information requirements',));
+    }
     SharedPreferences preferences = await SharedPreferences.getInstance();
-   String? token = preferences.getString('token');
-    final response = dio.post('https://api.peopli.ir/Api/Account/edit-profile',queryParameters: {
-      'token':token,
-      'username':userNameController.text,
-      'displayName':"${nameController.text} ${familyController.text}",
-      'avatar':pickedFile!.path,
-      'email':emailController.text,
-      'cityId':CreateAccountController.selectedCity.id,
-      // 'birthDate':CreateAccountController.,
-      'educationId':CreateAccountController.selectedEducation.id,
-    });
+    String? token = preferences.getString('token');
+    final response =await dio.post(
+      'https://api.peopli.ir/Api/Account/edit-profile',
+      queryParameters: {
+        'token': token,
+        'username': userNameController.text,
+        'displayName': displayController.text,
+        'avatar': pickedFile!.path,
+        'email': emailController.text,
+        'cityId': CreateAccountController.selectedCity.id,
+        'birthDate':
+            "${selectedDate!.year}${selectedDate!.month}${selectedDate!.day}",
+        'educationId': CreateAccountController.selectedEducation.id,
+      },
+    );
+    print(response.data);
+    if(response.statusCode == 200 && response.data['status'] == 'ok'){
+      Get.toNamed(NamedRoute.routeLoginScreen);
+    }
   }
 
   DateTime? selectedDate;
@@ -76,6 +122,7 @@ class EditProfileController extends GetxController {
       print("Selected birth date: $picked");
     }
   }
+
   updateLAnguage(int index) {
     selectedLanguage = index;
     update();
@@ -93,14 +140,12 @@ class EditProfileController extends GetxController {
   }
 
   uploadImage() async {
-    final  picker = ImagePicker();
-// Pick an image.
+    final picker = ImagePicker();
+    // Pick an image.
     final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-    pickedFile=File(pickedImage!.path);
+    pickedFile = File(pickedImage!.path);
     update();
   }
-
-
 
   // openDialog(context){
   //   showDialog(context: context, builder: (context)=>AlertDialog(
@@ -237,61 +282,53 @@ class EditProfileController extends GetxController {
 
   //openDialogLocation
 
-
   //openDialogPerson
-  openDialogPerson(context){
-    showDialog(context: context, builder: (context)=>AlertDialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10.0))
-      ),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text("Do you mean?",style: appThemeData.textTheme.headlineSmall,),
-          Text("23 Result",style: appThemeData.textTheme.labelLarge,),
+  openDialogPerson(context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("Do you mean?", style: appThemeData.textTheme.headlineSmall),
+            Text("23 Result", style: appThemeData.textTheme.labelLarge),
+          ],
+        ),
+        backgroundColor: AppLightColor.backgoundPost,
+
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                border: Border.all(
+                  color: AppLightColor.strokePositive,
+                  width: 1,
+                ),
+                color: AppLightColor.withColor,
+              ),
+              height: 300.0, // Change as per your requirement
+              width: 300.0, // Change as per your requirement
+
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: 10,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    children: [
+                      //divider
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
         ],
       ),
-      backgroundColor: AppLightColor.backgoundPost,
-
-      actions:[Padding(
-        padding: const EdgeInsets.only(left: 10,right: 10,bottom: 10),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            border: Border.all(color: AppLightColor.strokePositive,width: 1),
-            color: AppLightColor.withColor,
-          ),
-          height: 300.0, // Change as per your requirement
-          width: 300.0, // Change as per your requirement
-
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: 10,
-            itemBuilder: (BuildContext context, int index) {
-              return Column(
-                children: [
-
-                  //divider
-
-                ],
-              );
-            },
-          ),
-
-        ),
-      ),
-
-
-      ],
-
-
-    )
-
     );
-
-
-
   }
 }
-
-

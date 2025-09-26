@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 
 
 import '../../../config/app_colors/app_colors_light.dart';
@@ -9,7 +10,7 @@ import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../../../config/widgets/customButton.dart';
 class HeaderProfile extends StatelessWidget {
-  const HeaderProfile({Key? key}) : super(key: key);
+final ProfileController profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +68,7 @@ class HeaderProfile extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 23),
-                child: CustomElevatedButton(onPressed: (){Get.toNamed(NamedRoute.routeEditProfiletScreen);}, textColor: AppLightColor.strokePositive, color: AppLightColor.withColor, title: "Edit Profile", height: 27.h, width: 96.w),
+                child: CustomElevatedButton(onPressed: (){Get.toNamed(NamedRoute.routeEditProfiletScreen,arguments:profileController.currentUser[0]);}, textColor: AppLightColor.strokePositive, color: AppLightColor.withColor, title: "Edit Profile", height: 27.h, width: 96.w),
               )
             ],
           ),

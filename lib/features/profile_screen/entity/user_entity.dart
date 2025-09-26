@@ -1,6 +1,6 @@
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 
-class User {
+class UserEntity {
   final int id;
   final int? educationId;
   final String role;
@@ -23,7 +23,7 @@ class User {
   final List<dynamic> userOption;
   final List<dynamic> vote;
 
-  User({
+  UserEntity({
     required this.id,
     this.educationId,
     required this.role,
@@ -46,8 +46,8 @@ class User {
     required this.userOption,
     required this.vote,
   });
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+  factory UserEntity.fromJson(Map<String, dynamic> json) {
+    return UserEntity(
       id: json['id'],
       educationId: json['educationId'],
       role: json['role'],

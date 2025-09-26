@@ -30,6 +30,7 @@ class LocationController extends GetxController{
     }
   }
   Future<void> getCity(countryId) async {
+
     LocationController.cityList.clear();
     try {
       final response = await dio.get(
