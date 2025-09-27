@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_route/route_names.dart';
 import '../../../config/widgets/customButton.dart';
-import '../../create_person/controller/create_perxon_controller.dart';
+import '../../create_person/controller/create_person_controller.dart';
 class EditSavePerson extends GetView<CreatePersonController> {
   const EditSavePerson({Key? key}) : super(key: key);
 

@@ -49,14 +49,13 @@ final ProfileController profileController = Get.put(ProfileController());
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 15,right: 15,top: 2),
+          padding: EdgeInsetsDirectional.only(start: 15,end: 15,top: 2),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
                 width: 125.w,
                 child: Column(
-
                   children: [
                     SizedBox(width: double.infinity,  child: Text("Sofia J. West",style: appThemeData.textTheme.headlineLarge,textAlign: TextAlign.start,)),
                     SizedBox(width: double.infinity, child: Text("wise president of France",style: appThemeData.textTheme.bodyLarge,textAlign: TextAlign.start,)),
@@ -68,7 +67,7 @@ final ProfileController profileController = Get.put(ProfileController());
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 23),
-                child: CustomElevatedButton(onPressed: (){Get.toNamed(NamedRoute.routeEditProfiletScreen,arguments:profileController.currentUser[0]);}, textColor: AppLightColor.strokePositive, color: AppLightColor.withColor, title: "Edit Profile", height: 27.h, width: 96.w),
+                child: CustomElevatedButton(onPressed: (){Get.toNamed(NamedRoute.routeEditProfiletScreen,arguments:profileController.currentUser[0]);}, textColor: AppLightColor.strokePositive, color: AppLightColor.withColor, title: "Edit Profile", height: 27.h, width: 100.w),
               )
             ],
           ),

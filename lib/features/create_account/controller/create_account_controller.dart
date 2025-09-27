@@ -35,7 +35,6 @@ class CreateAccountController extends GetxController {
   int selectedLanguage = 0;
   File? pickedFile;
   String education="";
-  String jobs="";
 
   @override
   void onInit() {
@@ -227,6 +226,9 @@ class CreateAccountController extends GetxController {
         actions:[
           GetBuilder<LocationController>(
           id: 'country',
+            initState: (state) {
+              selectedCountry = Get.find<LocationController>().countryList[0];
+            },
             builder: (controller) {
             return  Container(
               height: 100.h,

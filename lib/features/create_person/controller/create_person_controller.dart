@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
 import 'package:test_test_test/features/feature_job_and_education/entity/education_entity.dart';
 import 'package:test_test_test/features/feature_job_and_education/entity/job_entity.dart';
 import 'package:test_test_test/features/feature_job_and_education/view/education_drop_down_global.dart';
@@ -30,19 +32,78 @@ class CreatePersonController extends GetxController {
    TextEditingController familyNameController = TextEditingController();
    TextEditingController knowAsController = TextEditingController();
    TextEditingController locationController = TextEditingController();
+   TextEditingController dateTimeController = TextEditingController();
    int selectedRadio = 0;
-  int selectedLanguage = 0;
-  File? pickedFile;
-  String education="";
-  String jobs="";
-  final dio = Dio();
-  @override
-  void onInit() {
-
+   int selectedLanguage = 0;
+   File? pickedFile;
+   String gender = '';
+   @override void onInit() {
+    super.onInit();
+    Get.lazyPut(() => CreateAccountController(),);
+    Get.lazyPut(() => LocationController(),);
+   CreateAccountController.selectedCity = LocationController.cityList[0];
+   CreateAccountController.selectedCountry = Get.find<LocationController>().countryList[0];
+   Get.find<CreateAccountController>().update();
   }
+   final dio = Dio();
    /// Simple POST request with error handling
+   Future<void> addFace() async {
+     try {
+       final preferences = await SharedPreferences.getInstance();
+       final token = preferences.getString('token');
 
+       if (token == null) {
+         debugPrint("⚠️ No token found in SharedPreferences");
+         return;
+       }
+       var date = selectedDate!;
+       final response = await dio.post(
+         'https://api.peopli.ir/Api/Faces/add',
+         queryParameters: {
+           'token':token,
+           'name':nameController.text,
+           'lastName':familyNameController.text,
+           'knownFor':knowAsController.text,
+           'gender':gender,
+           'avatar':pickedFile!.path,
+           'hometownId':CreateAccountController.selectedCity.id,
+           'educationId':CreateAccountController.selectedEducation.id,
+           'jobId':CreateAccountController.selectedJob.id,
+           'birthDate':"${date.year}${date.month}${date.day}",
+         }
+       );
+       if (response.statusCode == 200 && response.data['status'] == 'ok') {
+       } else {
+         debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+       }
+     } catch (e, stacktrace) {
+       debugPrint("🔥 Exception while fetching memories: $e");
+       debugPrint(stacktrace.toString());
+     }
+   }
+   DateTime? selectedDate;
 
+   void pickDateTime(context) async {
+     DateTime now = DateTime.now();
+     DateTime initialDate = DateTime(now.year - 18); // default: 18 years ago
+     DateTime firstDate = DateTime(1900); // earliest selectable year
+     DateTime lastDate = now; // latest selectable date: today
+
+     final picked = await showDatePicker(
+       context: context,
+       initialDate: selectedDate ?? initialDate,
+       firstDate: firstDate,
+       lastDate: lastDate,
+       helpText: "Select your birth date",
+     );
+
+     if (picked != null && picked != selectedDate) {
+       selectedDate = picked;
+       dateTimeController.text = picked.toString();
+       update();
+       print("Selected birth date: $picked");
+     }
+   }
 
   updateLAnguage(int index) {
     selectedLanguage = index;
@@ -50,6 +111,11 @@ class CreatePersonController extends GetxController {
   }
 
   setSelectedRadio(int val) {
+    if(val == 1){
+      gender == 'male';
+    }else if(val ==0){
+      gender == 'female';
+    }
     selectedRadio = val;
     update();
   }
@@ -182,7 +248,7 @@ class CreatePersonController extends GetxController {
       },
     ));
   }
-  
+
 
   JobEntity? selectedJob;
   openDialogJobs(context){

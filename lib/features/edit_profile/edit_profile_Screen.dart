@@ -15,7 +15,7 @@ import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/customButton.dart';
 import '../create_account/widget/custom_textField.dart';
 import '../create_person/widget/textField_create.dart';
-import 'conteoller/edit_profile_controller.dart';
+import 'controller/edit_profile_controller.dart';
 
 class EditProfileScreen extends GetView<EditProfileController> {
   final EditProfileController editProfileController = Get.put(

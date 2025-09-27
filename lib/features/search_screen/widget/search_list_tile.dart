@@ -6,9 +6,10 @@ import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_icons/app_assets_jpg.dart';
 import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
+import '../controller/search_controller.dart';
 
 class SearchListTile extends StatelessWidget {
-  const SearchListTile({Key? key}) : super(key: key);
+  final SearchBottomController searchController = Get.put(SearchBottomController());
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +22,7 @@ class SearchListTile extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(25)),
             border: Border.all(width: 1.w, color: AppLightColor.strokeStar)),
         child: ListView.builder(
+          controller: searchController.scrollController,
           itemCount: 10,
           itemBuilder: (BuildContext context, index) {
             return Padding(

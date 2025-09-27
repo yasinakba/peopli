@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_route/route_names.dart';
 import '../../../config/widgets/customButton.dart';
-import '../controller/create_perxon_controller.dart';
+import '../controller/create_person_controller.dart';
 class CreateCancelPerson extends GetView<CreatePersonController> {
   const CreateCancelPerson({Key? key}) : super(key: key);
 
@@ -17,7 +17,7 @@ class CreateCancelPerson extends GetView<CreatePersonController> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CustomElevatedButton(onPressed: (){Get.back();}, textColor: AppLightColor.textBoldColor, color: AppLightColor.cancelButtonFill, title: "Cancel", height: 29.h, width: 75.w),
-            CustomElevatedButton(onPressed: (){Get.toNamed(NamedRoute.routePersonScreen);}, textColor: AppLightColor.withColor, color: AppLightColor.saveButton, title: "Create", height: 29.h, width: 75.w),
+            CustomElevatedButton(onPressed: (){controller.addFace();}, textColor: AppLightColor.withColor, color: AppLightColor.saveButton, title: "Create", height: 29.h, width: 75.w),
           ],
         ),)
     );

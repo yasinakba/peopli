@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_theme/app_theme.dart';
-import '../../create_person/controller/create_perxon_controller.dart';
+import '../../create_person/controller/create_person_controller.dart';
 
 class Gender extends GetView<CreatePersonController> {
   const Gender({Key? key}) : super(key: key);

@@ -6,7 +6,7 @@ import '../../../features/search_screen/controller/search_controller.dart';
 class SearchBinding extends Bindings{
   @override
   void dependencies() {
-   Get.put(SearchButtomController());
+   Get.put(SearchBottomController());
   }
 
 }

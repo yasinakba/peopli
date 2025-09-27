@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/widgets/customButton.dart';
-import '../controller/create_perxon_controller.dart';
+import '../controller/create_person_controller.dart';
 class SavePerson extends GetView<CreatePersonController> {
   const SavePerson({Key? key}) : super(key: key);
 

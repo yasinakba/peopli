@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:test_test_test/features/create_person/widget/gender-person.dart';
 import 'package:test_test_test/features/create_person/widget/information-Person.dart';
 import 'package:test_test_test/features/create_person/widget/save_person.dart';
@@ -12,7 +13,7 @@ import 'package:test_test_test/features/create_person/widget/save_person.dart';
 import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../edit_person/widget/textField_create.dart';
-import 'controller/create_perxon_controller.dart';
+import 'controller/create_person_controller.dart';
 
 
 class CreatePersonScreen extends GetView<CreatePersonController> {
@@ -93,8 +94,47 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                         child: TextFieldCreate(labelText: 'Known as', controller: controller.knowAsController,),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: TextFieldCreate(labelText: 'Date of birth', controller: controller.nameController,),
+                        padding: EdgeInsetsDirectional.only(top: 10,),
+                        child: Container(
+                          width: 290.w,
+                          height: 32.h,
+                          padding: EdgeInsetsDirectional.only(
+                            start: 10.w,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                controller.selectedDate != null
+                                    ? DateFormat(
+                                  'yyyy/MM/dd – HH:mm',
+                                ).format(
+                                  controller.selectedDate!,
+                                )
+                                    : "No date selected",
+                                style:
+                                appThemeData.textTheme.bodySmall,
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  controller.pickDateTime(context);
+                                },
+                                icon: Icon(
+                                  Icons.calendar_today,
+                                  size: 15,
+                                  color: Colors.grey,
+                                ),
+                                color: Colors.blue,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
