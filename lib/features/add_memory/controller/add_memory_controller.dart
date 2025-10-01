@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -32,7 +33,7 @@ final dio = Dio();
       'type':typeController.text,
       'lat':'',
       'lng':'',
-      'media':pickedFile!.path,
+      'media':base64String,
       'date':"${selectedDate!.month}/${selectedDate!.day}/${selectedDate!.year}",
     });
   }
@@ -83,14 +84,23 @@ setSelectedRadio(int val){
     update();
 }
 
+String? base64String;
 uploadImage() async {
   final  picker = ImagePicker();
 // Pick an image.
   final pickedImage = await picker.pickImage(source: ImageSource.gallery);
   pickedFile=File(pickedImage!.path);
+  if (pickedImage != null) {
+    // Read file as bytes
+    final bytes = await File(pickedImage.path).readAsBytes();
+
+    // Convert to Base64
+    base64String = base64Encode(bytes);
+
+    print("📦 Base64 String: $base64String");
+  }
   update();
 }
-
 
 
 

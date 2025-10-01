@@ -9,10 +9,7 @@ import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_icons/app_assets_png.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/custom_radio_button.dart';
-import '../create_account/controller/create_account_controller.dart';
-import '../feature_job_and_education/controller/education_cotnroller.dart';
-import '../feature_location/controller/location_controller.dart';
-import 'controller/search_controller.dart';
+import 'controller/search_bottom_controller.dart';
 
 class SearchScreen extends GetView<SearchBottomController> {
   const SearchScreen({Key? key}) : super(key: key);
@@ -212,86 +209,82 @@ class SearchScreen extends GetView<SearchBottomController> {
                           ),
                           child: Column(
                             children: [
-                              GetBuilder<LocationController>(
-                                builder: (controller) {
-                                  return SizedBox(
-                                    width: double.infinity,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 5,
-                                        left: 10,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                              SizedBox(
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 5,
+                                    left: 10,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
                                         children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                "Home Location :",
-                                                style: appThemeData
-                                                    .textTheme
-                                                    .bodyLarge,
-                                              ),
-                                              Spacer(),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                  right: 10,
-                                                ),
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    CreateAccountController.openDialogLocation(
-                                                      context,
-                                                    );
-                                                  },
-                                                  child: Text(
-                                                    'Add',
-                                                    style: appThemeData
-                                                        .textTheme
-                                                        .labelLarge!
-                                                        .copyWith(
-                                                          color: AppLightColor
-                                                              .fillButton,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
                                           Text(
-                                            textAlign: TextAlign.start,
-                                            "${CreateAccountController.selectedCountry.name} ${CreateAccountController.selectedCity.name ?? 'No Selected sitll'}",
+                                            "Home Location :",
                                             style: appThemeData
                                                 .textTheme
-                                                .labelLarge!
-                                                .copyWith(
-                                                  color:
-                                                      AppLightColor.fillButton,
-                                                ),
+                                                .bodyLarge,
+                                          ),
+                                          Spacer(),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              right: 10,
+                                            ),
+                                            child: InkWell(
+                                              onTap: () {
+                                                controller
+                                                    .openDialogLocationCountry(
+                                                      context,
+                                                );
+                                                controller
+                                                    .openDialogLocationCity(
+                                                      context,
+                                                    );
+                                              },
+                                              child: Text(
+                                                'Add',
+                                                style: appThemeData
+                                                    .textTheme
+                                                    .labelLarge!
+                                                    .copyWith(
+                                                      color: AppLightColor
+                                                          .fillButton,
+                                                    ),
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  );
-                                },
+                                      Text(
+                                        textAlign: TextAlign.start,
+                                        "${controller.selectedCountry == null?'':controller.selectedCountry!.name ?? ''} ${controller.selectedCity==null?'':controller.selectedCity!.name}",
+                                        style: appThemeData
+                                            .textTheme
+                                            .labelLarge!
+                                            .copyWith(
+                                              color: AppLightColor.fillButton,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                               SizedBox(height: 5.h),
-                              GetBuilder<EducationController>(
-                                builder: (controller) {
-                                  return SizedBox(
-                                    width: double.infinity,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 5,
-                                        left: 10,
-                                      ),
-                                      child: Text(
-                                        "Education :",
-                                        style: appThemeData.textTheme.bodyLarge,
-                                      ),
-                                    ),
-                                  );
-                                },
+                              SizedBox(
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 5,
+                                    left: 10,
+                                  ),
+                                  child: Text(
+                                    "Education :",
+                                    style: appThemeData.textTheme.bodyLarge,
+                                  ),
+                                ),
                               ),
                               Row(
                                 mainAxisAlignment:
@@ -305,10 +298,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                         top: 5,
                                       ),
                                       child: Text(
-                                        CreateAccountController
-                                                .selectedEducation
-                                                .name ??
-                                            "No selectedEducation",
+                                        "${controller.selectedEducation == null ? '' : controller.selectedEducation!.name ?? ''}",
                                         maxLines: 2,
                                         style: appThemeData.textTheme.bodySmall,
                                       ),
@@ -318,9 +308,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                     padding: const EdgeInsets.only(right: 10),
                                     child: InkWell(
                                       onTap: () {
-                                        CreateAccountController.openDialogEducation(
-                                          context,
-                                        );
+                                        controller.openDialogEducation(context);
                                       },
                                       child: Text(
                                         'Add',
@@ -336,22 +324,18 @@ class SearchScreen extends GetView<SearchBottomController> {
                                 ],
                               ),
                               SizedBox(height: 5.h),
-                              GetBuilder<CreateAccountController>(
-                                builder: (controller) {
-                                  return SizedBox(
-                                    width: double.infinity,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 5,
-                                        left: 10,
-                                      ),
-                                      child: Text(
-                                        "Job :",
-                                        style: appThemeData.textTheme.bodyLarge,
-                                      ),
-                                    ),
-                                  );
-                                },
+                              SizedBox(
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 5,
+                                    left: 10,
+                                  ),
+                                  child: Text(
+                                    "Job :",
+                                    style: appThemeData.textTheme.bodyLarge,
+                                  ),
+                                ),
                               ),
                               Row(
                                 mainAxisAlignment:
@@ -365,10 +349,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                         top: 5,
                                       ),
                                       child: Text(
-                                        CreateAccountController
-                                                .selectedJob
-                                                .name ??
-                                            "No selectedJob",
+                                        "${controller.selectedJob==null?'':controller.selectedJob}",
                                         maxLines: 2,
                                         style: appThemeData.textTheme.bodySmall,
                                       ),
@@ -378,9 +359,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                     padding: const EdgeInsets.only(right: 10),
                                     child: InkWell(
                                       onTap: () {
-                                        CreateAccountController.openDialogJob(
-                                          context,
-                                        );
+                                        controller.openDialogJobs(context);
                                       },
                                       child: Text(
                                         'Add',

@@ -28,10 +28,8 @@ class PostFirstScreen extends StatelessWidget {
       memory.lng!.toDouble(),
       localeIdentifier: "en", // force English
     );
-
     if (placemarks.isNotEmpty) {
       final place = placemarks.first;
-
       // Build a nice formatted address
       return "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
     }
@@ -45,6 +43,7 @@ class PostFirstScreen extends StatelessWidget {
     return GetBuilder<FirstController>(
       initState: (state) {
         Get.lazyPut(() => ProfileController());
+        state.controller!.getFaceForMemories(memory.id);
       },
       builder: (controller) {
         return Container(
@@ -74,7 +73,7 @@ class PostFirstScreen extends StatelessWidget {
                               SizedBox(
                                 width: double.infinity,
                                 child: Text(
-                                  "Sofia J. West",
+                                memory.face??'Face Name',
                                   style: appThemeData.textTheme.headlineLarge,
                                   textAlign: TextAlign.start,
                                 ),
@@ -82,7 +81,7 @@ class PostFirstScreen extends StatelessWidget {
                               SizedBox(
                                 width: double.infinity,
                                 child: Text(
-                                  "wise president of France",
+                                  memory.text??'',
                                   style: appThemeData.textTheme.bodyLarge,
                                   textAlign: TextAlign.start,
                                 ),
@@ -90,7 +89,8 @@ class PostFirstScreen extends StatelessWidget {
                               SizedBox(
                                 width: double.infinity,
                                 child: Text(
-                                  "1975 - now",
+                                  // "${m} - now",
+                                  'age -now',
                                   style: appThemeData.textTheme.bodyLarge,
                                   textAlign: TextAlign.start,
                                 ),
@@ -155,8 +155,7 @@ class PostFirstScreen extends StatelessWidget {
                               (Get.find<ProfileController>()
                                           .currentUser
                                           .first
-                                          .avatar !=
-                                      null &&
+                                          .avatar != null &&
                                   Get.find<ProfileController>()
                                       .currentUser
                                       .first

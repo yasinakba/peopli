@@ -6,7 +6,7 @@ import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_icons/app_assets_jpg.dart';
 import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
-import '../controller/search_controller.dart';
+import '../controller/search_bottom_controller.dart';
 
 class SearchListTile extends StatelessWidget {
   final SearchBottomController searchController = Get.put(SearchBottomController());
@@ -31,7 +31,6 @@ class SearchListTile extends StatelessWidget {
                 onTap: () {
                   Get.toNamed(NamedRoute.routePersonScreen);
                 },
-
                 leading: SizedBox(
                   child: CircleAvatar(
                     radius: 30,

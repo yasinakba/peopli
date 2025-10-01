@@ -71,7 +71,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                       children: [
                                         InkWell(
                                           onTap: () {
-                                            controller.updateLAnguage(0);
+                                            controller.updateLanguage(0);
                                           },
                                           child: Text(
                                             "EN",
@@ -87,7 +87,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                         ),
                                         InkWell(
                                           onTap: () {
-                                            controller.updateLAnguage(1);
+                                            controller.updateLanguage(1);
                                           },
                                           child: Text(
                                             "FA",

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -85,7 +86,7 @@ class EditProfileController extends GetxController {
         'token': token,
         'username': userNameController.text,
         'displayName': displayController.text,
-        'avatar': pickedFile!.path,
+        'avatar': base64String,
         'email': emailController.text,
         'cityId': CreateAccountController.selectedCity.id,
         'birthDate':
@@ -123,7 +124,7 @@ class EditProfileController extends GetxController {
     }
   }
 
-  updateLAnguage(int index) {
+  updateLanguage(int index) {
     selectedLanguage = index;
     update();
   }
@@ -139,11 +140,21 @@ class EditProfileController extends GetxController {
         : appThemeData.textTheme.bodyLarge;
   }
 
+  String? base64String;
   uploadImage() async {
-    final picker = ImagePicker();
-    // Pick an image.
+    final  picker = ImagePicker();
+// Pick an image.
     final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-    pickedFile = File(pickedImage!.path);
+    pickedFile=File(pickedImage!.path);
+    if (pickedImage != null) {
+      // Read file as bytes
+      final bytes = await File(pickedImage.path).readAsBytes();
+
+      // Convert to Base64
+      base64String = base64Encode(bytes);
+
+      print("📦 Base64 String: $base64String");
+    }
     update();
   }
 

@@ -3,11 +3,10 @@ import 'dart:io';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'dart:convert';
+import 'dart:io';
 import '../../../config/app_colors/app_colors_light.dart';
-import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../../../config/widgets/customButton.dart';
 import '../../create_person/widget/location.dart';
@@ -45,12 +44,21 @@ class EditPersonController extends GetxController {
         ? appThemeData.textTheme.headlineSmall
         : appThemeData.textTheme.bodyLarge;
   }
-
+ String? base64String;
   uploadImage() async {
     final  picker = ImagePicker();
 // Pick an image.
    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
     pickedFile=File(pickedImage!.path);
+    if (pickedImage != null) {
+      // Read file as bytes
+      final bytes = await File(pickedImage.path).readAsBytes();
+
+      // Convert to Base64
+      base64String = base64Encode(bytes);
+
+      print("📦 Base64 String: $base64String");
+    }
     update();
   }
 

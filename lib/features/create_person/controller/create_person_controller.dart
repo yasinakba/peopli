@@ -1,4 +1,5 @@
 
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -9,23 +10,12 @@ import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
-import 'package:test_test_test/features/feature_job_and_education/entity/education_entity.dart';
-import 'package:test_test_test/features/feature_job_and_education/entity/job_entity.dart';
-import 'package:test_test_test/features/feature_job_and_education/view/education_drop_down_global.dart';
-import 'package:test_test_test/features/feature_job_and_education/view/job_drop_down_global.dart';
-import 'package:test_test_test/features/feature_location/entity/city_entity.dart';
-import 'package:test_test_test/features/feature_location/entity/country_entity.dart';
-import 'package:test_test_test/features/feature_location/view/location_global_widget.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
-import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
-import '../../../config/widgets/customButton.dart';
-import '../../feature_job_and_education/controller/job_controller.dart';
 import '../../feature_location/controller/location_controller.dart';
 import '../widget/create_cancel_person.dart';
 import '../widget/listTile_create.dart';
-import '../widget/location.dart';
 
 class CreatePersonController extends GetxController {
    TextEditingController nameController = TextEditingController();
@@ -65,7 +55,7 @@ class CreatePersonController extends GetxController {
            'lastName':familyNameController.text,
            'knownFor':knowAsController.text,
            'gender':gender,
-           'avatar':pickedFile!.path,
+           'avatar':base64String,
            'hometownId':CreateAccountController.selectedCity.id,
            'educationId':CreateAccountController.selectedEducation.id,
            'jobId':CreateAccountController.selectedJob.id,
@@ -73,6 +63,7 @@ class CreatePersonController extends GetxController {
          }
        );
        if (response.statusCode == 200 && response.data['status'] == 'ok') {
+         print('test');print(response.data);print(response.statusCode);
        } else {
          debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
        }
@@ -105,7 +96,7 @@ class CreatePersonController extends GetxController {
      }
    }
 
-  updateLAnguage(int index) {
+  updateLanguage(int index) {
     selectedLanguage = index;
     update();
   }
@@ -126,188 +117,24 @@ class CreatePersonController extends GetxController {
         : appThemeData.textTheme.bodyLarge;
   }
 
-  uploadImage() async {
-    final  picker = ImagePicker();
-// Pick an image.
-   final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-    pickedFile=File(pickedImage!.path);
-    update();
-  }
+   String? base64String;
+   uploadImage() async {
+     final  picker = ImagePicker();
+     final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+     pickedFile=File(pickedImage!.path);
+     if (pickedImage != null) {
+       // Read file as bytes
+       final bytes = await File(pickedImage.path).readAsBytes();
+
+       // Convert to Base64
+       base64String = base64Encode(bytes);
+
+       print("📦 Base64 String: $base64String");
+     }
+     update();
+   }
 
 
- EducationEntity? selectedEducation;
-  openDialogEducation(context){
-      showDialog(context: context, builder: (context)=>EducationDropDownGlobal(selectedEducation: selectedEducation,));
-
-    }
-
-   late CountryEntity selectedCountry;
-    //location
-  openDialogLocationCountry(context){
-    showDialog(context: context, builder: (context)=>GetBuilder<LocationController>(
-      id: 'country',
-      initState: (state) {
-        Get.lazyPut(() => LocationController(),);
-       selectedCountry = Get.find<LocationController>().countryList[0];
-      },
-      builder: (controller) {
-        return Container(
-          height: 100.h,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: DropdownSearch<String>(
-                popupProps: PopupProps.menu(
-                  showSelectedItems: true,
-                  showSearchBox: true,
-                  searchFieldProps: TextFieldProps(
-                    decoration: InputDecoration(
-                      hintText: "search country",
-                      helperStyle: appThemeData.textTheme.bodySmall,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                  ),
-                ),
-                items: controller.countryName,
-                onChanged: print,
-                selectedItem: selectedCountry.name ??'',
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    ));
-
-
-
-  }
-   late CityEntity selectedCity;
-
-   openDialogLocationCity(context){
-    showDialog(context: context, builder: (context)=>GetBuilder<LocationController>(
-      id: 'country',
-      initState: (state) {
-        Get.lazyPut(() => LocationController(),);
-       selectedCity= LocationController.cityList[0];
-      },
-      builder: (controller) {
-        return Container(
-          height: 100.h,
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: DropdownSearch<String>(
-                popupProps: PopupProps.menu(
-                  showSelectedItems: true,
-                  showSearchBox: true,
-                  searchFieldProps: TextFieldProps(
-                    decoration: InputDecoration(
-                      hintText: "search country",
-                      helperStyle: appThemeData.textTheme.bodySmall,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                  ),
-                ),
-                items: controller.cityNames,
-                onChanged: print,
-                selectedItem: selectedCity.name ??'',
-                dropdownDecoratorProps: DropDownDecoratorProps(
-                  dropdownSearchDecoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    ));
-  }
-
-
-  JobEntity? selectedJob;
-  openDialogJobs(context){
-    showDialog(context: context, builder: (context)=>GetBuilder<JobDropDownController>(builder: (controller) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0))
-        ),
-        title: Text("Jobs", style: appThemeData.textTheme.headlineSmall,),
-        backgroundColor: AppLightColor.backgoundPost,
-
-        actions: [Container(
-          height: 300.0, // Change as per your requirement
-          width: 300.0, // Change as per your requirement
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: controller.jobList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Column(
-                children: [
-                  ListTile(
-                    leading: Icon(Icons.person_add, color: AppLightColor
-                        .fillButton,),
-                    subtitle: Text(
-                      "Please select the desired degree", style: appThemeData
-                        .textTheme.bodyMedium,),
-                    onTap: () {
-                      selectedJob = controller.jobList[index];
-                      Get.back();
-                      controller.update();
-                    },
-                    title: Text(controller.jobList[index].name??'failed', style: appThemeData.textTheme
-                        .headlineSmall),
-                    selectedColor: AppLightColor.elipsFill,
-                    focusColor: AppLightColor.strokePositive,
-
-
-                  ),
-                  //divider
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Container(
-                      width: double.infinity,
-                      height: 1,
-                      color: AppLightColor.strokePositive,
-                    ),
-                  )
-                ],
-              );
-            },
-          ),
-        ),
-        ],
-      );
-    }),);
-
-
-
-  }
 
   //openDialogLocation
 

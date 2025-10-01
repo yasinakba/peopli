@@ -201,6 +201,40 @@ class FirstController extends GetxController {
       debugPrint(stacktrace.toString());
     }
   }
+  Future<void> getFaceForMemories(userId) async{
+    faceList.clear();
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final token = preferences.getString('token');
+
+      if (token == null) {
+        debugPrint("⚠️ No token found in SharedPreferences");
+        return;
+      }
+
+      final response = await dio.get(
+        'https://api.peopli.ir/Api/Faces?token=$token&page=1&take=15&sortBy=closest&userId=$userId',
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // ✅ Success
+        List<dynamic> data = response.data['data']['comments'];
+        commentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
+        debugPrint("Comments: ${response.data}");
+        update();
+      } else {
+        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+      }
+    } catch (e, stacktrace) {
+      debugPrint("🔥 Exception while fetching memories: $e");
+      debugPrint(stacktrace.toString());
+    }
+  }
   Future<void> readMoreFace() async{
     try {
       final preferences = await SharedPreferences.getInstance();

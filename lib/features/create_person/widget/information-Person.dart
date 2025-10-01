@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
+import 'package:test_test_test/features/feature_location/controller/location_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_theme/app_theme.dart';
@@ -13,7 +14,7 @@ class InformationPerson extends GetView<CreatePersonController> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<CreateAccountController>(
+    return GetBuilder<LocationController>(
       builder: (controller) => Container(
               width: 300.w,
               height: 220.h,
@@ -47,7 +48,7 @@ class InformationPerson extends GetView<CreatePersonController> {
                                         null &&
                                     CreateAccountController.selectedCity.name !=
                                         null
-                                ? "${CreateAccountController.selectedCountry.name ?? ''}${CreateAccountController.selectedCity.name ?? ''}"
+                                ? "${CreateAccountController.selectedCountry.name ?? ''} ${CreateAccountController.selectedCity.name ?? ''}"
                                 : "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France",
                             maxLines: 2,
                             style: appThemeData.textTheme.bodySmall,

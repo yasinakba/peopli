@@ -38,6 +38,7 @@ class CreateAccountController extends GetxController {
 
   @override
   void onInit() {
+    super.onInit();
 
   }
   final dio = Dio();
@@ -153,7 +154,6 @@ class CreateAccountController extends GetxController {
     update();
   }
 
-
  static late EducationEntity selectedEducation;
  static openDialogEducation(context){
       showDialog(context: context, builder: (context)=>GetBuilder<EducationController>(id:'education',initState: (state) {
@@ -243,8 +243,8 @@ class CreateAccountController extends GetxController {
                     onChanged: (value) {
                       selectedCountry = value!;
                       Get.lazyPut(() => LocationController(),);
-                     Get.find<LocationController>().getCity(selectedCountry.id); // load cities for selected country
-
+                     Get.find<LocationController>().getCity(selectedCountry.id);
+                    controller.update(['createPersonLocation']);
                     },
                     popupProps: PopupProps.menu(
                       showSelectedItems: true,
@@ -279,8 +279,6 @@ class CreateAccountController extends GetxController {
         ),
           GetBuilder<LocationController>(
             id: 'city',
-            initState: (state) {
-            },
             builder: (controller) {
               return Container(
                 height: 100.h,
@@ -340,13 +338,6 @@ class CreateAccountController extends GetxController {
 
 
   }
-
-
-
-
-
-
-
 
  static late JobEntity selectedJob;
 
