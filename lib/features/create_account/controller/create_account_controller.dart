@@ -1,4 +1,5 @@
 
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -18,7 +19,6 @@ import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../../../config/widgets/customButton.dart';
-import '../../create_person/widget/location.dart';
 import '../../feature_job_and_education/controller/education_cotnroller.dart';
 import '../../feature_job_and_education/controller/job_controller.dart';
 import '../../feature_location/controller/location_controller.dart';
@@ -70,11 +70,13 @@ class CreateAccountController extends GetxController {
           "displayName": "${nameController.text} ${familyController.text}",
           "username": userNameController.text,
           "password": passwordController.text,
-          "avatar": pickedFile!.path,
+          "avatar": base64String,
           "birthDate": selectedDate.toString(), // make sure API accepts String
           "cityId": selectedCity.id,
           "educationId": selectedEducation.id,
-        },
+        },  options: Options(
+        headers: {'Content-Type': 'application/json'},
+      ),
       );
 
       print(response.data);
@@ -147,13 +149,22 @@ class CreateAccountController extends GetxController {
         : appThemeData.textTheme.bodyLarge;
   }
 
+  String? base64String;
   uploadImage() async {
     final  picker = ImagePicker();
-   final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
     pickedFile=File(pickedImage!.path);
+    if (pickedImage != null) {
+      // Read file as bytes
+      final bytes = await File(pickedImage.path).readAsBytes();
+
+      // Convert to Base64
+      base64String = base64Encode(bytes);
+
+      print("📦 Base64 String: $base64String");
+    }
     update();
   }
-
  static late EducationEntity selectedEducation;
  static openDialogEducation(context){
       showDialog(context: context, builder: (context)=>GetBuilder<EducationController>(id:'education',initState: (state) {

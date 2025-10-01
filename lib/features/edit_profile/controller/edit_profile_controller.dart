@@ -74,13 +74,13 @@ class EditProfileController extends GetxController {
         displayController.text == null ||
         pickedFile!.path == null || emailController.text == null ||
         CreateAccountController.selectedCity.id == null ||
-        selectedDate == null ||
+        selectedDate == null ||base64String == null||
         CreateAccountController.selectedEducation.id == null) {
       Get.showSnackbar(GetSnackBar(title: 'Error',message: 'fulfilment information requirements',));
     }
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? token = preferences.getString('token');
-    final response =await dio.post(
+    final response = await dio.post(
       'https://api.peopli.ir/Api/Account/edit-profile',
       queryParameters: {
         'token': token,
