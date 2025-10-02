@@ -178,98 +178,102 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                           ),
 
                           //location
-                          SizedBox(
-                            width: double.infinity,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 30, left: 10),
-                              child: Text(
-                                "Home Location :",
-                                style: appThemeData.textTheme.bodyLarge,
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          Column(
                             children: [
                               SizedBox(
-                                width: 220.w,
+                                width: double.infinity,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 15,
-                                    top: 5,
-                                  ),
+                                  padding: const EdgeInsets.only(top: 30, left: 10),
                                   child: Text(
-                                    "${CreateAccountController.selectedCountry.name} ${CreateAccountController.selectedCity.name ?? "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France"}",
-                                    maxLines: 2,
-                                    style: appThemeData.textTheme.bodySmall,
+                                    "Home Location :",
+                                    style: appThemeData.textTheme.bodyLarge,
                                   ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: InkWell(
-                                  onTap: () {
-                                    CreateAccountController.openDialogLocation(
-                                      context,
-                                    );
-                                  },
-                                  child: Text(
-                                    'Add',
-                                    style: appThemeData.textTheme.labelLarge!
-                                        .copyWith(
-                                          color: AppLightColor.fillButton,
-                                        ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: 220.w,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        left: 15,
+                                        top: 5,
+                                      ),
+                                      child: Text(
+                                        "${CreateAccountController.selectedCountry.name} ${CreateAccountController.selectedCity.name ?? "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France"}",
+                                        maxLines: 2,
+                                        style: appThemeData.textTheme.bodySmall,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: InkWell(
+                                      onTap: () {
+                                        CreateAccountController.openDialogLocation(
+                                          context,
+                                        );
+                                      },
+                                      child: Text(
+                                        'Add',
+                                        style: appThemeData.textTheme.labelLarge!
+                                            .copyWith(
+                                              color: AppLightColor.fillButton,
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 30, left: 10),
-                              child: Text(
-                                "Education",
-                                style: appThemeData.textTheme.bodyLarge,
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
                               SizedBox(
-                                width: 220.w,
+                                width: double.infinity,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 15,
-                                    top: 5,
-                                  ),
+                                  padding: const EdgeInsets.only(top: 30, left: 10),
                                   child: Text(
-                                    CreateAccountController
-                                            .selectedEducation
-                                            .name ??
-                                        "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France",
-                                    maxLines: 2,
-                                    style: appThemeData.textTheme.bodySmall,
+                                    "Education",
+                                    style: appThemeData.textTheme.bodyLarge,
                                   ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: InkWell(
-                                  onTap: () {
-                                    CreateAccountController.openDialogEducation(
-                                      context,
-                                    );
-                                  },
-                                  child: Text(
-                                    'Add',
-                                    style: appThemeData.textTheme.labelLarge!
-                                        .copyWith(
-                                          color: AppLightColor.fillButton,
-                                        ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: 220.w,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        left: 15,
+                                        top: 5,
+                                      ),
+                                      child: Text(
+                                        CreateAccountController
+                                                .selectedEducation
+                                                .name ??
+                                            "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France",
+                                        maxLines: 2,
+                                        style: appThemeData.textTheme.bodySmall,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: InkWell(
+                                      onTap: () {
+                                        CreateAccountController.openDialogEducation(
+                                          context,
+                                        );
+                                      },
+                                      child: Text(
+                                        'Add',
+                                        style: appThemeData.textTheme.labelLarge!
+                                            .copyWith(
+                                              color: AppLightColor.fillButton,
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),

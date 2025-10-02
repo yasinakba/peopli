@@ -42,10 +42,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                             decoration: BoxDecoration(
                               color: AppLightColor.elipsFill,
                               image: controller.pickedFile == null
-                                  ? DecorationImage(
-                                image: AssetImage(AppAssetsJpg.imagePerson),
-                                fit: BoxFit.cover,
-                              )
+                                  ? DecorationImage(image:NetworkImage("https://api.peopli.ir/uploads/${controller.currentUser.avatar.split('/').last}"))
                                   : DecorationImage(
                                 image: FileImage(controller.pickedFile!),
                                 fit: BoxFit.cover,

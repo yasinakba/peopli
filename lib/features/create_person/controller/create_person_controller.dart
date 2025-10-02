@@ -33,7 +33,10 @@ class CreatePersonController extends GetxController {
     Get.lazyPut(() => LocationController(),);
    CreateAccountController.selectedCity = LocationController.cityList[0];
    CreateAccountController.selectedCountry = Get.find<LocationController>().countryList[0];
-   Get.find<CreateAccountController>().update();
+    Future.delayed(Duration.zero, () {
+      update();
+    });
+
   }
    final dio = Dio();
    /// Simple POST request with error handling

@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
@@ -23,7 +22,6 @@ import '../../feature_job_and_education/controller/education_cotnroller.dart';
 import '../../feature_job_and_education/controller/job_controller.dart';
 import '../../feature_location/controller/location_controller.dart';
 
-
 class CreateAccountController extends GetxController {
   TextEditingController nameController = TextEditingController();
   TextEditingController familyController = TextEditingController();
@@ -31,18 +29,21 @@ class CreateAccountController extends GetxController {
   TextEditingController passwordController = TextEditingController();
   TextEditingController dateTimeController = TextEditingController();
 
-   int selectedRadio = 0;
+  int selectedRadio = 0;
   int selectedLanguage = 0;
   File? pickedFile;
-  String education="";
+  String education = "";
 
   @override
   void onInit() {
     super.onInit();
-
   }
+
   final dio = Dio();
+
   Future<void> signUp() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+
     // ✅ Step 1: Input validation
     if (nameController.text.isEmpty ||
         familyController.text.isEmpty ||
@@ -62,52 +63,38 @@ class CreateAccountController extends GetxController {
       return; // Stop execution if validation fails
     }
 
-    try {
-      // ✅ Step 2: API request
-      final response = await dio.post(
-        "https://api.peopli.ir/Api/register",
-        queryParameters: {
-          "displayName": "${nameController.text} ${familyController.text}",
-          "username": userNameController.text,
-          "password": passwordController.text,
-          "avatar": base64String,
-          "birthDate": selectedDate.toString(), // make sure API accepts String
-          "cityId": selectedCity.id,
-          "educationId": selectedEducation.id,
-        },  options: Options(
-        headers: {'Content-Type': 'application/json'},
+    // try {
+
+
+    // ✅ Step 4: Make POST request with body, not queryParameters
+    final response = await dio.postUri(
+      Uri.parse(
+        'https://api.peopli.ir/Api/register?displayName=${nameController.text} ${familyController.text}&username=${userNameController.text}&password=${passwordController.text}&birthDate=${selectedDate?.toString()}&cityId=${selectedCity.id}&educationId=${selectedEducation.id}',
       ),
-      );
-
-      print(response.data);
-
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-
-      // ✅ Step 3: Success / Error handling
-      if (response.statusCode == 200 && response.data['status'] == 'ok') {
-        await preferences.setString('token', response.data['data']);
-        Get.toNamed(NamedRoute.routeHomeScreen);
-      } else {
-        Get.showSnackbar(
-          GetSnackBar(
-            title: 'Error',
-            message: response.data['data'] ?? 'Registration failed',
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      }
-    } on DioException catch (e) {
-      print("POST error: ${e.response?.statusCode} - ${e.message}");
+    );
+    if (response.statusCode == 200 && response.data['status'] == 'ok') {
+      await preferences.setString('token', response.data['data']);
+      Get.toNamed(NamedRoute.routeHomeScreen);
+    } else {
       Get.showSnackbar(
         GetSnackBar(
           title: 'Error',
-          message: 'Something went wrong: ${e.message}',
+          message: response.data['data'] ?? 'Registration failed',
           duration: const Duration(seconds: 3),
         ),
       );
     }
+    // } on DioException catch (e) {
+    //   print("POST error: ${e.response?.statusCode} - ${e.message}");
+    //   Get.showSnackbar(
+    //     GetSnackBar(
+    //       title: 'Error',
+    //       message: 'Something went wrong: ${e.message}',
+    //       duration: const Duration(seconds: 3),
+    //     ),
+    //   );
+    // }
   }
-
 
   DateTime? selectedDate;
 
@@ -150,144 +137,183 @@ class CreateAccountController extends GetxController {
   }
 
   String? base64String;
-  uploadImage() async {
-    final  picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-    pickedFile=File(pickedImage!.path);
-    if (pickedImage != null) {
+
+  Future<void> uploadImage() async {
+    try {
+      final picker = ImagePicker();
+      final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedImage == null) {
+        print("❌ No image selected.");
+        return;
+      }
+
+      pickedFile = File(pickedImage.path);
+
       // Read file as bytes
-      final bytes = await File(pickedImage.path).readAsBytes();
+      final bytes = await pickedFile!.readAsBytes();
 
       // Convert to Base64
       base64String = base64Encode(bytes);
 
       print("📦 Base64 String: $base64String");
+
+      update(); // If using GetX to update UI
+    } catch (e) {
+      print("⚠️ Error picking image: $e");
     }
-    update();
   }
- static late EducationEntity selectedEducation;
- static openDialogEducation(context){
-      showDialog(context: context, builder: (context)=>GetBuilder<EducationController>(id:'education',initState: (state) {
-        Get.lazyPut(()=>EducationController());
-        selectedEducation = Get.find<EducationController>().educationList[0];
-      },builder: (controller) {
-        return AlertDialog(
+
+  static late EducationEntity selectedEducation;
+
+  static openDialogEducation(context) {
+    showDialog(
+      context: context,
+      builder: (context) => GetBuilder<EducationController>(
+        id: 'education',
+        initState: (state) {
+          Get.lazyPut(() => EducationController());
+          selectedEducation = Get.find<EducationController>().educationList[0];
+        },
+        builder: (controller) {
+          return AlertDialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
-            title: Text("Educations", style: appThemeData.textTheme.headlineSmall,),
+            title: Text(
+              "Educations",
+              style: appThemeData.textTheme.headlineSmall,
+            ),
             backgroundColor: AppLightColor.backgoundPost,
 
-            actions: [Container(
-              height: 300.0, // Change as per your requirement
-              width: 300.0, // Change as per your requirement
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: controller.educationList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                      ListTile(
-                        leading: Icon(Icons.person_add, color: AppLightColor
-                            .fillButton,),
-                        subtitle: Text(
-                          "Please select the desired degree", style: appThemeData
-                            .textTheme.bodyMedium,),
-                        onTap: () {
-                          selectedEducation = controller.educationList[index];
-                          controller.update(['education']);
-                          Get.back();
-                        },
-                        title: Text(controller.educationList[index].name??'failed', style: appThemeData.textTheme
-                            .headlineSmall),
-                        selectedColor: AppLightColor.elipsFill,
-                        focusColor: AppLightColor.strokePositive,
-
-
-                      ),
-                      //divider
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Container(
-                          width: double.infinity,
-                          height: 1,
-                          color: AppLightColor.strokePositive,
+            actions: [
+              Container(
+                height: 300.0, // Change as per your requirement
+                width: 300.0, // Change as per your requirement
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: controller.educationList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Column(
+                      children: [
+                        ListTile(
+                          leading: Icon(
+                            Icons.person_add,
+                            color: AppLightColor.fillButton,
+                          ),
+                          subtitle: Text(
+                            "Please select the desired degree",
+                            style: appThemeData.textTheme.bodyMedium,
+                          ),
+                          onTap: () {
+                            selectedEducation = controller.educationList[index];
+                            controller.update(['education']);
+                            Get.back();
+                          },
+                          title: Text(
+                            controller.educationList[index].name ?? 'failed',
+                            style: appThemeData.textTheme.headlineSmall,
+                          ),
+                          selectedColor: AppLightColor.elipsFill,
+                          focusColor: AppLightColor.strokePositive,
                         ),
-                      )
-                    ],
-                  );
-                },
+                        //divider
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Container(
+                            width: double.infinity,
+                            height: 1,
+                            color: AppLightColor.strokePositive,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
-            )
-            ]
-        );
-      }));}
+            ],
+          );
+        },
+      ),
+    );
+  }
 
+  static late CountryEntity selectedCountry;
+  static late CityEntity selectedCity;
 
- static late CountryEntity selectedCountry;
- static late CityEntity selectedCity;
-    //location
- static openDialogLocation(context){
-    showDialog(context: context, builder: (context)=>AlertDialog(
+  //location
+  static openDialogLocation(context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0))
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
         ),
-        title: Text("Location",style: appThemeData.textTheme.headlineSmall,),
+        title: Text("Location", style: appThemeData.textTheme.headlineSmall),
         backgroundColor: AppLightColor.backgoundPost,
-        actions:[
+        actions: [
           GetBuilder<LocationController>(
-          id: 'country',
+            id: 'country',
             initState: (state) {
               selectedCountry = Get.find<LocationController>().countryList[0];
             },
             builder: (controller) {
-            return  Container(
-              height: 100.h,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: DropdownSearch<CountryEntity>(
-                    items: controller.countryList,
-                    selectedItem: selectedCountry,
-                    itemAsString: (CountryEntity? country) => country?.name ?? "",
-                    compareFn: (CountryEntity? a, CountryEntity? b) => a?.id == b?.id, // 👈 lets DropdownSearch know equality
-                    onChanged: (value) {
-                      selectedCountry = value!;
-                      Get.lazyPut(() => LocationController(),);
-                     Get.find<LocationController>().getCity(selectedCountry.id);
-                    controller.update(['createPersonLocation']);
-                    },
-                    popupProps: PopupProps.menu(
-                      showSelectedItems: true,
-                      showSearchBox: true,
-                      searchFieldProps: TextFieldProps(
-                        decoration: InputDecoration(
-                          hintText: "search country",
+              return Container(
+                height: 100.h,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: DropdownSearch<CountryEntity>(
+                      items: controller.countryList,
+                      selectedItem: selectedCountry,
+                      itemAsString: (CountryEntity? country) =>
+                          country?.name ?? "",
+                      compareFn: (CountryEntity? a, CountryEntity? b) =>
+                          a?.id == b?.id,
+                      // 👈 lets DropdownSearch know equality
+                      onChanged: (value) {
+                        selectedCountry = value!;
+                        Get.lazyPut(() => LocationController());
+                        Get.find<LocationController>().getCity(
+                          selectedCountry.id,
+                        );
+                        controller.update(['createPersonLocation']);
+                        controller.update();
+                        Get.lazyPut(() => CreateAccountController());
+                        Get.find<CreateAccountController>().update();
+                      },
+                      popupProps: PopupProps.menu(
+                        showSelectedItems: true,
+                        showSearchBox: true,
+                        searchFieldProps: TextFieldProps(
+                          decoration: InputDecoration(
+                            hintText: "search country",
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ),
+                      ),
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        // 👈 must be here, not inside searchFieldProps
+                        dropdownSearchDecoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
                       ),
                     ),
-                    dropdownDecoratorProps: DropDownDecoratorProps( // 👈 must be here, not inside searchFieldProps
-                      dropdownSearchDecoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        ),
+              );
+            },
+          ),
           GetBuilder<LocationController>(
             id: 'city',
             builder: (controller) {
@@ -316,10 +342,13 @@ class CreateAccountController extends GetxController {
                         print;
                         selectedCity = value!;
                         controller.update();
+                        Get.lazyPut(() => CreateAccountController());
+                        Get.find<CreateAccountController>().update();
                       },
                       selectedItem: selectedCity,
-                      itemAsString: (CityEntity? city) => city!.name ??'',
-                      compareFn: (CityEntity? a,CityEntity? b)=>a?.id == b?.id,
+                      itemAsString: (CityEntity? city) => city!.name ?? '',
+                      compareFn: (CityEntity? a, CityEntity? b) =>
+                          a?.id == b?.id,
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
@@ -339,116 +368,139 @@ class CreateAccountController extends GetxController {
             },
           ),
           Align(
-              alignment: Alignment.center,
-              child: CustomElevatedButton(onPressed: (){
+            alignment: Alignment.center,
+            child: CustomElevatedButton(
+              onPressed: () {
                 Get.back();
-              }, textColor: AppLightColor.withColor, color: AppLightColor.textBlueColor, title: "Save", height: 40.h, width: 120.w))
-        ]
-    ));
-
-
-
+              },
+              textColor: AppLightColor.withColor,
+              color: AppLightColor.textBlueColor,
+              title: "Save",
+              height: 40.h,
+              width: 120.w,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
- static late JobEntity selectedJob;
+  static late JobEntity selectedJob;
 
- static openDialogJob(context){
-    showDialog(context: context, builder: (context)=>AlertDialog(
+  static openDialogJob(context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0))
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
         ),
-        title: Text("Jobs",style: appThemeData.textTheme.headlineSmall,),
+        title: Text("Jobs", style: appThemeData.textTheme.headlineSmall),
         backgroundColor: AppLightColor.backgoundPost,
 
-        actions:[GetBuilder<JobDropDownController>(initState:(state) {
-          Get.lazyPut(() => JobDropDownController(),);
-         selectedJob = Get.find<JobDropDownController>().jobList[0];
-        },builder: (controller) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))
-            ),
-            title: Text("Jobs", style: appThemeData.textTheme.headlineSmall,),
-            backgroundColor: AppLightColor.backgoundPost,
+        actions: [
+          GetBuilder<JobDropDownController>(
+            initState: (state) {
+              Get.lazyPut(() => JobDropDownController());
+              selectedJob = Get.find<JobDropDownController>().jobList[0];
+            },
+            builder: (controller) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                title: Text(
+                  "Jobs",
+                  style: appThemeData.textTheme.headlineSmall,
+                ),
+                backgroundColor: AppLightColor.backgoundPost,
 
-            actions: [Container(
-              height: 300.0, // Change as per your requirement
-              width: 300.0, // Change as per your requirement
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: controller.jobList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                      ListTile(
-                        leading: Icon(Icons.person_add, color: AppLightColor
-                            .fillButton,),
-                        subtitle: Text(
-                          "Please select the desired degree", style: appThemeData
-                            .textTheme.bodyMedium,),
-                        onTap: () {
-                          selectedJob = controller.jobList[index];
-                          Get.back();
-                          controller.update();
-                        },
-                        title: Text(controller.jobList[index].name??'failed', style: appThemeData.textTheme
-                            .headlineSmall),
-                        selectedColor: AppLightColor.elipsFill,
-                        focusColor: AppLightColor.strokePositive,
-
-
-                      ),
-                      //divider
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Container(
-                          width: double.infinity,
-                          height: 1,
-                          color: AppLightColor.strokePositive,
-                        ),
-                      )
-                    ],
-                  );
-                },
-              ),
-            ),
-            ],
-          );
-        })]
-    ));
-
-
-
+                actions: [
+                  Container(
+                    height: 300.0, // Change as per your requirement
+                    width: 300.0, // Change as per your requirement
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: controller.jobList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Column(
+                          children: [
+                            ListTile(
+                              leading: Icon(
+                                Icons.person_add,
+                                color: AppLightColor.fillButton,
+                              ),
+                              subtitle: Text(
+                                "Please select the desired degree",
+                                style: appThemeData.textTheme.bodyMedium,
+                              ),
+                              onTap: () {
+                                selectedJob = controller.jobList[index];
+                                Get.back();
+                                controller.update();
+                              },
+                              title: Text(
+                                controller.jobList[index].name ?? 'failed',
+                                style: appThemeData.textTheme.headlineSmall,
+                              ),
+                              selectedColor: AppLightColor.elipsFill,
+                              focusColor: AppLightColor.strokePositive,
+                            ),
+                            //divider
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Container(
+                                width: double.infinity,
+                                height: 1,
+                                color: AppLightColor.strokePositive,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   //openDialogLocation
 
-
   //openDialogPerson
-  openDialogPerson(context){
-    showDialog(context: context, builder: (context)=>AlertDialog(
+  openDialogPerson(context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10.0))
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Do you mean?",style: appThemeData.textTheme.headlineSmall,),
-            Text("23 Result",style: appThemeData.textTheme.labelLarge,),
+            Text("Do you mean?", style: appThemeData.textTheme.headlineSmall),
+            Text("23 Result", style: appThemeData.textTheme.labelLarge),
           ],
         ),
         backgroundColor: AppLightColor.backgoundPost,
 
-        actions:[Padding(
-          padding: const EdgeInsets.only(left: 10,right: 10,bottom: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              border: Border.all(color: AppLightColor.strokePositive,width: 1),
-              color: AppLightColor.withColor,
-            ),
-            height: 300.0, // Change as per your requirement
-            width: 300.0, // Change as per your requirement
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                border: Border.all(
+                  color: AppLightColor.strokePositive,
+                  width: 1,
+                ),
+                color: AppLightColor.withColor,
+              ),
+              height: 300.0, // Change as per your requirement
+              width: 300.0, // Change as per your requirement
 
               child: ListView.builder(
                 shrinkWrap: true,
@@ -456,28 +508,15 @@ class CreateAccountController extends GetxController {
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
                     children: [
-
                       //divider
-
                     ],
                   );
                 },
               ),
-
+            ),
           ),
-        ),
-
-
         ],
-
-
-    )
-
+      ),
     );
-
-
-
   }
 }
-
-

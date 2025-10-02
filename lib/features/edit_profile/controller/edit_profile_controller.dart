@@ -20,10 +20,11 @@ import '../../create_person/widget/location.dart';
 
 class EditProfileController extends GetxController {
   UserEntity currentUser = Get.arguments;
+
   @override
   void onInit() {
     super.onInit();
-   fillProperties();
+    fillProperties();
   }
 
   TextEditingController displayController = TextEditingController();
@@ -57,48 +58,113 @@ class EditProfileController extends GetxController {
 
       final educationCtrl = Get.find<EducationController>();
       final selected = educationCtrl.educationList.firstWhereOrNull(
-            (element) => element.id == currentUser.educationId,
+        (element) => element.id == currentUser.educationId,
       );
       if (selected != null) {
         CreateAccountController.selectedEducation = selected;
       }
 
       update();
-      Get.find<CreateAccountController>().update();
-      Get.find<EducationController>().update();
+      Future.delayed(Duration.zero, () {
+        Get.find<CreateAccountController>().update();
+        Get.find<EducationController>().update();
+      });
+    }
+  }
+  Future<void> editProfile() async {
+
+      // 1️⃣ Input validation
+      if (userNameController.text.isEmpty ||
+          displayController.text.isEmpty ||
+          emailController.text.isEmpty ||
+          CreateAccountController.selectedCity.id == null ||
+          selectedDate == null ||
+          base64String == null ||
+          CreateAccountController.selectedEducation.id == null) {
+        Get.showSnackbar(
+          GetSnackBar(
+            title: 'Error',
+            message: 'Please fill in all required information',
+            duration: Duration(seconds: 3),
+          ),
+        );
+        return; // stop execution if validation fails
+      }
+
+      // 2️⃣ Optional: further email format validation
+      if (!GetUtils.isEmail(emailController.text.trim())) {
+        Get.showSnackbar(
+          GetSnackBar(
+            title: 'Error',
+            message: 'Please enter a valid email address',
+            duration: Duration(seconds: 3),
+          ),
+        );
+        return;
+      }
+
+      // 3️⃣ Proceed with API call
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      final t = preferences.get('token');
+      if (t == null) {
+        Get.showSnackbar(
+          GetSnackBar(
+            title: 'Error',
+            message: 'User token not found',
+            duration: Duration(seconds: 3),
+          ),
+        );
+        return;
+      }
+
+    // 3️⃣ Prepare request
+    try {
+      final response = await dio.post(
+        'https://api.peopli.ir/Api/Account/edit-profile',
+        data: {
+          "username": userNameController.text,
+          "displayName": displayController.text,
+          "avatar": base64String ?? "",
+          "email": emailController.text,
+          "cityId": CreateAccountController.selectedCity.id,
+          "birthDate": "${selectedDate!.year}-${selectedDate!.month}-${selectedDate!.day}",
+          "educationId": CreateAccountController.selectedEducation.id,
+          // "token":"100ed121-bd65-4551-bf22-eed3de45",
+        },
+        options: Options(
+          headers: {
+            "Authorization":"Bearer 100ed121-bd65-4551-bf22-eed3de45",
+            "Content-Type": "application/json", // ✅ important
+          },
+          contentType: "application/json", // ✅ force JSON
+          responseType: ResponseType.json,
+        ),
+      );
+
+      print(response.data);
+      if (response.statusCode == 200 && response.data['status'] == 'ok') {
+        Get.toNamed(NamedRoute.routeLoginScreen);
+      } else {
+        Get.showSnackbar(
+          GetSnackBar(
+            title: 'Error',
+            message: 'Failed to update profile',
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+        debugPrint("${e}");
+      Get.showSnackbar(
+        GetSnackBar(
+          title: 'Error',
+          message: 'Something went wrong: $e',
+          duration: Duration(seconds: 3),
+        ),
+      );
     }
   }
 
-  Future<void> editProfile() async {
-    if (userNameController.text == null ||
-        displayController.text == null ||
-        pickedFile!.path == null || emailController.text == null ||
-        CreateAccountController.selectedCity.id == null ||
-        selectedDate == null ||base64String == null||
-        CreateAccountController.selectedEducation.id == null) {
-      Get.showSnackbar(GetSnackBar(title: 'Error',message: 'fulfilment information requirements',));
-    }
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String? token = preferences.getString('token');
-    final response = await dio.post(
-      'https://api.peopli.ir/Api/Account/edit-profile',
-      queryParameters: {
-        'token': token,
-        'username': userNameController.text,
-        'displayName': displayController.text,
-        'avatar': base64String,
-        'email': emailController.text,
-        'cityId': CreateAccountController.selectedCity.id,
-        'birthDate':
-            "${selectedDate!.year}${selectedDate!.month}${selectedDate!.day}",
-        'educationId': CreateAccountController.selectedEducation.id,
-      },
-    );
-    print(response.data);
-    if(response.statusCode == 200 && response.data['status'] == 'ok'){
-      Get.toNamed(NamedRoute.routeLoginScreen);
-    }
-  }
 
   DateTime? selectedDate;
 
@@ -141,159 +207,32 @@ class EditProfileController extends GetxController {
   }
 
   String? base64String;
-  uploadImage() async {
-    final  picker = ImagePicker();
-// Pick an image.
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-    pickedFile=File(pickedImage!.path);
-    if (pickedImage != null) {
+
+  Future<void> uploadImage() async {
+    try {
+      final picker = ImagePicker();
+      final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+
+      if (pickedImage == null) {
+        print("❌ No image selected.");
+        return;
+      }
+
+      pickedFile = File(pickedImage.path);
+
       // Read file as bytes
-      final bytes = await File(pickedImage.path).readAsBytes();
+      final bytes = await pickedFile!.readAsBytes();
 
       // Convert to Base64
       base64String = base64Encode(bytes);
 
       print("📦 Base64 String: $base64String");
+
+      update(); // If using GetX to update UI
+    } catch (e) {
+      print("⚠️ Error picking image: $e");
     }
-    update();
   }
-
-  // openDialog(context){
-  //   showDialog(context: context, builder: (context)=>AlertDialog(
-  //       shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(10.0))
-  //       ),
-  //       title: Text("Education",style: appThemeData.textTheme.headlineSmall,),
-  //       backgroundColor: AppLightColor.backgoundPost,
-  //
-  //       actions:[Container(
-  //         height: 300.0, // Change as per your requirement
-  //         width: 300.0, // Change as per your requirement
-  //         child: ListView.builder(
-  //           shrinkWrap: true,
-  //           itemCount: listData.length,
-  //           itemBuilder: (BuildContext context, int index) {
-  //             return Column(
-  //               children: [
-  //                 ListTile(
-  //                   leading: Icon(Icons.bookmark_add,color: AppLightColor.fillButton,),
-  //                   subtitle: Text("Please select the desired degree",style: appThemeData.textTheme.bodyMedium,),
-  //                   onTap: (){
-  //                     education=listData[index];
-  //                     Get.back();
-  //                     update();
-  //                   },
-  //                   title:Text(listData[index],style: appThemeData.textTheme.headlineSmall,),
-  //                   selectedColor: AppLightColor.elipsFill,
-  //                   focusColor: AppLightColor.strokePositive,
-  //
-  //
-  //                 ),
-  //                 //divider
-  //                 Padding(
-  //                   padding: const EdgeInsets.all(10),
-  //                   child: Container(
-  //                     width: double.infinity,
-  //                     height: 1,
-  //                     color: AppLightColor.strokePositive,
-  //                   ),
-  //                 )
-  //               ],
-  //             );
-  //           },
-  //         ),
-  //       )]
-  //   ));
-  //
-  //
-  //
-  // }
-  //
-  // //location
-  // openDialogLocation(context){
-  //   showDialog(context: context, builder: (context)=>AlertDialog(
-  //       shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(10.0))
-  //       ),
-  //       title: Text("Location",style: appThemeData.textTheme.headlineSmall,),
-  //       backgroundColor: AppLightColor.backgoundPost,
-  //       actions:[LocationScreen(),
-  //         LocationCity(),
-  //         Align(
-  //             alignment: Alignment.center,
-  //             child: CustomElevatedButton(onPressed: (){}, textColor: AppLightColor.withColor, color: AppLightColor.textBlueColor, title: "Save", height: 40.h, width: 120.w))
-  //       ]
-  //   ));
-  //
-  //
-  //
-  // }
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  // openDialogJobs(context){
-  //   showDialog(context: context, builder: (context)=>AlertDialog(
-  //       shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.all(Radius.circular(10.0))
-  //       ),
-  //       title: Text("Jobs",style: appThemeData.textTheme.headlineSmall,),
-  //       backgroundColor: AppLightColor.backgoundPost,
-  //
-  //       actions:[Container(
-  //         height: 300.0, // Change as per your requirement
-  //         width: 300.0, // Change as per your requirement
-  //         child: ListView.builder(
-  //           shrinkWrap: true,
-  //           itemCount: listJobs.length,
-  //           itemBuilder: (BuildContext context, int index) {
-  //             return Column(
-  //               children: [
-  //                 ListTile(
-  //                   leading: Icon(Icons.person_add,color: AppLightColor.fillButton,),
-  //                   subtitle: Text("Please select the desired degree",style: appThemeData.textTheme.bodyMedium,),
-  //                   onTap: (){
-  //                     jobs=listJobs[index];
-  //                     Get.back();
-  //                     update();
-  //                   },
-  //                   title:Text(listJobs[index],style: appThemeData.textTheme.headlineSmall),
-  //                   selectedColor: AppLightColor.elipsFill,
-  //                   focusColor: AppLightColor.strokePositive,
-  //
-  //
-  //                 ),
-  //                 //divider
-  //                 Padding(
-  //                   padding: const EdgeInsets.all(10),
-  //                   child: Container(
-  //                     width: double.infinity,
-  //                     height: 1,
-  //                     color: AppLightColor.strokePositive,
-  //                   ),
-  //                 )
-  //               ],
-  //             );
-  //           },
-  //         ),
-  //       )]
-  //   ));
-  //
-  //
-  //
-  // }
-
-  //openDialogLocation
-
-  //openDialogPerson
   openDialogPerson(context) {
     showDialog(
       context: context,
