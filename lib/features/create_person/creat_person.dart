@@ -73,7 +73,7 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                         ),
                         InkWell(
                           onTap: (){
-                            controller.uploadImage();
+                            controller.selectImageFromGallery(context);
                           },
                           child: Text("Add Photos",style: appThemeData.textTheme.bodyLarge,),
                         ),

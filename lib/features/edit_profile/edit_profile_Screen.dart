@@ -95,7 +95,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        controller.uploadImage();
+                                        controller.selectImageFromGallery(context);
                                       },
                                       child: Text(
                                         "Add Photos",

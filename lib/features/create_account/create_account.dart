@@ -86,7 +86,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                 ),
                                 InkWell(
                                   onTap: () {
-                                    controller.uploadImage();
+                                    controller.selectImageFromGallery(context);
                                   },
                                   child: Text(
                                     "Add Photos",

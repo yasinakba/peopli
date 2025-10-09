@@ -1,24 +1,31 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
+
 import 'package:image_picker/image_picker.dart';
-import 'package:get/get.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/features/feature_job_and_education/entity/education_entity.dart';
 import 'package:test_test_test/features/feature_job_and_education/entity/job_entity.dart';
 import 'package:test_test_test/features/feature_location/entity/city_entity.dart';
 import 'package:test_test_test/features/feature_location/entity/country_entity.dart';
 
+import 'package:flutter/foundation.dart';
+
+import 'package:test_test_test/features/feature_job_and_education/controller/education_cotnroller.dart';
+
+import 'package:dio/dio.dart' as DioPackage;
+
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
+
 import '../../../config/widgets/customButton.dart';
-import '../../feature_job_and_education/controller/education_cotnroller.dart';
+import '../../edit_profile/controller/edit_profile_controller.dart';
+
 import '../../feature_job_and_education/controller/job_controller.dart';
 import '../../feature_location/controller/location_controller.dart';
 
@@ -65,11 +72,10 @@ class CreateAccountController extends GetxController {
 
     // try {
 
-
     // ✅ Step 4: Make POST request with body, not queryParameters
     final response = await dio.postUri(
       Uri.parse(
-        'https://api.peopli.ir/Api/register?displayName=${nameController.text} ${familyController.text}&username=${userNameController.text}&password=${passwordController.text}&birthDate=${selectedDate?.toString()}&cityId=${selectedCity.id}&educationId=${selectedEducation.id}',
+        'https://api.peopli.ir/Api/register?displayName=${nameController.text} ${familyController.text}&username=${userNameController.text}&password=${passwordController.text}&birthDate=${selectedDate?.toString()}&cityId=${selectedCity.id}&educationId=${selectedEducation.id}&avatar=${selectedImage}',
       ),
     );
     if (response.statusCode == 200 && response.data['status'] == 'ok') {
@@ -136,31 +142,83 @@ class CreateAccountController extends GetxController {
         : appThemeData.textTheme.bodyLarge;
   }
 
-  String? base64String;
+  var isUploading = false.obs;
+  var selectedImage = 'usericon.png'.obs;
 
-  Future<void> uploadImage() async {
+  uploadImage({required context, required XFile image}) async {
+    isUploading.value = true;
     try {
-      final picker = ImagePicker();
-      final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+      DioPackage.FormData formData;
+      var response;
+      if (!kIsWeb) {
+        try {
+          formData = DioPackage.FormData.fromMap({
+            'file': await DioPackage.MultipartFile.fromFile(image.path),
+          });
 
-      if (pickedImage == null) {
-        print("❌ No image selected.");
-        return;
+          final response = await dio.post(
+            "Https://api.peopli.ir/uploader/image",
+            data: formData,
+          );
+          if (response.statusCode == 200) {
+            var status = response.data["status"];
+            var data = response.data["data"];
+            if (status == "ok") {
+              selectedImage.value = data;
+              selectedImage.refresh();
+            }
+          } else {
+            Get.snackbar('خطا در هنگام آپلود', response.statusMessage ?? '');
+          }
+
+          isUploading.value = false;
+        } catch (e) {
+          print(e.toString());
+          Get.snackbar('خطا در هنگام آپلود', e.toString());
+          isUploading.value = false;
+        }
+      } else {
+        // Uint8List content = await image.readAsBytes();
+        // DioPackage.FormData formData = DioPackage.FormData.fromMap({
+        //   "file": DioPackage.MultipartFile.fromBytes(content, filename: image.name)
+        // });
+        // response = await dio.post('https://api.peopli.ir/Api/uploads',
+        //     data: formData,
+        //     options: Options(headers: {"Content-Type": "multipart/form-data"}));
       }
 
-      pickedFile = File(pickedImage.path);
+      if (response.statusCode == 200) {
+        var status = response.data["status"];
+        var data = response.data["data"];
+        if (status == "ok") {
+          selectedImage.value = data;
+          selectedImage.refresh();
+        }
+      } else {
+        Get.snackbar('خطا در هنگام آپلود', response.statusM);
+      }
 
-      // Read file as bytes
-      final bytes = await pickedFile!.readAsBytes();
-
-      // Convert to Base64
-      base64String = base64Encode(bytes);
-
-      print("📦 Base64 String: $base64String");
-
-      update(); // If using GetX to update UI
+      isUploading.value = false;
     } catch (e) {
-      print("⚠️ Error picking image: $e");
+      print(e.toString());
+      Get.snackbar('خطا در هنگام آپلود', e.toString());
+      isUploading.value = false;
+    }
+  }
+
+  selectImageFromGallery(context) async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1080,
+    );
+    if (image != null) {
+      await Get.find<EditProfileController>().uploadImage(
+        context: context,
+        image: image,
+      );
+      selectedImage = Get.find<EditProfileController>().selectedImage;
+      selectedImage.refresh();
     }
   }
 
