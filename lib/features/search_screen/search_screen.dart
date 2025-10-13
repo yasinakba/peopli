@@ -236,13 +236,9 @@ class SearchScreen extends GetView<SearchBottomController> {
                                             child: InkWell(
                                               onTap: () {
                                                 controller
-                                                    .openDialogLocationCountry(
+                                                    .openDialogLocation(
                                                       context,
                                                 );
-                                                controller
-                                                    .openDialogLocationCity(
-                                                      context,
-                                                    );
                                               },
                                               child: Text(
                                                 'Add',
@@ -298,7 +294,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                         top: 5,
                                       ),
                                       child: Text(
-                                        "${controller.selectedEducation == null ? '' : controller.selectedEducation!.name ?? ''}",
+                                        controller.selectedEducation.name??'',
                                         maxLines: 2,
                                         style: appThemeData.textTheme.bodySmall,
                                       ),
@@ -359,7 +355,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                     padding: const EdgeInsets.only(right: 10),
                                     child: InkWell(
                                       onTap: () {
-                                        controller.openDialogJobs(context);
+                                        controller.openDialogJob(context);
                                       },
                                       child: Text(
                                         'Add',

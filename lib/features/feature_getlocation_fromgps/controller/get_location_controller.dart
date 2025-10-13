@@ -15,7 +15,7 @@ class GetLocationController extends GetxController {
       // Check service
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        print("❌ Location services are disabled.");
+        Get.snackbar('Error',"❌ Location services are disabled.");
         return;
       }
 
@@ -23,12 +23,12 @@ class GetLocationController extends GetxController {
       var status = await Permission.location.request();
 
       if (status.isDenied) {
-        print("❌ Location permission denied by user.");
+        Get.snackbar('Error', "❌ Location permission denied by user.");
         return;
       }
 
       if (status.isPermanentlyDenied) {
-        print("❌ Permission permanently denied, opening settings...");
+        Get.snackbar('Error',"❌ Permission permanently denied, opening settings...");
         await openAppSettings();
         return;
       }
@@ -41,22 +41,26 @@ class GetLocationController extends GetxController {
       controller.latitude = position.latitude;
       controller.longitude = position.longitude;
 
-      // ✅ Convert to human-readable address
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-        localeIdentifier: "en", // force English
-      );
+      try {
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+          position.latitude,
+          position.longitude,
+          localeIdentifier: "en",
+        );
 
-      if (placemarks.isNotEmpty) {
-        final place = placemarks.first;
-        controller.locationController.text =
-        "${place.street}, ${place.locality}, ${place
-            .administrativeArea}, ${place.country}";
-        Get.find<AddMemoryController>().update();
+        if (placemarks.isNotEmpty) {
+          final place = placemarks.first;
+          controller.locationController.text =
+          "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+          controller.update();
+        }
+      } catch (e) {
+        Get.snackbar("Error", "Failed to get address: $e");
+        controller.locationController.text = "Unknown";
       }
     } else {
       await Geolocator.requestPermission();
 
     }
-  }}
+  }
+}

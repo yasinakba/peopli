@@ -40,8 +40,8 @@ class JobDropDownGlobal extends StatelessWidget {
                           .textTheme.bodyMedium,),
                       onTap: () {
                         selectedJob = controller.jobList[index];
-                        Get.back();
                        controller.update();
+                        Get.back();
                       },
                       title: Text(controller.jobList[index].name??'failed', style: appThemeData.textTheme
                           .headlineSmall),

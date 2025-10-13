@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
+import 'package:test_test_test/features/home_screen/controller/home_controller.dart';
+import 'package:test_test_test/features/home_screen/home_screen.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
@@ -17,15 +19,21 @@ import '../../login/controller/login_controller.dart';
 import '../../splashscreen/controllers/login_controller.dart';
 import 'comment_post.dart';
 
-class PostFirstScreen extends StatelessWidget {
+class PostFirstScreen extends StatefulWidget {
   final MemoryEntity memory;
+  final dynamic index;
+  bool isLiked = false;
+  PostFirstScreen(this.memory, this.index);
 
-  PostFirstScreen(this.memory);
+  @override
+  State<PostFirstScreen> createState() => _PostFirstScreenState();
+}
 
+class _PostFirstScreenState extends State<PostFirstScreen> {
   Future<String> getAddress() async {
     final placemarks = await placemarkFromCoordinates(
-      memory.lat!.toDouble(),
-      memory.lng!.toDouble(),
+      widget.memory.lat!.toDouble(),
+      widget.memory.lng!.toDouble(),
       localeIdentifier: "en", // force English
     );
     if (placemarks.isNotEmpty) {
@@ -43,7 +51,8 @@ class PostFirstScreen extends StatelessWidget {
     return GetBuilder<FirstController>(
       initState: (state) {
         Get.lazyPut(() => ProfileController());
-        state.controller!.getFaceForMemories(memory.id);
+        Get.lazyPut(() => FirstController());
+        Get.find<FirstController>().getFaceForMemories(widget.memory.id);
       },
       builder: (controller) {
         return Container(
@@ -73,7 +82,7 @@ class PostFirstScreen extends StatelessWidget {
                               SizedBox(
                                 width: double.infinity,
                                 child: Text(
-                                memory.face??'Face Name',
+                                widget.memory.face??'Face Name',
                                   style: appThemeData.textTheme.headlineLarge,
                                   textAlign: TextAlign.start,
                                 ),
@@ -81,7 +90,7 @@ class PostFirstScreen extends StatelessWidget {
                               SizedBox(
                                 width: double.infinity,
                                 child: Text(
-                                  memory.text??'',
+                                  widget.memory.text??'',
                                   style: appThemeData.textTheme.bodyLarge,
                                   textAlign: TextAlign.start,
                                 ),
@@ -176,7 +185,7 @@ class PostFirstScreen extends StatelessWidget {
                           SizedBox(
                             width: 130.w,
                             child: Text(
-                              memory.user ?? 'null',
+                              widget.memory.user ?? 'null',
                               style: appThemeData.textTheme.labelMedium,
                               textAlign: TextAlign.start,
                             ),
@@ -203,7 +212,7 @@ class PostFirstScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
                   child: SizedBox(
                     child: AutoSizeText(
-                      memory.title ?? 'null',
+                      widget.memory.title ?? 'null',
                       maxLines: 3,
                       style: appThemeData.textTheme.headlineLarge,
                       textAlign: TextAlign.start,
@@ -252,9 +261,9 @@ class PostFirstScreen extends StatelessWidget {
                   child: SizedBox(
                     width: 293.w,
                     height: 141.h,
-                    child: memory.media != null
+                    child: widget.memory.media != null
                         ? Image.network(
-                            'https://api.peopli.ir/uploads/${memory.media?.split('/').last}',
+                            'https://api.peopli.ir/uploads/${widget.memory.media?.split('/').last}',
                             fit: BoxFit.fitWidth,
                           )
                         : Image.asset(
@@ -288,7 +297,7 @@ class PostFirstScreen extends StatelessWidget {
                                       height: 450,
 
                                       child: CommentPost(
-                                        memoryEntity: memory,
+                                        memoryEntity: widget.memory,
                                         isFromProfile: false,
                                       ),
                                     ),
@@ -308,7 +317,7 @@ class PostFirstScreen extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(left: 4),
                             child: Text(
-                              memory.commentsCount.toString(),
+                              widget.memory.commentsCount.toString(),
                               style: appThemeData.textTheme.bodyMedium,
                             ),
                           ),
@@ -320,18 +329,20 @@ class PostFirstScreen extends StatelessWidget {
                           InkWell(
                             onTap: () {},
                             child: SizedBox(
-                              width: 17.w,
-                              height: 17.w,
-                              child: Image.asset(
-                                AppAssetsPng.iconLHeart,
-                                color: AppLightColor.postNavbar,
-                              ),
+                              width: 30.w,
+                              height: 30.w,
+                              child: IconButton(onPressed: () {
+                                setState(() {
+                                  widget.isLiked = !widget.isLiked;
+                                  controller.addLike(widget.memory.id);
+                                });
+                              }, icon: Icon(widget.isLiked?Icons.favorite:Icons.favorite_border,size: 17.sp,color:widget.isLiked? Colors.green.shade400:Colors.grey.shade600,)),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 4),
                             child: Text(
-                              memory.likesCount.toString(),
+                              widget.memory.likesCount.toString(),
                               style: appThemeData.textTheme.bodyMedium,
                             ),
                           ),
@@ -361,7 +372,7 @@ class PostFirstScreen extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(left: 4),
                             child: Text(
-                              memory.createdAt.toString(),
+                              widget.memory.createdAt.toString(),
                               style: appThemeData.textTheme.bodyMedium,
                             ),
                           ),

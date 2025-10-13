@@ -35,7 +35,7 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                       width: 100.w,
                       decoration: BoxDecoration(
                         color: AppLightColor.elipsFill,
-                        image:controller.pickedFile==null?null: DecorationImage(image: FileImage(controller.pickedFile!),fit: BoxFit.cover),
+                        image:controller.pickedFile==null?null: DecorationImage(image: FileImage(File(controller.pickedFile!.path)),fit: BoxFit.cover),
                         shape: BoxShape.circle,
                       ),
 
@@ -73,7 +73,7 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                         ),
                         InkWell(
                           onTap: (){
-                            controller.selectImageFromGallery(context);
+                            controller.uploadImage();
                           },
                           child: Text("Add Photos",style: appThemeData.textTheme.bodyLarge,),
                         ),

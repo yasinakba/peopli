@@ -75,7 +75,7 @@ class EditProfileController extends GetxController {
           emailController.text.isEmpty ||
           CreateAccountController.selectedCity.id == null ||
           selectedDate == null ||
-          pickedFile == null ||
+          selectedImage.value == null ||
           CreateAccountController.selectedEducation.id == null) {
         Get.showSnackbar(
           GetSnackBar(
@@ -117,15 +117,15 @@ class EditProfileController extends GetxController {
     try {
       final response = await dio.post(
         'https://api.peopli.ir/Api/Account/edit-profile',
-        data: {
+        queryParameters: {
           "username": userNameController.text,
           "displayName": displayController.text,
-          "avatar": pickedFile!.path.split('/').last,
+          "avatar": selectedImage.value,
           "email": emailController.text,
           "cityId": CreateAccountController.selectedCity.id,
           "birthDate": "${selectedDate!.year}-${selectedDate!.month}-${selectedDate!.day}",
           "educationId": CreateAccountController.selectedEducation.id,
-          "token":"$t",
+          "token":t.toString(),
         },
       );
 

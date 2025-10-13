@@ -51,7 +51,7 @@ class FirstScreen extends StatelessWidget {
                         right: 10,
                         left: 10,
                         bottom: index == 3 ? 60 : 10),
-                    child: PostFirstScreen(memory),
+                    child: PostFirstScreen(memory,index),
                   );
                 },
               ),

@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:image_picker/image_picker.dart';
 
@@ -38,7 +40,7 @@ class CreateAccountController extends GetxController {
 
   int selectedRadio = 0;
   int selectedLanguage = 0;
-  File? pickedFile;
+  XFile? pickedFile;
   String education = "";
 
   @override
@@ -56,7 +58,7 @@ class CreateAccountController extends GetxController {
         familyController.text.isEmpty ||
         userNameController.text.isEmpty ||
         passwordController.text.isEmpty ||
-        pickedFile == null ||
+        selectedImage.value == null ||
         selectedDate == null ||
         selectedCity == null ||
         selectedEducation == null) {
@@ -70,15 +72,16 @@ class CreateAccountController extends GetxController {
       return; // Stop execution if validation fails
     }
 
-    // try {
+    try {
 
     // ✅ Step 4: Make POST request with body, not queryParameters
     final response = await dio.postUri(
       Uri.parse(
-        'https://api.peopli.ir/Api/register?displayName=${nameController.text} ${familyController.text}&username=${userNameController.text}&password=${passwordController.text}&birthDate=${selectedDate?.toString()}&cityId=${selectedCity.id}&educationId=${selectedEducation.id}&avatar=${selectedImage}',
+        'https://api.peopli.ir/Api/register?displayName=${nameController.text} ${familyController.text}&username=${userNameController.text}&password=${passwordController.text}&birthDate=${selectedDate?.toString()}&cityId=${selectedCity.id}&educationId=${selectedEducation.id}&avatar=${selectedImage.value}',
       ),
     );
-    if (response.statusCode == 200 && response.data['status'] == 'ok') {
+      print(response.data);
+      if (response.statusCode == 200 && response.data['status'] == 'ok') {
       await preferences.setString('token', response.data['data']);
       Get.toNamed(NamedRoute.routeHomeScreen);
     } else {
@@ -90,18 +93,56 @@ class CreateAccountController extends GetxController {
         ),
       );
     }
-    // } on DioException catch (e) {
-    //   print("POST error: ${e.response?.statusCode} - ${e.message}");
-    //   Get.showSnackbar(
-    //     GetSnackBar(
-    //       title: 'Error',
-    //       message: 'Something went wrong: ${e.message}',
-    //       duration: const Duration(seconds: 3),
-    //     ),
-    //   );
-    // }
+    } on DioException catch (e) {
+      print("POST error: ${e.response?.statusCode} - ${e.message}");
+      Get.showSnackbar(
+        GetSnackBar(
+          title: 'Error',
+          message: 'Something went wrong: ${e.message}',
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
+  var isUploading = false.obs;
+  // RxString selectedImage = 'usericon.png'.obs;
+  RxString selectedImage = 'usericon.png'.obs;
+  final String uploadUrl = "https://api.peopli.ir/uploader";
+  Future<void> uploadImage() async {
+    final picker = ImagePicker();
 
+    // Pick an image
+    final file = await picker.pickImage(source: ImageSource.gallery);
+
+    if (file == null) {
+      print("No file selected");
+      return;
+    }
+    pickedFile = file;
+    File imageFile = File(file.path);
+
+    // Create multipart request
+    var request = http.MultipartRequest("POST", Uri.parse(uploadUrl));
+
+    // "file" must match your IFormFile parameter name
+    request.files.add(
+      await http.MultipartFile.fromPath("file", imageFile.path),
+    );
+
+    // Send request
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      var responseBody= await response.stream.bytesToString();
+      var data = await json.decode(responseBody);
+      selectedImage.value = data['data']; // for ex// ample
+      update();
+      final respStr = await response.stream.bytesToString();
+      print("Upload success: $respStr");
+    } else {
+      print("Upload failed: ${response.statusCode}");
+    }
+  }
   DateTime? selectedDate;
 
   void pickDateTime(context) async {
@@ -142,69 +183,6 @@ class CreateAccountController extends GetxController {
         : appThemeData.textTheme.bodyLarge;
   }
 
-  var isUploading = false.obs;
-  var selectedImage = 'usericon.png'.obs;
-
-  uploadImage({required context, required XFile image}) async {
-    isUploading.value = true;
-    try {
-      DioPackage.FormData formData;
-      var response;
-      if (!kIsWeb) {
-        try {
-          formData = DioPackage.FormData.fromMap({
-            'file': await DioPackage.MultipartFile.fromFile(image.path),
-          });
-
-          final response = await dio.post(
-            "Https://api.peopli.ir/uploader/image",
-            data: formData,
-          );
-          if (response.statusCode == 200) {
-            var status = response.data["status"];
-            var data = response.data["data"];
-            if (status == "ok") {
-              selectedImage.value = data;
-              selectedImage.refresh();
-            }
-          } else {
-            Get.snackbar('خطا در هنگام آپلود', response.statusMessage ?? '');
-          }
-
-          isUploading.value = false;
-        } catch (e) {
-          print(e.toString());
-          Get.snackbar('خطا در هنگام آپلود', e.toString());
-          isUploading.value = false;
-        }
-      } else {
-        // Uint8List content = await image.readAsBytes();
-        // DioPackage.FormData formData = DioPackage.FormData.fromMap({
-        //   "file": DioPackage.MultipartFile.fromBytes(content, filename: image.name)
-        // });
-        // response = await dio.post('https://api.peopli.ir/Api/uploads',
-        //     data: formData,
-        //     options: Options(headers: {"Content-Type": "multipart/form-data"}));
-      }
-
-      if (response.statusCode == 200) {
-        var status = response.data["status"];
-        var data = response.data["data"];
-        if (status == "ok") {
-          selectedImage.value = data;
-          selectedImage.refresh();
-        }
-      } else {
-        Get.snackbar('خطا در هنگام آپلود', response.statusM);
-      }
-
-      isUploading.value = false;
-    } catch (e) {
-      print(e.toString());
-      Get.snackbar('خطا در هنگام آپلود', e.toString());
-      isUploading.value = false;
-    }
-  }
 
   selectImageFromGallery(context) async {
     final ImagePicker _picker = ImagePicker();
@@ -266,6 +244,8 @@ class CreateAccountController extends GetxController {
                           onTap: () {
                             selectedEducation = controller.educationList[index];
                             controller.update(['education']);
+                            Get.lazyPut(() => CreateAccountController(),);
+                            Get.find<CreateAccountController>().update();
                             Get.back();
                           },
                           title: Text(

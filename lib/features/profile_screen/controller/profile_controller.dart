@@ -24,7 +24,7 @@ class ProfileController extends GetxController {
   Future<void> getCurrentAccount() async {
     try {
       final preferences = await SharedPreferences.getInstance();
-      final token = preferences.getString('token');
+      final token = preferences.get('token');
 
       if (token == null) {
         debugPrint("⚠️ No token found in SharedPreferences");
@@ -34,7 +34,7 @@ class ProfileController extends GetxController {
       final response = await dio.get(
         'https://api.peopli.ir/Api/Account',
         queryParameters: {
-          'token': token,
+          'token': token.toString(),
         },
       );
 

@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
@@ -23,7 +26,7 @@ class CreatePersonController extends GetxController {
    TextEditingController dateTimeController = TextEditingController();
    int selectedRadio = 0;
    int selectedLanguage = 0;
-   File? pickedFile;
+   XFile? pickedFile;
    String gender = '';
    @override void onInit() {
     super.onInit();
@@ -38,24 +41,90 @@ class CreatePersonController extends GetxController {
   }
    final dio = Dio();
    /// Simple POST request with error handling
+   // Future<void> addFace() async {
+   //   // try {
+   //     final preferences = await SharedPreferences.getInstance();
+   //     String? token = preferences.getString('token');
+   //
+   //     // ✅ Step 1: Token validation
+   //     if (token == null || token.isEmpty) {
+   //       debugPrint("⚠️ No token found in SharedPreferences");
+   //       Get.snackbar('Error', 'Please login first.');
+   //       return;
+   //     }
+   //
+   //     // ✅ Step 2: Input validation
+   //     if (nameController.text.trim().isEmpty ||
+   //         familyNameController.text.trim().isEmpty ||
+   //         knowAsController.text.trim().isEmpty ||
+   //         gender == null ||
+   //         selectedImage.value == '' ||
+   //         CreateAccountController.selectedCity.id == null ||
+   //         CreateAccountController.selectedEducation.id == null ||
+   //         CreateAccountController.selectedJob.id == null ||
+   //         selectedDate == null) {
+   //       Get.snackbar(
+   //         'Error',
+   //         'Please fill in all required fields before submitting.',
+   //       );
+   //       return;
+   //     }
+   //
+   //     // ✅ Step 3: Format date safely
+   //     final date = selectedDate!;
+   //     final formattedDate =
+   //         "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+   //
+   //     // ✅ Step 5: Send request
+   //     final response = await dio.post(
+   //       'https://api.peopli.ir/Api/Faces/add',
+   //       data: {
+   //         'token': token.toString(),
+   //         'name': nameController.text.trim(),
+   //         'lastName': familyNameController.text.trim(),
+   //         'knownFor': knowAsController.text.trim(),
+   //         'gender': gender,
+   //         'avatar': selectedImage.value,
+   //         'hometownId': CreateAccountController.selectedCity.id,
+   //         'educationId': CreateAccountController.selectedEducation.id,
+   //         'jobId': CreateAccountController.selectedJob.id,
+   //         'birthDate': formattedDate,
+   //       },
+   //       // options: Options(headers: headers),
+   //     );
+   //    print(response.data['data']);
+   //     // ✅ Step 6: Handle response
+   //     if (response.statusCode == 200 && response.data['status'] == 'OK') {
+   //       debugPrint('✅ Face added successfully: ${response.data}');
+   //       Get.snackbar('Success', 'Face added successfully!');
+   //     } else {
+   //       debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+   //       Get.snackbar('Error', 'Failed to add face. Please try again.');
+   //     }
+   //   // } catch (e, stacktrace) {
+   //   //   debugPrint("🔥 Exception while adding face: $e");
+   //   //   debugPrint(stacktrace.toString());
+   //   //   Get.snackbar('Error', 'An unexpected error occurred.');
+   //   // }
+   // }
    Future<void> addFace() async {
      try {
        final preferences = await SharedPreferences.getInstance();
-       final token = preferences.getString('token');
+       String? token = preferences.getString('token');
 
-       // ✅ Step 1: Token validation
+       // ✅ Token validation
        if (token == null || token.isEmpty) {
          debugPrint("⚠️ No token found in SharedPreferences");
          Get.snackbar('Error', 'Please login first.');
          return;
        }
 
-       // ✅ Step 2: Input validation
+       // ✅ Input validation
        if (nameController.text.trim().isEmpty ||
            familyNameController.text.trim().isEmpty ||
            knowAsController.text.trim().isEmpty ||
            gender == null ||
-           selectedImage == null ||
+           selectedImage.value.isEmpty ||
            CreateAccountController.selectedCity.id == null ||
            CreateAccountController.selectedEducation.id == null ||
            CreateAccountController.selectedJob.id == null ||
@@ -67,41 +136,41 @@ class CreatePersonController extends GetxController {
          return;
        }
 
-       // ✅ Step 3: Format date safely
+       // ✅ Format date safely
        final date = selectedDate!;
        final formattedDate =
            "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
 
-       // ✅ Step 4: Prepare Dio headers
-       final headers = {
-         'content-type': 'application/json',
-         'content-length': '40749', // optional, usually set automatically by Dio
+       // ✅ Prepare request data
+       final data = {
+         'token':token.toString(),
+         'name': nameController.text.trim(),
+         'lastName': familyNameController.text.trim(),
+         'knownFor': knowAsController.text.trim(),
+         'gender': gender,
+         'avatar': selectedImage.value,
+         'hometownId': CreateAccountController.selectedCity.id,
+         'educationId': CreateAccountController.selectedEducation.id,
+         'jobId': CreateAccountController.selectedJob.id,
+         'birthDate': formattedDate,
        };
 
-       // ✅ Step 5: Send request
+       // ✅ Send POST request with token in headers
        final response = await dio.post(
          'https://api.peopli.ir/Api/Faces/add',
-         data: {
-           'token': token,
-           'name': nameController.text.trim(),
-           'lastName': familyNameController.text.trim(),
-           'knownFor': knowAsController.text.trim(),
-           'gender': gender,
-           'avatar': selectedImage,
-           'hometownId': CreateAccountController.selectedCity.id,
-           'educationId': CreateAccountController.selectedEducation.id,
-           'jobId': CreateAccountController.selectedJob.id,
-           'birthDate': formattedDate,
-         },
-         // options: Options(headers: headers),
+         data: data,
+         options: Options(
+           contentType: Headers.formUrlEncodedContentType, // crucial for .NET backend
+         ),
        );
 
-       // ✅ Step 6: Handle response
-       if (response.statusCode == 200 && response.data['status'] == 'OK') {
+       // ✅ Handle response safely
+       if (response.statusCode == 200 && response.data['status'] == 'ok') {
+
          debugPrint('✅ Face added successfully: ${response.data}');
          Get.snackbar('Success', 'Face added successfully!');
        } else {
-         debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+         debugPrint("❌ Error: ${response.statusCode} -> ${response.data}");
          Get.snackbar('Error', 'Failed to add face. Please try again.');
        }
      } catch (e, stacktrace) {
@@ -110,72 +179,44 @@ class CreatePersonController extends GetxController {
        Get.snackbar('Error', 'An unexpected error occurred.');
      }
    }
+
    var isUploading = false.obs;
-   var selectedImage = 'usericon.png'.obs;
-   uploadImage({required context, required XFile image}) async {
-     isUploading.value = true;
-     try {
-       DioPackage.FormData formData;
-       var response;
-       if (!kIsWeb) {
-         try{
-           formData = DioPackage.FormData.fromMap(
-               {'file': await DioPackage.MultipartFile.fromFile(image.path)});
+   // RxString selectedImage = 'usericon.png'.obs;
+   RxString selectedImage = 'usericon.png'.obs;
+   final String uploadUrl = "https://api.peopli.ir/uploader";
+   Future<void> uploadImage() async {
+     final picker = ImagePicker();
 
-           final  response = await dio.post("Https://api.peopli.ir/uploader/image", data: formData);
-           if (response.statusCode == 200) {
-             var status = response.data["status"];
-             var data = response.data["data"];
-             if (status == "ok") {
-               selectedImage.value = data;
-               selectedImage.refresh();
-             }
-           } else {
-             Get.snackbar('خطا در هنگام آپلود', response.statusMessage??'');
-           }
+     // Pick an image
+     final file = await picker.pickImage(source: ImageSource.gallery);
 
-           isUploading.value = false;
-         } catch (e) {
-           print(e.toString());
-           Get.snackbar('خطا در هنگام آپلود', e.toString());
-           isUploading.value = false;
-         }
-       } else {
-         // Uint8List content = await image.readAsBytes();
-         // DioPackage.FormData formData = DioPackage.FormData.fromMap({
-         //   "file": DioPackage.MultipartFile.fromBytes(content, filename: image.name)
-         // });
-         // response = await dio.post('https://api.peopli.ir/Api/uploads',
-         //     data: formData,
-         //     options: Options(headers: {"Content-Type": "multipart/form-data"}));
-       }
-
-       if (response.statusCode == 200) {
-         var status = response.data["status"];
-         var data = response.data["data"];
-         if (status == "ok") {
-           selectedImage.value = data;
-           selectedImage.refresh();
-         }
-       } else {
-         Get.snackbar('خطا در هنگام آپلود', response.statusM);
-       }
-
-       isUploading.value = false;
-     } catch (e) {
-       print(e.toString());
-       Get.snackbar('خطا در هنگام آپلود', e.toString());
-       isUploading.value = false;
+     if (file == null) {
+       print("No file selected");
+       return;
      }
-   }
-   selectImageFromGallery(context) async {
-     final ImagePicker _picker = ImagePicker();
-     final XFile? image =
-     await _picker.pickImage(source: ImageSource.gallery, maxWidth: 1080);
-     if (image != null) {
-       await Get.find<EditProfileController>().uploadImage(context: context, image: image);
-       selectedImage = Get.find<EditProfileController>().selectedImage;
-       selectedImage.refresh();
+     pickedFile = file;
+     File imageFile = File(file.path);
+
+     // Create multipart request
+     var request = http.MultipartRequest("POST", Uri.parse(uploadUrl));
+
+     // "file" must match your IFormFile parameter name
+     request.files.add(
+       await http.MultipartFile.fromPath("file", imageFile.path),
+     );
+
+     // Send request
+     var response = await request.send();
+
+     if (response.statusCode == 200) {
+     var responseBody= await response.stream.bytesToString();
+     var data = await json.decode(responseBody);
+     selectedImage.value = data['data']; // for ex// ample
+     update();
+     final respStr = await response.stream.bytesToString();
+       print("Upload success: $respStr");
+     } else {
+       print("Upload failed: ${response.statusCode}");
      }
    }
 
