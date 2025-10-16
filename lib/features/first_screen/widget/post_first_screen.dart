@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/home_screen/controller/home_controller.dart';
@@ -22,37 +23,52 @@ import 'comment_post.dart';
 class PostFirstScreen extends StatefulWidget {
   final MemoryEntity memory;
   final dynamic index;
+  final FaceEntity face;
   bool isLiked = false;
-  PostFirstScreen(this.memory, this.index);
+
+  PostFirstScreen(this.memory, this.index, this.face);
 
   @override
   State<PostFirstScreen> createState() => _PostFirstScreenState();
 }
 
 class _PostFirstScreenState extends State<PostFirstScreen> {
-  Future<String> getAddress() async {
-    final placemarks = await placemarkFromCoordinates(
-      widget.memory.lat!.toDouble(),
-      widget.memory.lng!.toDouble(),
-      localeIdentifier: "en", // force English
-    );
-    if (placemarks.isNotEmpty) {
-      final place = placemarks.first;
-      // Build a nice formatted address
-      return "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+  // Future<String> getAddress(lat,lng) async {
+  //   final placemarks = await placemarkFromCoordinates(
+  //    lat!.toDouble(),
+  //     lng!.toDouble(),
+  //     localeIdentifier: "en", // force English
+  //   );
+  //   if (placemarks.isNotEmpty) {
+  //     final place = placemarks.first;
+  //     // Build a nice formatted address
+  //     return "${place.street}, ${place.locality}, ${place
+  //         .administrativeArea}, ${place.country}";
+  //   }
+  //
+  //   return "Unknown location";
+  // }
+  @override
+  void initState() {
+    super.initState();
+    if (!Get.isRegistered<ProfileController>()) {
+      Get.put(ProfileController());
     }
-
-    return "Unknown location";
+    if (!Get.isRegistered<FirstController>()) {
+      Get.put(FirstController());
+    }
+    Get.find<FirstController>().readFace();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    var profileController = Get.find<ProfileController>();
     return GetBuilder<FirstController>(
       initState: (state) {
         Get.lazyPut(() => ProfileController());
         Get.lazyPut(() => FirstController());
-        Get.find<FirstController>().getFaceForMemories(widget.memory.id);
+        Get.find<FirstController>().readFace();
       },
       builder: (controller) {
         return Container(
@@ -70,7 +86,10 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                   padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
                   child: InkWell(
                     onTap: () {
-                      Get.toNamed(NamedRoute.routePersonScreen);
+                      Get.toNamed(
+                        NamedRoute.routePersonScreen,
+                        arguments: widget.face,
+                      );
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -82,7 +101,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                               SizedBox(
                                 width: double.infinity,
                                 child: Text(
-                                widget.memory.face??'Face Name',
+                                  widget.face.name ?? 'Face Name',
                                   style: appThemeData.textTheme.headlineLarge,
                                   textAlign: TextAlign.start,
                                 ),
@@ -90,7 +109,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                               SizedBox(
                                 width: double.infinity,
                                 child: Text(
-                                  widget.memory.text??'',
+                                  widget.memory.text ?? '',
                                   style: appThemeData.textTheme.bodyLarge,
                                   textAlign: TextAlign.start,
                                 ),
@@ -99,7 +118,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                                 width: double.infinity,
                                 child: Text(
                                   // "${m} - now",
-                                  'age -now',
+                                  "${widget.face.birthdate.toString()} -now",
                                   style: appThemeData.textTheme.bodyLarge,
                                   textAlign: TextAlign.start,
                                 ),
@@ -125,8 +144,8 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                                 height: 55.h,
                                 child: CircleAvatar(
                                   radius: 80,
-                                  backgroundImage: AssetImage(
-                                    AppAssetsJpg.imagePerson,
+                                  backgroundImage: NetworkImage(
+                                   "https://api.peopli.ir/uploads/${widget.face.avatar??''}",
                                   ),
                                 ),
                               ),
@@ -145,7 +164,6 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                     ),
                   ),
                 ),
-
                 //post
                 Row(
                   children: [
@@ -155,26 +173,23 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                         left: 10,
                         bottom: 5,
                       ),
-                      child: SizedBox(
-                        width: 44.w,
-                        height: 44.h,
-                        child: CircleAvatar(
-                          radius: 80,
-                          backgroundImage:
-                              (Get.find<ProfileController>()
-                                          .currentUser
-                                          .first
-                                          .avatar != null &&
-                                  Get.find<ProfileController>()
-                                      .currentUser
-                                      .first
-                                      .avatar
-                                      .isNotEmpty)
-                              ? NetworkImage(
-                                  'https://api.peopli.ir/uploads/${Get.find<ProfileController>().currentUser.first.avatar.split('/').last}',
+                      child: GestureDetector(
+                        child: SizedBox(
+                          width: 44.w,
+                          height: 44.h,
+                          child: profileController.currentUser.isEmpty
+                              ? const CircleAvatar(
+                                  radius: 80,
+                                  backgroundImage: AssetImage(
+                                    AppAssetsPng.iconPerson,
+                                  ),
                                 )
-                              : AssetImage(AppAssetsPng.iconPerson)
-                                    as ImageProvider,
+                              : CircleAvatar(
+                                  radius: 80,
+                                  backgroundImage: NetworkImage(
+                                    "https://api.peopli.ir/uploads/${profileController.currentUser.first.avatar}",
+                                  ),
+                                ),
                         ),
                       ),
                     ),
@@ -218,40 +233,41 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                       textAlign: TextAlign.start,
                     ),
                   ),
+
+                  //Location
+                  // SliverPadding(
+                  //   padding: const EdgeInsets.only(
+                  //     left: 12,
+                  //     right: 20,
+                  //     bottom: 5,
+                  //     top: 5,
+                  //   ),
+                  //   sliver: Row(
+                  //     children: [
+                  //       Icon(Icons.location_on),
+                  //       // FutureBuilder<String>(
+                  //       //   future: getAddress(widget.memory.lat,widget.memory.lng),
+                  //       //   builder: (context, snapshot) {
+                  //       //     if (snapshot.connectionState ==
+                  //       //         ConnectionState.waiting) {
+                  //       //       return const CircularProgressIndicator();
+                  //       //     } else if (snapshot.hasError) {
+                  //       //       return Text("Error: ${snapshot.error}");
+                  //       //     } else {
+                  //       //       return AutoSizeText(
+                  //       //         snapshot.data ?? 'null',
+                  //       //         maxLines: 3,
+                  //       //         style: appThemeData.textTheme.bodySmall,
+                  //       //         textAlign: TextAlign.start,
+                  //       //       );
+                  //       //     }
+                  //       //   },
+                  //       // ),
+                  //     ],
+                  //   ),
+                  // ),
+                  //imagepost
                 ),
-                //Location
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 12,
-                    right: 20,
-                    bottom: 5,
-                    top: 5,
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.location_on),
-                      FutureBuilder<String>(
-                        future: getAddress(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text("Error: ${snapshot.error}");
-                          } else {
-                            return AutoSizeText(
-                              snapshot.data ?? 'null',
-                              maxLines: 3,
-                              style: appThemeData.textTheme.bodySmall,
-                              textAlign: TextAlign.start,
-                            );
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                //imagepost
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 20,
@@ -295,7 +311,6 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                                     ),
                                     child: Container(
                                       height: 450,
-
                                       child: CommentPost(
                                         memoryEntity: widget.memory,
                                         isFromProfile: false,
@@ -331,12 +346,23 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                             child: SizedBox(
                               width: 30.w,
                               height: 30.w,
-                              child: IconButton(onPressed: () {
-                                setState(() {
-                                  widget.isLiked = !widget.isLiked;
-                                  controller.addLike(widget.memory.id);
-                                });
-                              }, icon: Icon(widget.isLiked?Icons.favorite:Icons.favorite_border,size: 17.sp,color:widget.isLiked? Colors.green.shade400:Colors.grey.shade600,)),
+                              child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    widget.isLiked = !widget.isLiked;
+                                    controller.addLike(widget.memory.id);
+                                  });
+                                },
+                                icon: Icon(
+                                  widget.isLiked
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  size: 17.sp,
+                                  color: widget.isLiked
+                                      ? Colors.green.shade400
+                                      : Colors.grey.shade600,
+                                ),
+                              ),
                             ),
                           ),
                           Padding(
@@ -348,6 +374,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                           ),
                         ],
                       ),
+
                       //share
                       Row(
                         children: [
@@ -366,6 +393,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                           ),
                         ],
                       ),
+
                       //time
                       Row(
                         children: [
@@ -381,6 +409,8 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                     ],
                   ),
                 ),
+                SizedBox(height: 50.h,),
+
               ],
             ),
           ),

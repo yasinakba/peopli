@@ -32,7 +32,7 @@ class NegativPositive extends GetView<AddMemoryController> {
                       controller.setSelectedRadio(val!);
                     },
                   ),
-                  Text("Negetive", style: appThemeData.textTheme.bodyLarge),
+                  Text("Negative", style: appThemeData.textTheme.bodyLarge),
                 ],
               ),
               SizedBox(width: 15.w),

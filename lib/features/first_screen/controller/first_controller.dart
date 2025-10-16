@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import 'package:test_test_test/features/first_screen/entity/comment_entity.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
@@ -14,14 +16,17 @@ class FirstController extends GetxController {
   final dio = Dio();
   int memoryPage = 1;
   List<MemoryEntity> memoryList = [];
-  ScrollController scrollMemoryController = ScrollController();
+  late ScrollController scrollMemoryController;
+  bool isLoadingMemories = false;
+  int lastLoadedPage = 0;
   ScrollController scrollFaceController = ScrollController();
-
+  final threshold = 100.0;
   @override
  void onInit() {
     super.onInit();
+    readFace();
     readMemories();
-    // Register controllers only
+    scrollMemoryController = ScrollController();
     Get.lazyPut<LocationController>(() => LocationController());
     Get.lazyPut<JobDropDownController>(() => JobDropDownController());
     Get.lazyPut<EducationController>(() => EducationController());
@@ -35,23 +40,39 @@ class FirstController extends GetxController {
       Get.find<EducationController>().getEducation();
       Get.find<ProfileController>().getCurrentAccount();
     });
-    scrollMemoryController.addListener(() {
-      if (scrollMemoryController.position.pixels >=
-          scrollMemoryController.position.maxScrollExtent) {
-        memoryPage++;
-        readMoreMemories();
-      }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollMemoryController.addListener(() {
+        if (!scrollMemoryController.hasClients) return;
+
+        final position = scrollMemoryController.position;
+        if (position.pixels >= position.maxScrollExtent - 200) {
+          if (!isLoadingMemories) {
+            isLoadingMemories = true;
+            try {
+              readMoreMemories(); // fetch next page
+              if (!isClosed) {
+                memoryPage++;
+                update(); // update UI safely
+              }
+            } finally {
+              if (!isClosed) isLoadingMemories = false;
+            }
+          }
+        }
+      });
     });
-    scrollFaceController.addListener(() {
-      if (scrollFaceController.position.pixels >=
-          scrollFaceController.position.maxScrollExtent) {
-        facePage++;
-        readMoreFace();
-      }
-    });
+
   }
 
+
+  @override
+  void dispose() {
+    // scrollMemoryController.dispose();
+    super.dispose();
+  }
   Future<void> readMemories() async {
+    isLoadingMemories = true;
+    memoryList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
@@ -66,7 +87,7 @@ class FirstController extends GetxController {
         queryParameters: {
           'token':token,
           'page': 1,
-          'take': 15,
+          'take': 4,
           'sortBy': 'closet',
         },
         options: Options(
@@ -79,6 +100,7 @@ class FirstController extends GetxController {
         // ✅ Success
         List<dynamic> data = response.data['data']['memories'];
         memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e),));
+        isLoadingMemories = false;
         update();
         debugPrint("Memories: ${response.data}");
       } else {
@@ -90,7 +112,54 @@ class FirstController extends GetxController {
     }
   }
 
+
+  // Future<void> readMoreMemories() async {
+  //   try {
+  //     final preferences = await SharedPreferences.getInstance();
+  //     final token = preferences.getString('token');
+  //     await Future.delayed(const Duration(seconds: 2)); // simulate API call
+  //     // update UI safely
+  //
+  //     if (token == null) {
+  //       debugPrint("⚠️ No token found in SharedPreferences");
+  //       return;
+  //     }
+  //
+  //     final response = await dio.get(
+  //       'https://api.peopli.ir/Api/Memories',
+  //       queryParameters: {
+  //         'token':token,
+  //         'page': memoryPage,
+  //         'take': 15,
+  //         'sortBy': 'closet',
+  //       },
+  //       options: Options(
+  //         headers: {
+  //           'Accept': 'application/json',
+  //         },
+  //       ),
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       // ✅ Success
+  //     List<dynamic> data = response.data['data']['memories'];
+  //     memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e),));
+  //     debugPrint("Memories: ${response.data}");
+  //     if (Get.isRegistered<FirstController>()) {
+  //       update(); // or use Rx variables
+  //     }
+  //     } else {
+  //       debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+  //     }
+  //   } catch (e, stacktrace) {
+  //     debugPrint("🔥 Exception while fetching memories: $e");
+  //     debugPrint(stacktrace.toString());
+  //   }
+  // }
   Future<void> readMoreMemories() async {
+    if (isLoadingMemories) return; // prevent multiple triggers
+    isLoadingMemories = true;
+
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
@@ -100,10 +169,12 @@ class FirstController extends GetxController {
         return;
       }
 
+      await Future.delayed(const Duration(seconds: 2)); // simulate API
+
       final response = await dio.get(
         'https://api.peopli.ir/Api/Memories',
         queryParameters: {
-          'token':token,
+          'token': token,
           'page': memoryPage,
           'take': 15,
           'sortBy': 'closet',
@@ -116,19 +187,28 @@ class FirstController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        // ✅ Success
-      List<dynamic> data = response.data['data']['memories'];
-      memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e),));
-      debugPrint("Memories: ${response.data}");
-      update();
+        final List<dynamic> data = response.data['data']['memories'];
+
+        // Append to memory list safely
+        memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e)));
+
+        debugPrint("Memories loaded: ${data.length}");
+
+        // ✅ Update UI only if controller is still alive
+        if (!isClosed) {// increment page only after successful fetch
+          update();
+        }
       } else {
         debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
       }
     } catch (e, stacktrace) {
       debugPrint("🔥 Exception while fetching memories: $e");
       debugPrint(stacktrace.toString());
+    } finally {
+      if (!isClosed) isLoadingMemories = false;
     }
   }
+
   List<CommentEntity> commentList = [];
   int commentPage = 1;
   Future<void> readComment(memoryId) async{
@@ -167,7 +247,6 @@ class FirstController extends GetxController {
   }
   TextEditingController commentTextFieldController = TextEditingController();
   Future<void> addComment(memoryId) async{
-    commentList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
@@ -182,19 +261,17 @@ class FirstController extends GetxController {
         data: {
           'token':token,
           'memoryId':memoryId,
+          'type':'test',
           'text':commentTextFieldController.text,
         },
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
+          contentType: Headers.formUrlEncodedContentType,
         ),
       );
-
+      print(response.data);
       if (response.statusCode == 200) {
         // ✅ Success
-        List<dynamic> data = response.data['data']['comments'];
-        commentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
+        readComment(memoryId);
         debugPrint("Comments: ${response.data}");
         update();
       } else {
@@ -223,9 +300,7 @@ class FirstController extends GetxController {
           'commentId':commentId,
         },
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
+          contentType: Headers.formUrlEncodedContentType,
         ),
       );
 
@@ -261,9 +336,7 @@ class FirstController extends GetxController {
           'commentId':commentId,
         },
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
+          contentType: Headers.formUrlEncodedContentType,
         ),
       );
 
@@ -281,9 +354,9 @@ class FirstController extends GetxController {
       debugPrint(stacktrace.toString());
     }
   }
-  List<CommentEntity> faceList = [];
+  List<FaceEntity> faceList = [];
   int facePage = 1;
-  Future<void> getFace() async{
+  Future<void> readFace() async{
     faceList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -305,45 +378,9 @@ class FirstController extends GetxController {
 
       if (response.statusCode == 200) {
         // ✅ Success
-        List<dynamic> data = response.data['data']['comments'];
-        commentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
-        debugPrint("Comments: ${response.data}");
-        update();
-      } else {
-        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
-      }
-    } catch (e, stacktrace) {
-      debugPrint("🔥 Exception while fetching memories: $e");
-      debugPrint(stacktrace.toString());
-    }
-  }
-  Future<void> getFaceForMemories(userId) async{
-    faceList.clear();
-    try {
-      final preferences = await SharedPreferences.getInstance();
-      final token = preferences.getString('token');
-
-      if (token == null) {
-        debugPrint("⚠️ No token found in SharedPreferences");
-        return;
-      }
-
-      final response = await dio.get(
-        'https://api.peopli.ir/Api/Faces?token=$token&page=1&take=15&sortBy=closest&userId=$userId',
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        // ✅ Success
-        List<dynamic> data = response.data['data']['comments'];
-        if(data.isNotEmpty){
-        commentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
-        }
-        debugPrint("Comments: ${response.data}");
+        List<dynamic> data = response.data['data']['faces'];
+        faceList.addAll(data.map((e) => FaceEntity.fromJson(e),));
+        debugPrint("Faces: ${response.data}");
         update();
       } else {
         debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
@@ -374,9 +411,9 @@ class FirstController extends GetxController {
 
       if (response.statusCode == 200) {
         // ✅ Success
-        List<dynamic> data = response.data['data']['comments'];
-        commentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
-        debugPrint("Comments: ${response.data}");
+        List<dynamic> data = response.data['data']['faces'];
+        faceList.addAll(data.map((e) => FaceEntity.fromJson(e),));
+        debugPrint("Faces: ${response.data}");
         update();
       } else {
         debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
@@ -404,17 +441,15 @@ class FirstController extends GetxController {
           'memoryId':memoryId,
         },
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
+          contentType: Headers.formUrlEncodedContentType,
         ),
       );
       print(response.data['data']);
-      if (response.statusCode == 200 && response.statusMessage == 'OK') {
+      if (response.statusCode == 200) {
         // ✅ Success
-        List<dynamic> data = response.data['data']['comments'];
+        List<dynamic> data = response.data['data']['faces'];
         commentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
-        debugPrint("Comments: ${response.data}");
+        debugPrint("Faces: ${response.data}");
         update();
       } else {
         debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
@@ -442,17 +477,14 @@ class FirstController extends GetxController {
           'memoryId':memoryId,
         },
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
+          contentType: Headers.formUrlEncodedContentType,
         ),
       );
 
       if (response.statusCode == 200) {
         // ✅ Success
-        List<dynamic> data = response.data['data']['comments'];
-        commentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
-        debugPrint("Comments: ${response.data}");
+
+        debugPrint("Faces: ${response.data}");
         update();
       } else {
         debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_icons/app_assets_jpg.dart';
 import '../../config/app_icons/app_assets_png.dart';
@@ -13,10 +14,14 @@ import '../person_add_memory/widget/more_add_memory.dart';
 import 'controller/person_controller.dart';
 
 class PersonScreen extends GetView<PersonController> {
-  const PersonScreen({Key? key}) : super(key: key);
+  final FaceEntity? face = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
+    if(face == null){
+      Get.back();
+      return Scaffold();
+    }
     return Scaffold(
       backgroundColor: AppLightColor.withColor,
       appBar: AppBar(
@@ -24,16 +29,13 @@ class PersonScreen extends GetView<PersonController> {
         elevation: 0,
         backgroundColor: AppLightColor.withColor,
         title: Text(
-          "Sofia J west",
+          face!.name??'Name does not exist',
           style: appThemeData.textTheme.displayMedium,
         ),
         leading: IconButton(
           onPressed: () {
-            // Get.find<HomeController>().currentIndex=0;
-            // Get.find<HomeController>().update();
-            // print('........................................................');
-            // print(Get.find<HomeController>().currentIndex);
-            Get.back();
+            Get.find<HomeController>().currentIndex=0;
+            Get.find<HomeController>().update();
             Get.back();
           },
           icon: Icon(Icons.arrow_back_ios_new),
@@ -43,7 +45,9 @@ class PersonScreen extends GetView<PersonController> {
           Padding(
             padding: const EdgeInsets.only(top: 20, bottom: 15, right: 10),
             child: CustomElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+
+              },
               textColor: AppLightColor.textBoldColor,
               color: AppLightColor.mapButton,
               title: 'map',
@@ -72,7 +76,7 @@ class PersonScreen extends GetView<PersonController> {
                     height: 60.h,
                     width: 60.w,
                     child: CircleAvatar(
-                      backgroundImage: AssetImage(AppAssetsJpg.imagePerson),
+                      backgroundImage: NetworkImage("https://api.peopli.ir/uploads/${face!.avatar}"),
                     ),
                   ),
                   SizedBox(
@@ -82,7 +86,7 @@ class PersonScreen extends GetView<PersonController> {
                         SizedBox(
                           width: double.infinity,
                           child: Text(
-                            "Sofia J. West",
+                            "${face!.name ?? ''} ${face!.lastName}",
                             style: appThemeData.textTheme.headlineLarge,
                             textAlign: TextAlign.start,
                           ),
@@ -90,7 +94,7 @@ class PersonScreen extends GetView<PersonController> {
                         SizedBox(
                           width: double.infinity,
                           child: Text(
-                            "wise president of France",
+                            face!.country ?? 'your country null',
                             style: appThemeData.textTheme.bodyLarge,
                             textAlign: TextAlign.start,
                           ),
@@ -98,7 +102,7 @@ class PersonScreen extends GetView<PersonController> {
                         SizedBox(
                           width: double.infinity,
                           child: Text(
-                            "1975 - now",
+                            "${face!.birthdate??'null'} - now",
                             style: appThemeData.textTheme.bodyLarge,
                             textAlign: TextAlign.start,
                           ),
@@ -106,7 +110,7 @@ class PersonScreen extends GetView<PersonController> {
                         SizedBox(
                           width: double.infinity,
                           child: Text(
-                            "Avenue 13, Bond Pavilion ...",
+                            face!.homeTown??'your homeTown does not exist',
                             style: appThemeData.textTheme.bodyLarge,
                             textAlign: TextAlign.start,
                             maxLines: 1,
@@ -138,7 +142,7 @@ class PersonScreen extends GetView<PersonController> {
                             ),
                             child: InkWell(
                               onTap: () {
-                                Get.toNamed(NamedRoute.routeAddMemoryScreen);
+                                Get.toNamed(NamedRoute.routeAddMemoryScreen,arguments: face);
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 5),
@@ -167,8 +171,6 @@ class PersonScreen extends GetView<PersonController> {
                 ],
               ),
             ),
-
-            //readMore
             MorePerson(),
             Container(
               width: double.infinity,

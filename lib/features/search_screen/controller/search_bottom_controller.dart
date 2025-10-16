@@ -44,8 +44,12 @@ class SearchBottomController extends GetxController {
 
   final dio = Dio();
   int facePage = 1;
+  bool searchWithLocation = false;
+  bool searchWithEducation = false;
+  bool searchWithJob = false;
   List<FaceEntity> faceList = [];
   Future<void> searchFace() async {
+    faceList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
@@ -54,24 +58,35 @@ class SearchBottomController extends GetxController {
         debugPrint("⚠️ No token found in SharedPreferences");
         return;
       }
-      final response = await dio.post(
+      if (selectedCity.id == null || selectedEducation.id == null || selectedJob.id == null) {
+        Get.snackbar("Error","⚠️ One or more required fields are null");
+        return;
+      }
+
+      final requestData = {
+        'token': token,
+        'page': 1,
+        'take': 15,
+        'filter': displayNameController.text,
+        'hometownId':searchWithLocation? selectedCity.id:null,
+        'educationId':searchWithEducation? selectedEducation.id:null,
+        'jobId':searchWithJob?selectedJob.id:null,
+        'birthDate': dateTimeController.text.isNotEmpty
+            ? dateTimeController.text
+            : '', // ensure API gets a valid string
+      };
+      final response = await dio.get(
         'https://api.peopli.ir/Api/Faces',
-        queryParameters: {
-          'token': token,
-          'page': 1,
-          'take': 15,
-          'filter': displayNameController.text,
-          'hometownId': selectedCity!.id,
-          'educationId': selectedEducation!.id,
-          'jobId': selectedJob!.id,
-          'birthDate': dateTimeController.text,
-        },
+        queryParameters: requestData,
       );
-      if (response.statusCode == 200 && response.data['status'] == 'ok') {
+      if (response.statusCode == 200) {
+        List<dynamic> data = response.data['data']['faces'];
+        faceList.addAll(data.map((i)=> FaceEntity.fromJson(i)));
+        update();
+        // Get.snackbar('Succeed', '');
+
       } else {
-        debugPrint(
-          "❌ Error: ${response.statusCode} -> ${response.statusMessage}",
-        );
+        Get.snackbar("Error","❌ Error: ${response.statusCode} -> ${response.statusMessage}",);
       }
     } catch (e, stacktrace) {
       debugPrint("🔥 Exception while fetching memories: $e");

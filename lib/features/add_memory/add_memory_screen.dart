@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:test_test_test/features/add_memory/widget/negativ_pasetiv.dart';
 import 'package:test_test_test/features/add_memory/widget/textFild_memory.dart';
+import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 
 import '../../config/app_colors/app_colors_light.dart';
-import '../../config/app_icons/app_assets_jpg.dart';
 import '../../config/app_route/route_names.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/customButton.dart';
@@ -14,7 +14,7 @@ import '../feature_getlocation_fromgps/controller/get_location_controller.dart';
 import 'controller/add_memory_controller.dart';
 
 class AddMemoryScreen extends GetView<AddMemoryController> {
-  const AddMemoryScreen({Key? key}) : super(key: key);
+  final FaceEntity face = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                         height: 60.h,
                         width: 60.w,
                         child: CircleAvatar(
-                          backgroundImage: AssetImage(AppAssetsJpg.imagePerson),
+                          backgroundImage: NetworkImage("https://api.peopli.ir/uploads/${face.avatar}"),
                         ),
                       ),
                       SizedBox(
@@ -67,7 +67,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                             SizedBox(
                               width: double.infinity,
                               child: Text(
-                                "Sofia J. West",
+                                "${face.name ?? ''} ${face!.lastName}",
                                 style: appThemeData.textTheme.headlineLarge,
                                 textAlign: TextAlign.start,
                               ),
@@ -75,7 +75,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                             SizedBox(
                               width: double.infinity,
                               child: Text(
-                                "wise president of France",
+                                face.country ?? 'your country null',
                                 style: appThemeData.textTheme.bodyLarge,
                                 textAlign: TextAlign.start,
                               ),
@@ -83,7 +83,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                             SizedBox(
                               width: double.infinity,
                               child: Text(
-                                "1975 - now",
+                                "${face.birthdate??'null'} - now",
                                 style: appThemeData.textTheme.bodyLarge,
                                 textAlign: TextAlign.start,
                               ),
@@ -91,7 +91,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                             SizedBox(
                               width: double.infinity,
                               child: Text(
-                                "Avenue 13, Bond Pavilion ...",
+                                face.homeTown??'your homeTown does not exist',
                                 style: appThemeData.textTheme.bodyLarge,
                                 textAlign: TextAlign.start,
                                 maxLines: 1,
@@ -100,7 +100,6 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                           ],
                         ),
                       ),
-                      //
                       SizedBox(width: 70.w),
                     ],
                   ),
@@ -268,7 +267,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                               style: appThemeData.textTheme.bodyLarge,
                             ),
                             Text(
-                              "Art-L01.jpg",
+                              controller.selectedImage.value,
                               style: appThemeData.textTheme.bodySmall,
                             ),
                           ],
@@ -297,14 +296,13 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                     ),
                   ],
                 ),
-                //Submit
                 Padding(
                   padding: const EdgeInsets.only(top: 50, right: 50),
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: CustomElevatedButton(
                       onPressed: () {
-                        Get.toNamed(NamedRoute.routePersonAddScreen);
+                        controller.addMemory(face.id);
                       },
                       textColor: AppLightColor.withColor,
                       color: AppLightColor.textBlueColor,

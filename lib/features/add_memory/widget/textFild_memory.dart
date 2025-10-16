@@ -12,14 +12,13 @@ class TextFiildMemory extends StatelessWidget {
   TextEditingController controller;
   void Function() onPressed;
 
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 254.w,
       height: 32.h,
       child: TextFormField(
-
+        controller: controller,
         decoration: InputDecoration(
             suffixIcon: IconButton(onPressed: onPressed,icon: iconT,color: AppLightColor.elipsStroke,iconSize: 14,),
             border: OutlineInputBorder(

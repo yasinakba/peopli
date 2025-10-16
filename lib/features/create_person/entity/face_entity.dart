@@ -14,18 +14,18 @@
 
 class FaceEntity {
   FaceEntity({
-      num? id, 
-      num? homeTownId, 
-      String? homeTown, 
-      num? jobId, 
-      String? job, 
-      String? education, 
-      String? country, 
-      String? name, 
-      String? lastName, 
-      String? knownFor, 
-      String? birthdate, 
-      String? avatar, 
+      num? id,
+      num? homeTownId,
+      String? homeTown,
+      num? jobId,
+      String? job,
+      String? education,
+      String? country,
+      String? name,
+      String? lastName,
+      String? knownFor,
+      String? birthdate,
+      String? avatar,
       String? createdAt,}){
     _id = id;
     _homeTownId = homeTownId;

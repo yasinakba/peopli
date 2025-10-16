@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frino_icons/frino_icons.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
 import 'package:test_test_test/features/first_screen/entity/comment_entity.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
@@ -15,7 +16,8 @@ import '../../../config/app_theme/app_theme.dart';
 class CommentPost extends StatelessWidget {
   final MemoryEntity memoryEntity;
   FirstController firstController = Get.put(FirstController());
-   bool isFromProfile = false;
+  bool isFromProfile = false;
+
   CommentPost({required this.memoryEntity, required this.isFromProfile});
 
   @override
@@ -45,6 +47,11 @@ class CommentPost extends StatelessWidget {
                     itemCount: controller.commentList.length,
                     reverse: true,
                     itemBuilder: (BuildContext context, int index) {
+                      if (controller.commentList.isEmpty) {
+                        return Center(
+                          child: Text('Does not any comment still'),
+                        );
+                      }
                       CommentEntity comment = controller.commentList[index];
                       return Padding(
                         padding: const EdgeInsets.only(
@@ -98,38 +105,46 @@ class CommentPost extends StatelessWidget {
                                               textAlign: TextAlign.start,
                                             ),
                                           ),
-                                          SizedBox(
-                                            width: 130.w,
-                                            height: 15,
-                                            child: Align(
-                                              alignment: Alignment.bottomLeft,
-                                              child: Icon(
-                                                Icons.circle,
-                                                color:
-                                                    AppLightColor.negativeFill,
-                                                size: 10,
-                                              ),
-                                            ),
-                                          ),
+                                          // SizedBox(
+                                          //   width: 130.w,
+                                          //   height: 15,
+                                          //   child: Align(
+                                          //     alignment: Alignment.bottomLeft,
+                                          //     child: Icon(
+                                          //       Icons.circle,
+                                          //       color:
+                                          //           AppLightColor.negativeFill,
+                                          //       size: 10,
+                                          //     ),
+                                          //   ),
+                                          // ),
                                         ],
                                       ),
                                     ),
                                     Spacer(),
                                     Visibility(
-                                        visible: isFromProfile,
-                                        child: Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(FrinoIcons.f_edit),
-                                        ),
-                                        IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(FrinoIcons.f_delete),
-                                        ),
-                                      ],
-                                    )),
-
+                                      visible: isFromProfile,
+                                      child: Row(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              controller.editComment(
+                                                comment.id,
+                                              );
+                                            },
+                                            icon: Icon(FrinoIcons.f_edit,color: Colors.black,),
+                                          ),
+                                          IconButton(
+                                            onPressed: () {
+                                              controller.deleteComment(
+                                                comment.id,
+                                              );
+                                            },
+                                            icon: Icon(FrinoIcons.f_delete,color: Colors.black,),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 //Description
@@ -162,37 +177,39 @@ class CommentPost extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppLightColor.withColor,
                 border: Border.all(color: AppLightColor.textBoldColor),
-                borderRadius: BorderRadius.all(Radius.circular(50)),
+                shape: BoxShape.circle,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                    width: 45.w,
-                    height: 45.h,
-                    child: CircleAvatar(
-                      backgroundImage:
-                          Get.find<ProfileController>()
-                              .currentUser
-                              .first
-                              .avatar
-                              .isNotEmpty
-                          ? NetworkImage(
-                              Get.find<ProfileController>()
-                                  .currentUser
-                                  .first
-                                  .avatar
-                                  .split('/')
-                                  .last,
-                            )
-                          : AssetImage(AppAssetsJpg.imagePerson),
-                      radius: 50,
-                    ),
+                SizedBox(
+                width: 45.w,
+                height: 45.h,
+                child: Get.find<ProfileController>().currentUser.isNotEmpty &&
+                    Get.find<ProfileController>().currentUser.first.avatar.isNotEmpty
+                    ? CircleAvatar(
+                  radius: 50,
+                  backgroundImage: NetworkImage(
+                    Get.find<ProfileController>()
+                        .currentUser
+                        .first
+                        .avatar
+                        .split('/')
+                        .last,
                   ),
-                  SizedBox(
+                )
+                    : CircleAvatar(
+                  radius: 50,
+                  backgroundImage: AssetImage(
+                    AppAssetsJpg.imagePerson,
+                  ),
+                ),
+              ),
+              SizedBox(
                     width: 270.w,
                     height: 50,
                     child: TextField(
+                      controller: controller.commentTextFieldController,
                       cursorColor: Colors.blue,
                       maxLines: null,
                       expands: true,
@@ -206,7 +223,12 @@ class CommentPost extends StatelessWidget {
                   SizedBox(
                     width: 45.w,
                     height: 45.h,
-                    child: IconButton(onPressed: () {}, icon: Icon(Icons.send)),
+                    child: IconButton(
+                      onPressed: () {
+                        controller.addComment(memoryEntity.id);
+                      },
+                      icon: Icon(Icons.send),
+                    ),
                   ),
                 ],
               ),

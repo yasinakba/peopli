@@ -7,8 +7,10 @@ import 'package:test_test_test/features/splashscreen/controllers/login_controlle
 
 import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_icons/app_assets_png.dart';
+import '../../config/app_route/binding/account_binding.dart';
 import '../../config/app_route/route_names.dart';
 import '../../config/app_theme/app_theme.dart';
+import '../create_account/create_account.dart';
 
 class LoginScreen extends StatelessWidget {
  final LoginController loginController = Get.put(LoginController());
@@ -133,7 +135,7 @@ class LoginScreen extends StatelessWidget {
                 child: Center(
                   child: InkWell(
                     onTap: () {
-                      Get.toNamed(NamedRoute.routeAccountScreen);
+                      Get.to(CreateAccountScreen(),binding: AccountBinding(),curve: Curves.fastLinearToSlowEaseIn,transition: Transition.leftToRight,duration: Duration(milliseconds: 400));
                     },
                     child: RichText(
                       text: TextSpan(
@@ -162,7 +164,7 @@ class LoginScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: InkWell(
                         onTap: () {
-                          Get.toNamed(NamedRoute.routeForgetPassword);
+                          Get.toNamed(NamedRoute.routeForgetPassword,);
                         },
                         child: Text(" Forgot your password? ",
                           style: appThemeData.textTheme.headlineLarge!.copyWith(
