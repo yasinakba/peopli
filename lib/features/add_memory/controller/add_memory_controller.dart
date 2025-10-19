@@ -22,7 +22,7 @@ class AddMemoryController extends GetxController {
 
   @override
   void onInit() {
-
+    super.onInit();
   }
   final dio = Dio();
 
@@ -61,16 +61,6 @@ class AddMemoryController extends GetxController {
       Get.snackbar('Error', 'Please select a date');
       return;
     }
-
-    // ✅ Step 3: Prepare the request
-    final headers = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json; charset=utf-8',
-      'User-Agent': 'LancerResumeApp/1.0.0 (Flutter; Android/Windows)',
-      'Connection': 'keep-alive',
-      'Accept-Encoding': 'gzip, deflate, br',
-    };
-
 
     try {
       final response = await dio.post(
@@ -111,7 +101,6 @@ class AddMemoryController extends GetxController {
   Future<void> uploadImage() async {
     final picker = ImagePicker();
 
-    // Pick an image
     final file = await picker.pickImage(source: ImageSource.gallery);
 
     if (file == null) {
@@ -179,8 +168,7 @@ class AddMemoryController extends GetxController {
           child: Text(
             selectedDate == null
                 ? "Select Birth Date"
-                : "Birth Date: ${selectedDate!.day}/${selectedDate!
-                .month}/${selectedDate!.year}",
+                : "Birth Date: ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
           ),
         ),
       ),

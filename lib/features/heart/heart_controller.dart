@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 
@@ -10,26 +11,30 @@ import '../first_screen/entity/memory_entity.dart';
 
 
 class HeartController extends GetxController{
-  List<MemoryEntity> memoryList = [];
+  final dio = Dio();
   int memoryPage = 1;
-  List<FaceEntity> faceList =[];
-  ScrollController scrollMemoryController = ScrollController();
+  List<MemoryEntity> memoryList = [];
+  late final pagingMemoryController = PagingController<int,dynamic>(
+    getNextPageKey: (state) => state.lastPageIsEmpty ? null : state.nextIntPageKey,
+    fetchPage: (pageKey) => readMoreMemories(pageKey),
+  );
+  bool isLoadingMemories = false;
+  bool isLoadingFaces= false;
+  int lastLoadedPage = 0;
   @override
   void onInit() {
     super.onInit();
-    readFace();
     readMemories();
+  }
 
 
-    scrollMemoryController.addListener(() {
-      if (scrollMemoryController.position.pixels >=
-          scrollMemoryController.position.maxScrollExtent) {
-        memoryPage++;
-        readMoreMemories();
-      }
-    });
+  @override
+  void dispose() {
+    // scrollMemoryController.dispose();
+    super.dispose();
   }
   Future<void> readMemories() async {
+    isLoadingMemories = true;
     memoryList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -41,7 +46,7 @@ class HeartController extends GetxController{
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Memories',
+        'https://api.peopli.ir/Api/Memorie/likes',
         queryParameters: {
           'token':token,
           'page': 1,
@@ -49,15 +54,15 @@ class HeartController extends GetxController{
           'sortBy': 'closet',
         },
         options: Options(
-          headers: {
-            // 'Accept': 'application/json',
-          },
+          contentType: Headers.formUrlEncodedContentType,
         ),
       );
       if (response.statusCode == 200 && response.data['status'] == 'ok') {
         // ✅ Success
         List<dynamic> data = response.data['data']['memories'];
         memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e),));
+        totalPage = response.data['data']['pageCount'];
+        isLoadingMemories = false;
         update();
         debugPrint("Memories: ${response.data}");
       } else {
@@ -68,79 +73,50 @@ class HeartController extends GetxController{
       debugPrint(stacktrace.toString());
     }
   }
-  Future<void> readFace() async{
-    faceList.clear();
+  int totalPage = 0;
+  int totalFacePage = 0;
+  Future<List<MemoryEntity>> readMoreMemories(pageKey) async {
+    memoryPage++;
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
 
       if (token == null) {
         debugPrint("⚠️ No token found in SharedPreferences");
-        return;
+        return memoryList;
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Faces?token=$token&page=1&take=15&sortBy=closest',
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        // ✅ Success
-        List<dynamic> data = response.data['data']['faces'];
-        faceList.addAll(data.map((e) => FaceEntity.fromJson(e),));
-        debugPrint("Faces: ${response.data}");
-        update();
-      } else {
-        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
-      }
-    } catch (e, stacktrace) {
-      debugPrint("🔥 Exception while fetching memories: $e");
-      debugPrint(stacktrace.toString());
-    }
-  }
-
-  final dio = Dio();
-  Future<void> readMoreMemories() async {
-    try {
-      final preferences = await SharedPreferences.getInstance();
-      final token = preferences.getString('token');
-
-      if (token == null) {
-        debugPrint("⚠️ No token found in SharedPreferences");
-        return;
-      }
-
-      final response = await dio.get(
-        'https://api.peopli.ir/Api/Memories',
+        'https://api.peopli.ir/Api/Memorie/likes',
         queryParameters: {
-          'token':token,
-          'page': memoryPage,
+          'token': token,
+          'page': pageKey,
           'take': 15,
           'sortBy': 'closet',
         },
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
+          contentType: Headers.formUrlEncodedContentType,
         ),
       );
-
+      print(response.data);
       if (response.statusCode == 200) {
-        // ✅ Success
-        List<dynamic> data = response.data['data']['memories'];
-        memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e),));
-        debugPrint("Memories: ${response.data}");
+        final List<dynamic> data = response.data['data']['memories'];
+        totalPage = response.data['data']['pageCount'];
+        isLoadingMemories = false;
+        memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e)));
         update();
+        return memoryList;
       } else {
-        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+        debugPrint(
+            "❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+        return memoryList;
       }
     } catch (e, stacktrace) {
       debugPrint("🔥 Exception while fetching memories: $e");
       debugPrint(stacktrace.toString());
+      return memoryList;
+    } finally {
+      if (!isClosed) isLoadingMemories = false;
     }
   }
   List<CommentEntity> commentList = [];
@@ -159,9 +135,7 @@ class HeartController extends GetxController{
       final response = await dio.get(
         'https://api.peopli.ir/Api/Memories/comments?token=$token&memoryId=$memoryId&page=$commentPage&take=15&sortBy=latest',
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
+          contentType: Headers.formUrlEncodedContentType,
         ),
       );
 
@@ -181,7 +155,6 @@ class HeartController extends GetxController{
   }
   TextEditingController commentTextFieldController = TextEditingController();
   Future<void> addComment(memoryId) async{
-    commentList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
@@ -196,19 +169,17 @@ class HeartController extends GetxController{
         data: {
           'token':token,
           'memoryId':memoryId,
+          'type':'test',
           'text':commentTextFieldController.text,
         },
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
+          contentType: Headers.formUrlEncodedContentType,
         ),
       );
-
+      print(response.data);
       if (response.statusCode == 200) {
         // ✅ Success
-        List<dynamic> data = response.data['data']['comments'];
-        commentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
+        readComment(memoryId);
         debugPrint("Comments: ${response.data}");
         update();
       } else {
@@ -237,9 +208,7 @@ class HeartController extends GetxController{
           'commentId':commentId,
         },
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
+          contentType: Headers.formUrlEncodedContentType,
         ),
       );
 
@@ -275,9 +244,7 @@ class HeartController extends GetxController{
           'commentId':commentId,
         },
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
+          contentType: Headers.formUrlEncodedContentType,
         ),
       );
 
@@ -296,39 +263,6 @@ class HeartController extends GetxController{
     }
   }
   int facePage = 1;
-  Future<void> readMoreFace() async{
-    try {
-      final preferences = await SharedPreferences.getInstance();
-      final token = preferences.getString('token');
-
-      if (token == null) {
-        debugPrint("⚠️ No token found in SharedPreferences");
-        return;
-      }
-
-      final response = await dio.get(
-        'https://api.peopli.ir/Api/Faces?token=$token&page=$facePage&take=15&sortBy=closest',
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        // ✅ Success
-        List<dynamic> data = response.data['data']['faces'];
-        faceList.addAll(data.map((e) => FaceEntity.fromJson(e),));
-        debugPrint("Faces: ${response.data}");
-        update();
-      } else {
-        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
-      }
-    } catch (e, stacktrace) {
-      debugPrint("🔥 Exception while fetching memories: $e");
-      debugPrint(stacktrace.toString());
-    }
-  }
   Future<void> addLike(memoryId) async{
     commentList.clear();
     try {
@@ -347,9 +281,7 @@ class HeartController extends GetxController{
           'memoryId':memoryId,
         },
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
+          contentType: Headers.formUrlEncodedContentType,
         ),
       );
       print(response.data['data']);
@@ -385,9 +317,7 @@ class HeartController extends GetxController{
           'memoryId':memoryId,
         },
         options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
+          contentType: Headers.formUrlEncodedContentType,
         ),
       );
 

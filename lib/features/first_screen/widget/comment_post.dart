@@ -17,7 +17,6 @@ class CommentPost extends StatelessWidget {
   final MemoryEntity memoryEntity;
   FirstController firstController = Get.put(FirstController());
   bool isFromProfile = false;
-
   CommentPost({required this.memoryEntity, required this.isFromProfile});
 
   @override
@@ -27,6 +26,7 @@ class CommentPost extends StatelessWidget {
         firstController.readComment(memoryEntity.id);
       },
       builder: (controller) {
+
         return Column(
           children: [
             Padding(
@@ -47,12 +47,12 @@ class CommentPost extends StatelessWidget {
                     itemCount: controller.commentList.length,
                     reverse: true,
                     itemBuilder: (BuildContext context, int index) {
+                      CommentEntity comment = controller.commentList[index];
                       if (controller.commentList.isEmpty) {
                         return Center(
                           child: Text('Does not any comment still'),
                         );
                       }
-                      CommentEntity comment = controller.commentList[index];
                       return Padding(
                         padding: const EdgeInsets.only(
                           left: 3,
@@ -85,8 +85,8 @@ class CommentPost extends StatelessWidget {
                                         height: 44.h,
                                         child: CircleAvatar(
                                           radius: 80,
-                                          backgroundImage: AssetImage(
-                                            AppAssetsJpg.userPost,
+                                          backgroundImage: NetworkImage(
+                                            "https://api.peopli.ir/uploads/${comment.user?.avatar ?? ''}",
                                           ),
                                         ),
                                       ),
@@ -98,7 +98,7 @@ class CommentPost extends StatelessWidget {
                                           SizedBox(
                                             width: 130.w,
                                             child: Text(
-                                              memoryEntity.user ?? '',
+                                              comment.user?.displayName ?? '',
                                               style: appThemeData
                                                   .textTheme
                                                   .labelMedium,
@@ -176,8 +176,6 @@ class CommentPost extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 color: AppLightColor.withColor,
-                border: Border.all(color: AppLightColor.textBoldColor),
-                shape: BoxShape.circle,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -190,18 +188,16 @@ class CommentPost extends StatelessWidget {
                     ? CircleAvatar(
                   radius: 50,
                   backgroundImage: NetworkImage(
-                    Get.find<ProfileController>()
-                        .currentUser
-                        .first
-                        .avatar
-                        .split('/')
-                        .last,
+                   "https://api.peopli.ir/uploads/${Get.find<ProfileController>()
+                       .currentUser
+                       .first
+                       .avatar}" ,
                   ),
                 )
                     : CircleAvatar(
                   radius: 50,
-                  backgroundImage: AssetImage(
-                    AppAssetsJpg.imagePerson,
+                  backgroundImage: NetworkImage(
+                    "https://api.peopli.ir/uploads/noavatar.png",
                   ),
                 ),
               ),
