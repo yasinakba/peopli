@@ -14,12 +14,10 @@ class ProfileScreen extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-backgroundColor: AppLightColor.withColor,
+      backgroundColor: AppLightColor.withColor,
       body:Column(
         children: [
-
           HeaderProfile(),
-
           //postComment
           Padding(
             padding: const EdgeInsets.only(top: 20),

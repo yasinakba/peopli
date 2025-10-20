@@ -47,7 +47,8 @@ class EditProfileController extends GetxController {
 
       if (currentUser.birthdate != null) {
         final bd = currentUser.birthdate!;
-        dateTimeController.text = "${bd.year}/${bd.month}/${bd.day}";
+        // dateTimeController.text = "${bd.year}/${bd.month}/${bd.day}";
+        dateTimeController.text = selectedDate??'';
       } else {
         dateTimeController.clear();
       }
@@ -123,7 +124,8 @@ class EditProfileController extends GetxController {
           "avatar": selectedImage.value,
           "email": emailController.text,
           "cityId": CreateAccountController.selectedCity.id,
-          "birthDate": "${selectedDate!.year}-${selectedDate!.month}-${selectedDate!.day}",
+          // "birthDate": "${selectedDate!.year}-${selectedDate!.month}-${selectedDate!.day}",
+          "birthDate": selectedDate,
           "educationId": CreateAccountController.selectedEducation.id,
           "token":t.toString(),
         },
@@ -154,29 +156,29 @@ class EditProfileController extends GetxController {
   }
 
 
-  DateTime? selectedDate;
+  String? selectedDate;
 
-  void pickDateTime(context) async {
-    DateTime now = DateTime.now();
-    DateTime initialDate = DateTime(now.year - 18); // default: 18 years ago
-    DateTime firstDate = DateTime(1900); // earliest selectable year
-    DateTime lastDate = now; // latest selectable date: today
-
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate ?? initialDate,
-      firstDate: firstDate,
-      lastDate: lastDate,
-      helpText: "Select your birth date",
-    );
-
-    if (picked != null && picked != selectedDate) {
-      selectedDate = picked;
-      dateTimeController.text = picked.toString();
-      update();
-      print("Selected birth date: $picked");
-    }
-  }
+  // void pickDateTime(context) async {
+  //   DateTime now = DateTime.now();
+  //   DateTime initialDate = DateTime(now.year - 18); // default: 18 years ago
+  //   DateTime firstDate = DateTime(1900); // earliest selectable year
+  //   DateTime lastDate = now; // latest selectable date: today
+  //
+  //   final picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: selectedDate ?? initialDate,
+  //     firstDate: firstDate,
+  //     lastDate: lastDate,
+  //     helpText: "Select your birth date",
+  //   );
+  //
+  //   if (picked != null && picked != selectedDate) {
+  //     selectedDate = picked;
+  //     dateTimeController.text = picked.toString();
+  //     update();
+  //     print("Selected birth date: $picked");
+  //   }
+  // }
 
   updateLanguage(int index) {
     selectedLanguage = index;

@@ -217,40 +217,6 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                     textAlign: TextAlign.start,
                   ),
                 ),
-
-                //Location
-                // SliverPadding(
-                //   padding: const EdgeInsets.only(
-                //     left: 12,
-                //     right: 20,
-                //     bottom: 5,
-                //     top: 5,
-                //   ),
-                //   sliver: Row(
-                //     children: [
-                //       Icon(Icons.location_on),
-                //       // FutureBuilder<String>(
-                //       //   future: getAddress(widget.memory.lat,widget.memory.lng),
-                //       //   builder: (context, snapshot) {
-                //       //     if (snapshot.connectionState ==
-                //       //         ConnectionState.waiting) {
-                //       //       return const CircularProgressIndicator();
-                //       //     } else if (snapshot.hasError) {
-                //       //       return Text("Error: ${snapshot.error}");
-                //       //     } else {
-                //       //       return AutoSizeText(
-                //       //         snapshot.data ?? 'null',
-                //       //         maxLines: 3,
-                //       //         style: appThemeData.textTheme.bodySmall,
-                //       //         textAlign: TextAlign.start,
-                //       //       );
-                //       //     }
-                //       //   },
-                //       // ),
-                //     ],
-                //   ),
-                // ),
-                //imagepost
               ),
               Padding(
                 padding: const EdgeInsets.only(
@@ -394,23 +360,6 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                 ),
               ),
               SizedBox(height: 50.h),
-              // if (widget.index == controller.memoryList.length - 1 &&
-              //     !controller.isLoadingMemories) ...[
-              //   Padding(
-              //     padding: EdgeInsets.all(10),
-              //     child: SpinKitFadingCube(
-              //       duration: Duration(seconds: 1),
-              //       itemBuilder: (BuildContext context, int index) {
-              //         return DecoratedBox(
-              //           decoration: BoxDecoration(
-              //             color: index.isEven ? Colors.green : Colors.blue,
-              //           ),
-              //         );
-              //       },
-              //     ),
-              //   ),
-              //   SizedBox(height: 50.h,),
-              // ],
             ],
           ),
         );

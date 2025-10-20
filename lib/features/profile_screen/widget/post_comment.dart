@@ -7,8 +7,6 @@ import 'package:test_test_test/features/profile_screen/widget/tabbar_show_commen
 import '../../../config/app_colors/app_colors_light.dart';
 
 class PostComment extends StatelessWidget {
-  const PostComment({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(length: 2,

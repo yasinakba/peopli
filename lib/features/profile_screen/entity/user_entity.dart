@@ -1,6 +1,6 @@
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 
-class UserEntity {
+class  UserEntity {
   final int id;
   final int? educationId;
   final String role;
@@ -12,7 +12,7 @@ class UserEntity {
   final String? email;
   final int? cityId;
   final String? lastKnownLocation;
-  final DateTime? birthdate;
+  final String? birthdate;
   final DateTime? createdAt;
   final dynamic city;
   final List<dynamic> comment;
@@ -59,7 +59,7 @@ class UserEntity {
       email: json['email'],
       cityId: json['cityId'],
       lastKnownLocation: json['lastKnownLocation'],
-      birthdate: json['birthdate'] != null ? DateTime.parse(json['birthdate']) : null,
+      birthdate: json['birthdate'] != null ? (json['birthdate']) : null,
       createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
       city: json['city'],
       comment: json['comment'] != null ? List<dynamic>.from(json['comment']) : [],
@@ -88,7 +88,7 @@ class UserEntity {
       'email': email,
       'cityId': cityId,
       'lastKnownLocation': lastKnownLocation,
-      'birthdate': birthdate?.toIso8601String(),
+      'birthdate': birthdate,
       'createdAt': createdAt?.toIso8601String(),
       'city': city,
       'comment': comment,

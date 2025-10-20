@@ -1,9 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/features/profile_screen/entity/user_entity.dart';
 
+import '../../create_person/entity/face_entity.dart';
+import '../../first_screen/entity/comment_entity.dart';
 import '../../first_screen/entity/memory_entity.dart';
 
 class ProfileController extends GetxController {
@@ -11,15 +14,6 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getCurrentAccount();
-
-    scrollMemoryController.addListener(() {
-      if (scrollMemoryController.position.pixels >=
-          scrollMemoryController.position.maxScrollExtent) {
-        memoryPage++;
-        readMoreMemories();
-      }
-    });
   }
   Future<void> getCurrentAccount() async {
     try {
@@ -38,20 +32,39 @@ class ProfileController extends GetxController {
         },
       );
 
-      debugPrint("✅ Response received: ${response.data}");
+      final data = response.data['data'];
 
-      if (response.statusCode == 200 && response.data['status'] == 'ok') {
-        final data = response.data['data'] as Map<String, dynamic>;
-        final user = UserEntity.fromJson(data);
-        currentUser.add(user); // if currentUser is a List<User>
-        debugPrint("✅ currentUser updated: ${currentUser.length} users");
-        preferences.setInt('userId', currentUser.first.id);
-        readMemories();
-        update();
+      if (data != null) {
+        if (data is Map<String, dynamic>) {
+            final user = UserEntity.fromJson(data);
+            currentUser.add(user);
+            debugPrint("✅ Single user added: ${user.username}");
+        } else if (data is List) {
+          // Multiple users
+          for (var item in data) {
+            if (item is Map<String, dynamic>) {
+              try {
+                final user = UserEntity.fromJson(item);
+                currentUser.add(user);
+              } catch (e, st) {
+                debugPrint("❌ Error parsing user in list: $e");
+                debugPrint("$st");
+              }
+            } else {
+              debugPrint("❌ Unexpected item type in list: ${item.runtimeType}");
+            }
+          }
+          debugPrint("✅ Added ${currentUser.length} users from list");
+        } else {
+          debugPrint("❌ Unexpected data type: ${data.runtimeType}");
+        }
+
+        update();      // If using GetX
+        readMemories(); // Your function
       } else {
-        debugPrint(
-            "❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+        debugPrint("❌ Data is null");
       }
+
     } catch (e, stacktrace) {
       debugPrint("🔥 Exception while fetching account: $e");
       debugPrint(stacktrace.toString());
@@ -59,11 +72,19 @@ class ProfileController extends GetxController {
   }
   List<MemoryEntity> memoryList = [];
   int memoryPage = 1;
-  ScrollController scrollMemoryController = ScrollController();
   late TabController tabController;
   List<UserEntity> currentUser = [];
+  late final pagingMemoryController = PagingController<int,dynamic>(
+    getNextPageKey: (state) => state.lastPageIsEmpty ? null : state.nextIntPageKey,
+    fetchPage: (pageKey) => readMoreMemories(pageKey),
+  );
+  bool isLoadingMemories = false;
+  bool isLoadingFaces= false;
+  int lastLoadedPage = 0;
 
   Future<void> readMemories() async {
+    isLoadingMemories = true;
+    memoryList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
@@ -74,12 +95,25 @@ class ProfileController extends GetxController {
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Memories?token=$token&page=1&take=15&sortBy=latest&userId=${currentUser.first.id}',
+        'https://api.peopli.ir/Api/Memories',
+        queryParameters: {
+          'token':token,
+          'page': 1,
+          'take': 15,
+          'sortBy': 'closet',
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
       );
       if (response.statusCode == 200 && response.data['status'] == 'ok') {
         // ✅ Success
         List<dynamic> data = response.data['data']['memories'];
-        memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e),));
+        List<MemoryEntity> memories = [];
+        memories.addAll(data.map((e) => MemoryEntity.fromJson(e),));
+        memoryList.add(memories.firstWhere((i) => i.userId == currentUser.first.id,orElse: () => MemoryEntity(),));
+        totalPage = response.data['data']['pageCount'];
+        isLoadingMemories = false;
         update();
         debugPrint("Memories: ${response.data}");
       } else {
@@ -90,8 +124,55 @@ class ProfileController extends GetxController {
       debugPrint(stacktrace.toString());
     }
   }
+  int totalPage = 0;
+  int totalFacePage = 0;
+  Future<List<MemoryEntity>> readMoreMemories(pageKey) async {
+    memoryPage++;
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final token = preferences.getString('token');
 
-  Future<void> readMoreMemories() async {
+      if (token == null) {
+        debugPrint("⚠️ No token found in SharedPreferences");
+        return memoryList;
+      }
+
+      final response = await dio.get(
+        'https://api.peopli.ir/Api/Memories',
+        queryParameters: {
+          'token': token,
+          'page': pageKey,
+          'take': 15,
+          'sortBy': 'closet',
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+      print(response.data);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['data']['memories'];
+        totalPage = response.data['data']['pageCount'];
+        isLoadingMemories = false;
+        memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e)));
+        update();
+        return memoryList;
+      } else {
+        debugPrint(
+            "❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+        return memoryList;
+      }
+    } catch (e, stacktrace) {
+      debugPrint("🔥 Exception while fetching memories: $e");
+      debugPrint(stacktrace.toString());
+      return memoryList;
+    } finally {
+      if (!isClosed) isLoadingMemories = false;
+    }
+  }
+  Future<void> readFace() async{
+    isLoadingFaces = true;
+    faceList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
@@ -102,7 +183,7 @@ class ProfileController extends GetxController {
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Memories?token=$token&page=$memoryPage&take=15&sortBy=latest&userId=${currentUser.first.id}',
+        'https://api.peopli.ir/Api/Faces?token=$token&page=1&take=15&sortBy=closest',
         options: Options(
           headers: {
             'Accept': 'application/json',
@@ -112,9 +193,264 @@ class ProfileController extends GetxController {
 
       if (response.statusCode == 200) {
         // ✅ Success
-        List<dynamic> data = response.data['data']['memories'];
-        memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e),));
-        debugPrint("Memories: ${response.data}");
+        List<dynamic> data = response.data['data']['faces'];
+        faceList.addAll(data.map((e) => FaceEntity.fromJson(e),));
+        debugPrint("Faces: ${response.data}");
+        update();
+      } else {
+        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+      }
+    } catch (e, stacktrace) {
+      debugPrint("🔥 Exception while fetching memories: $e");
+      debugPrint(stacktrace.toString());
+    }
+  }
+  Future<List<FaceEntity>> readMoreFace(pageKey) async{
+    isLoadingFaces = true;
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final token = preferences.getString('token');
+
+      if (token == null) {
+        debugPrint("⚠️ No token found in SharedPreferences");
+        return faceList;
+      }
+
+      final response = await dio.get(
+        'https://api.peopli.ir/Api/Faces?token=$token&page=$pageKey&take=15&sortBy=closest',
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // ✅ Success
+        facePage = response.data['data']['pageCount'];
+        List<dynamic> data = response.data['data']['faces'];
+        faceList.addAll(data.map((e) => FaceEntity.fromJson(e),));
+        debugPrint("Faces: ${response.data}");
+        isLoadingFaces =false;
+        update();
+        return faceList;
+      } else {
+        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+        return faceList;
+      }
+    } catch (e, stacktrace) {
+      debugPrint("🔥 Exception while fetching memories: $e");
+      debugPrint(stacktrace.toString());
+      return faceList;
+
+    }
+  }
+  List<CommentEntity> commentList = [];
+  int commentPage = 1;
+  Future<void> readComment(memoryId) async{
+    commentList.clear();
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final token = preferences.getString('token');
+
+      if (token == null) {
+        debugPrint("⚠️ No token found in SharedPreferences");
+        return;
+      }
+
+      final response = await dio.get(
+        'https://api.peopli.ir/Api/Memories/comments?token=$token&memoryId=$memoryId&page=$commentPage&take=15&sortBy=latest',
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // ✅ Success
+        List<dynamic> data = response.data['data']['comments'];
+        commentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
+        debugPrint("Comments: ${response.data}");
+        update();
+      } else {
+        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+      }
+    } catch (e, stacktrace) {
+      debugPrint("🔥 Exception while fetching memories: $e");
+      debugPrint(stacktrace.toString());
+    }
+  }
+  TextEditingController commentTextFieldController = TextEditingController();
+  Future<void> addComment(memoryId) async{
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final token = preferences.getString('token');
+
+      if (token == null) {
+        debugPrint("⚠️ No token found in SharedPreferences");
+        return;
+      }
+
+      final response = await dio.post(
+        'https://api.peopli.ir/Api/Memories/add-comment',
+        data: {
+          'token':token,
+          'memoryId':memoryId,
+          'type':'test',
+          'text':commentTextFieldController.text,
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+      print(response.data);
+      if (response.statusCode == 200) {
+        // ✅ Success
+        readComment(memoryId);
+        debugPrint("Comments: ${response.data}");
+        update();
+      } else {
+        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+      }
+    } catch (e, stacktrace) {
+      debugPrint("🔥 Exception while fetching memories: $e");
+      debugPrint(stacktrace.toString());
+    }
+  }
+  Future<void> deleteComment(commentId) async{
+    commentList.clear();
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final token = preferences.getString('token');
+
+      if (token == null) {
+        debugPrint("⚠️ No token found in SharedPreferences");
+        return;
+      }
+
+      final response = await dio.post(
+        'https://api.peopli.ir/Api/Memories/delete-comment',
+        data: {
+          'token':token,
+          'commentId':commentId,
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // ✅ Success
+        List<dynamic> data = response.data['data']['comments'];
+        commentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
+        debugPrint("Comments: ${response.data}");
+        update();
+      } else {
+        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+      }
+    } catch (e, stacktrace) {
+      debugPrint("🔥 Exception while fetching memories: $e");
+      debugPrint(stacktrace.toString());
+    }
+  }
+  Future<void> editComment(commentId) async{
+    commentList.clear();
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final token = preferences.getString('token');
+
+      if (token == null) {
+        debugPrint("⚠️ No token found in SharedPreferences");
+        return;
+      }
+
+      final response = await dio.post(
+        'https://api.peopli.ir/Api/Memories/edit-comment',
+        data: {
+          'token':token,
+          'commentId':commentId,
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // ✅ Success
+        List<dynamic> data = response.data['data']['comments'];
+        commentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
+        debugPrint("Comments: ${response.data}");
+        update();
+      } else {
+        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+      }
+    } catch (e, stacktrace) {
+      debugPrint("🔥 Exception while fetching memories: $e");
+      debugPrint(stacktrace.toString());
+    }
+  }
+  List<FaceEntity> faceList = [];
+  int facePage = 1;
+
+  Future<void> addLike(memoryId) async{
+    commentList.clear();
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      String? token = preferences.getString('token');
+
+      if (token == null) {
+        debugPrint("⚠️ No token found in SharedPreferences");
+        return;
+      }
+
+      final response = await dio.post(
+        'https://api.peopli.ir/Api/Memories/like-memory',
+        data: {
+          'token':token.toString(),
+          'memoryId':memoryId,
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+      print(response.data['data']);
+      if (response.statusCode == 200) {
+        // ✅ Success
+        List<dynamic> data = response.data['data']['faces'];
+        commentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
+        debugPrint("Faces: ${response.data}");
+        update();
+      } else {
+        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+      }
+    } catch (e, stacktrace) {
+      debugPrint("🔥 Exception while fetching memories: $e");
+      debugPrint(stacktrace.toString());
+    }
+  }
+  Future<void> removeLike(memoryId) async{
+    commentList.clear();
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final token = preferences.getString('token');
+
+      if (token == null) {
+        debugPrint("⚠️ No token found in SharedPreferences");
+        return;
+      }
+
+      final response = await dio.post(
+        'https://api.peopli.ir/Api/Memories/remove-like',
+        data: {
+          'token':token,
+          'memoryId':memoryId,
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // ✅ Success
+
+        debugPrint("Faces: ${response.data}");
         update();
       } else {
         debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
