@@ -10,7 +10,6 @@ import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
-import '../../../config/app_icons/app_assets_jpg.dart';
 import '../../../config/app_theme/app_theme.dart';
 
 class CommentPost extends StatelessWidget {
@@ -22,9 +21,6 @@ class CommentPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<FirstController>(
-      initState: (state) {
-        firstController.readComment(memoryEntity.id);
-      },
       builder: (controller) {
 
         return Column(
@@ -105,19 +101,6 @@ class CommentPost extends StatelessWidget {
                                               textAlign: TextAlign.start,
                                             ),
                                           ),
-                                          // SizedBox(
-                                          //   width: 130.w,
-                                          //   height: 15,
-                                          //   child: Align(
-                                          //     alignment: Alignment.bottomLeft,
-                                          //     child: Icon(
-                                          //       Icons.circle,
-                                          //       color:
-                                          //           AppLightColor.negativeFill,
-                                          //       size: 10,
-                                          //     ),
-                                          //   ),
-                                          // ),
                                         ],
                                       ),
                                     ),

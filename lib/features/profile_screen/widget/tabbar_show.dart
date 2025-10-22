@@ -4,14 +4,15 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
+import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 import 'package:test_test_test/features/profile_screen/widget/post_profile2.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../first_screen/widget/post_first_screen.dart';
 
-class TabbarShow extends StatelessWidget {
-  const TabbarShow({Key? key}) : super(key: key);
+class TabBarShow extends StatelessWidget {
+  const TabBarShow({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +48,12 @@ class TabbarShow extends StatelessWidget {
                 child: Container(
                   color: AppLightColor.withColor,
                   child: TabBarView(
-
                     children: [
-                      GetBuilder<ProfileController>(builder: (controller) {
+                      GetBuilder<ProfileController>(
+                          initState: (state) {
+                            Get.lazyPut(() => FirstController(),);
+                          },
+                          builder: (controller) {
                         return PagingListener(
                           controller: controller.pagingMemoryController,
                           builder: (context, state, fetchNextPage) =>
@@ -62,7 +66,7 @@ class TabbarShow extends StatelessWidget {
                                 ),
                                 builderDelegate: PagedChildBuilderDelegate<dynamic>(
                                   itemBuilder: (context, memory, index) {
-                                    final face = controller.faceList.firstWhere(
+                                    final face = Get.find<FirstController>().faceList.firstWhere(
                                           (i) => i.id == memory.faceId,
                                       orElse: () => FaceEntity(), // Return empty face if not found
                                     );

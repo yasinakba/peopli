@@ -25,7 +25,7 @@ class FirstController extends GetxController {
     fetchPage: (pageKey) => readMoreFace(pageKey),
   );
   bool isLoadingMemories = false;
-  bool isLoadingFaces= false;
+  bool isLoadingFaces = false;
   int lastLoadedPage = 0;
   @override
  void onInit() {

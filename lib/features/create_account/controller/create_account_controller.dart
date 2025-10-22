@@ -191,10 +191,6 @@ class CreateAccountController extends GetxController {
       maxWidth: 1080,
     );
     if (image != null) {
-      await Get.find<EditProfileController>().uploadImage(
-        context: context,
-        image: image,
-      );
       selectedImage = Get.find<EditProfileController>().selectedImage;
       selectedImage.refresh();
     }

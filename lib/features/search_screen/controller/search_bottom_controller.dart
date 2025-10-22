@@ -3,6 +3,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 
@@ -23,7 +24,10 @@ class SearchBottomController extends GetxController {
   TextEditingController knowAsController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   TextEditingController dateTimeController = TextEditingController();
-  ScrollController scrollController = ScrollController();
+  late final pagingFaceController = PagingController<int,dynamic>(
+    getNextPageKey: (state) => state.lastPageIsEmpty ? null : state.nextIntPageKey,
+    fetchPage: (pageKey) => searchFace(pageKey),
+  );
   int selected = 0;
 
   //2
@@ -32,14 +36,6 @@ class SearchBottomController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    searchFace();
-    scrollController.addListener(() {
-      if (scrollController.position.pixels >=
-          scrollController.position.maxScrollExtent) {
-        facePage++;
-        searchMoreFace();
-      }
-    });
   }
 
   final dio = Dio();
@@ -48,19 +44,18 @@ class SearchBottomController extends GetxController {
   bool searchWithEducation = false;
   bool searchWithJob = false;
   List<FaceEntity> faceList = [];
-  Future<void> searchFace() async {
-    faceList.clear();
+  Future<List<FaceEntity>> searchFace(pageKey) async {
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
 
       if (token == null) {
         debugPrint("⚠️ No token found in SharedPreferences");
-        return;
+        return faceList;
       }
       if (selectedCity.id == null || selectedEducation.id == null || selectedJob.id == null) {
         Get.snackbar("Error","⚠️ One or more required fields are null");
-        return;
+        return faceList;
       }
 
       final requestData = {
@@ -83,53 +78,19 @@ class SearchBottomController extends GetxController {
         List<dynamic> data = response.data['data']['faces'];
         faceList.addAll(data.map((i)=> FaceEntity.fromJson(i)));
         update();
-        // Get.snackbar('Succeed', '');
-
+        return faceList;
       } else {
         Get.snackbar("Error","❌ Error: ${response.statusCode} -> ${response.statusMessage}",);
+        return faceList;
       }
     } catch (e, stacktrace) {
       debugPrint("🔥 Exception while fetching memories: $e");
       debugPrint(stacktrace.toString());
-    }
-  }
-
-  Future<void> searchMoreFace() async {
-    try {
-      final preferences = await SharedPreferences.getInstance();
-      final token = preferences.getString('token');
-
-      if (token == null) {
-        debugPrint("⚠️ No token found in SharedPreferences");
-        return;
-      }
-      final response = await dio.post(
-        'https://api.peopli.ir/Api/Faces',
-        queryParameters: {
-          'token': token,
-          'page': 1,
-          'take': 15,
-          'filter': displayNameController.text,
-          'hometownId': selectedCity!.id,
-          'educationId': selectedEducation!.id,
-          'jobId': selectedJob!.id,
-          'birthDate': dateTimeController.text,
-        },
-      );
-      if (response.statusCode == 200 && response.data['status'] == 'ok') {
-      } else {
-        debugPrint(
-          "❌ Error: ${response.statusCode} -> ${response.statusMessage}",
-        );
-      }
-    } catch (e, stacktrace) {
-      debugPrint("🔥 Exception while fetching memories: $e");
-      debugPrint(stacktrace.toString());
+      return faceList;
     }
   }
 
   DateTime? selectedDate;
-
   void pickDateTime(context) async {
     DateTime now = DateTime.now();
     DateTime initialDate = DateTime(now.year - 18); // default: 18 years ago

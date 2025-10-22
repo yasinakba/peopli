@@ -68,84 +68,76 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
               //famous
               Padding(
                 padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
-                child: InkWell(
-                  onTap: () {
-                    Get.toNamed(
-                      NamedRoute.routePersonScreen,
-                      arguments: widget.face,
-                    );
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        width: 125.w,
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              width: double.infinity,
-                              child: Text(
-                                widget.face.name ??'null',
-                                style: appThemeData.textTheme.headlineLarge,
-                                textAlign: TextAlign.start,
-                              ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    SizedBox(
+                      width: 125.w,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              widget.face.name ??'null',
+                              style: appThemeData.textTheme.headlineLarge,
+                              textAlign: TextAlign.start,
                             ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: Text(
-                                widget.memory.text ?? '',
-                                style: appThemeData.textTheme.bodyLarge,
-                                textAlign: TextAlign.start,
-                              ),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              widget.memory.text ?? '',
+                              style: appThemeData.textTheme.bodyLarge,
+                              textAlign: TextAlign.start,
                             ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: Text(
-                                // "${m} - now",
-                                "${widget.face.birthdate.toString()} -now",
-                                style: appThemeData.textTheme.bodyLarge,
-                                textAlign: TextAlign.start,
-                              ),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              // "${m} - now",
+                              "${widget.face.birthdate.toString()} -now",
+                              style: appThemeData.textTheme.bodyLarge,
+                              textAlign: TextAlign.start,
                             ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: Text(
-                                "Avenue 13, Bond Pavilion ...",
-                                style: appThemeData.textTheme.bodyLarge,
-                                textAlign: TextAlign.start,
-                                maxLines: 1,
-                              ),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              "Avenue 13, Bond Pavilion ...",
+                              style: appThemeData.textTheme.bodyLarge,
+                              textAlign: TextAlign.start,
+                              maxLines: 1,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      SizedBox(
-                        width: 115.w,
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              width: 55.w,
-                              height: 55.h,
-                              child: CircleAvatar(
-                                radius: 80,
-                                backgroundImage: NetworkImage(
-                                  "https://api.peopli.ir/uploads/${widget.face.avatar ?? ''}",
-                                ),
+                    ),
+                    SizedBox(
+                      width: 115.w,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: 55.w,
+                            height: 55.h,
+                            child: CircleAvatar(
+                              radius: 80,
+                              backgroundImage: NetworkImage(
+                                "https://api.peopli.ir/uploads/${widget.face.avatar??''}",
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 50),
-                              child: SizedBox(
-                                width: 20.w,
-                                height: 20.w,
-                                child: Text("2.0"),
-                              ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 50),
+                            child: SizedBox(
+                              width: 20.w,
+                              height: 20.w,
+                              child: Text("2.0"),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
               //post
@@ -184,7 +176,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                         SizedBox(
                           width: 130.w,
                           child: Text(
-                            widget.memory.user ?? 'null',
+                            widget.memory.user??'null',
                             style: appThemeData.textTheme.labelMedium,
                             textAlign: TextAlign.start,
                           ),
@@ -211,7 +203,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                 padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
                 child: SizedBox(
                   child: AutoSizeText(
-                    widget.memory.title ?? 'null',
+                    widget.memory.title??'null',
                     maxLines: 3,
                     style: appThemeData.textTheme.headlineLarge,
                     textAlign: TextAlign.start,
@@ -249,6 +241,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                       children: [
                         InkWell(
                           onTap: () {
+                            controller.readComment(widget.memory.id);
                             showModalBottomSheet(
                               isScrollControlled: true,
                               context: context,

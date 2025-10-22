@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
@@ -30,7 +32,7 @@ class EditProfileController extends GetxController {
   TextEditingController dateTimeController = TextEditingController();
   int selectedRadio = 0;
   int selectedLanguage = 0;
-  File? pickedFile;
+  XFile? pickedFile;
   String education = "";
   String jobs = "";
   final dio = Dio();
@@ -129,6 +131,9 @@ class EditProfileController extends GetxController {
           "educationId": CreateAccountController.selectedEducation.id,
           "token":t.toString(),
         },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
       );
 
       print(response.data);
@@ -144,7 +149,7 @@ class EditProfileController extends GetxController {
         );
       }
     } catch (e) {
-        debugPrint("${e}");
+      debugPrint("${e}");
       Get.showSnackbar(
         GetSnackBar(
           title: 'Error',
@@ -157,28 +162,29 @@ class EditProfileController extends GetxController {
 
 
   String? selectedDate;
+  DateTime? selectedDateTest;
 
-  // void pickDateTime(context) async {
-  //   DateTime now = DateTime.now();
-  //   DateTime initialDate = DateTime(now.year - 18); // default: 18 years ago
-  //   DateTime firstDate = DateTime(1900); // earliest selectable year
-  //   DateTime lastDate = now; // latest selectable date: today
-  //
-  //   final picked = await showDatePicker(
-  //     context: context,
-  //     initialDate: selectedDate ?? initialDate,
-  //     firstDate: firstDate,
-  //     lastDate: lastDate,
-  //     helpText: "Select your birth date",
-  //   );
-  //
-  //   if (picked != null && picked != selectedDate) {
-  //     selectedDate = picked;
-  //     dateTimeController.text = picked.toString();
-  //     update();
-  //     print("Selected birth date: $picked");
-  //   }
-  // }
+  void pickDateTime(context) async {
+    DateTime now = DateTime.now();
+    DateTime initialDate = DateTime(now.year - 18); // default: 18 years ago
+    DateTime firstDate = DateTime(1900); // earliest selectable year
+    DateTime lastDate = now; // latest selectable date: today
+
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDateTest ?? initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
+      helpText: "Select your birth date",
+    );
+
+    if (picked != null && picked != selectedDate) {
+      selectedDateTest = picked;
+      dateTimeController.text = picked.toString();
+      update();
+      print("Selected birth date: $picked");
+    }
+  }
 
   updateLanguage(int index) {
     selectedLanguage = index;
@@ -196,46 +202,43 @@ class EditProfileController extends GetxController {
         : appThemeData.textTheme.bodyLarge;
   }
   var isUploading = false.obs;
-  var selectedImage = 'usericon.png'.obs;
-  uploadImage({required context, required XFile image}) async {
-    isUploading.value = true;
-    // try {
-      DioPackage.FormData formData;
-      var response;
-      if (!kIsWeb) {
-        try{
-        formData = DioPackage.FormData.fromMap(
-            {'file': await DioPackage.MultipartFile.fromFile(image.path)});
-        print(image.path);
-        response = await dio.post("https://api.peopli.ir/uploader/image", data: formData);
-        print(response.data);
-        if (response.statusCode == 200) {
-          var status = response.data["status"];
-          var data = response.data["data"];
-          if (status == "ok") {
-            selectedImage.value = data;
-            selectedImage.refresh();
-          }
-        } else {
-          Get.snackbar('خطا در هنگام آپلود', response.statusMessage??'');
-        }
+  RxString selectedImage = 'usericon.png'.obs;
+  final String uploadUrl = "https://api.peopli.ir/uploader";
+  Future<void> uploadImage() async {
+    final picker = ImagePicker();
 
-        isUploading.value = false;
-      } catch (e) {
-      print(e.toString());
-      Get.snackbar('خطا در هنگام آپلود', e.toString());
-      isUploading.value = false;
+    // Pick an image
+    final file = await picker.pickImage(source: ImageSource.gallery);
+
+    if (file == null) {
+      print("No file selected");
+      return;
     }
-      }
-      // } else {
-        // Uint8List content = await image.readAsBytes();
-        // DioPackage.FormData formData = DioPackage.FormData.fromMap({
-        //   "file": DioPackage.MultipartFile.fromBytes(content, filename: image.name)
-        // });
-        // response = await dio.post('https://api.peopli.ir/Api/uploads',
-        //     data: formData,
-        //     options: Options(headers: {"Content-Type": "multipart/form-data"}));
-      }
+    pickedFile = file;
+    File imageFile = File(file.path);
+
+    // Create multipart request
+    var request = http.MultipartRequest("POST", Uri.parse(uploadUrl));
+
+    // "file" must match your IFormFile parameter name
+    request.files.add(
+      await http.MultipartFile.fromPath("file", imageFile.path),
+    );
+
+    // Send request
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      var responseBody= await response.stream.bytesToString();
+      var data = await json.decode(responseBody);
+      selectedImage.value = data['data']; // for ex// ample
+      update();
+      final respStr = await response.stream.bytesToString();
+      print("Upload success: $respStr");
+    } else {
+      print("Upload failed: ${response.statusCode}");
+    }
+  }
 
     //   if (response.statusCode == 200) {
     //     var status = response.data["status"];
@@ -255,16 +258,7 @@ class EditProfileController extends GetxController {
     //   isUploading.value = false;
     // }
 
-  selectImageFromGallery(context) async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image =
-    await _picker.pickImage(source: ImageSource.gallery, maxWidth: 1080);
-    if (image != null) {
-      await Get.find<EditProfileController>().uploadImage(context: context, image: image);
-      selectedImage = Get.find<EditProfileController>().selectedImage;
-      selectedImage.refresh();
-    }
-  }
+
   openDialogPerson(context) {
     showDialog(
       context: context,

@@ -58,19 +58,17 @@ class MorePerson extends GetView<PersonAddController> {
               SizedBox(
                 child: Column(
                   children: [
-                    Text(controller.ratingNumber.toString(),style: appThemeData.textTheme.displayMedium),
+                    Text("${controller.ratingNumber}",style: appThemeData.textTheme.displayMedium),
                     Text("Vote",style: appThemeData.textTheme.titleLarge),
                   ],
                 ),
               )
             ],
-
           ),
           //has in born
           Padding(
             padding: const EdgeInsets.only(left: 40,top: 20),
             child: Row(
-
               children: [
                 //Has BornIN
                 Padding(
@@ -93,7 +91,6 @@ class MorePerson extends GetView<PersonAddController> {
 
                   ),
                 ),
-
               ],
             ),
           ),
@@ -101,7 +98,6 @@ class MorePerson extends GetView<PersonAddController> {
           Padding(
             padding: const EdgeInsets.only(left: 40,),
             child: Row(
-
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
@@ -120,10 +116,8 @@ class MorePerson extends GetView<PersonAddController> {
                           ),
                         ]
                     ),
-
                   ),
                 ),
-
               ],
             ),
           ),
@@ -131,7 +125,6 @@ class MorePerson extends GetView<PersonAddController> {
           Padding(
             padding: const EdgeInsets.only(left: 40,),
             child: Row(
-
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
@@ -153,7 +146,6 @@ class MorePerson extends GetView<PersonAddController> {
 
                   ),
                 ),
-
               ],
             ),
           ),
@@ -161,7 +153,6 @@ class MorePerson extends GetView<PersonAddController> {
           Padding(
             padding: const EdgeInsets.only(left: 40,),
             child: Row(
-
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
@@ -175,13 +166,10 @@ class MorePerson extends GetView<PersonAddController> {
                           TextSpan(
                               text: "Martin Simpsons , ",style: appThemeData.textTheme.bodySmall
                           ),
-
                         ]
                     ),
-
                   ),
                 ),
-
               ],
             ),
           ),
@@ -217,7 +205,6 @@ class MorePerson extends GetView<PersonAddController> {
           Padding(
             padding: const EdgeInsets.only(left: 40,),
             child: Row(
-
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
@@ -246,11 +233,9 @@ class MorePerson extends GetView<PersonAddController> {
 
                   ),
                 ),
-
               ],
             ),
           ),
-
           //Awards
           Padding(
             padding: const EdgeInsets.only(left: 40,),
@@ -279,8 +264,6 @@ class MorePerson extends GetView<PersonAddController> {
               ],
             ),
           ),
-
-
           //less&Edit
           Padding(
             padding: const EdgeInsets.only(top: 20,bottom:10),
@@ -303,8 +286,6 @@ class MorePerson extends GetView<PersonAddController> {
               ],
             ),
           ),
-
-
         ],
       ),
     ),

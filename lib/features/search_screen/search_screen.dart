@@ -145,9 +145,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                     width: 20.w,
                                     height: 20.h,
                                     child: InkWell(
-                                      onTap: () {
-                                        controller.searchFace();
-                                      },
+                                      onTap: () {},
                                       child: Image.asset(
                                         AppAssetsPng.iconNavbarTwo,
                                         color: AppLightColor.textBoldColor,
@@ -271,9 +269,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                         style: appThemeData
                                             .textTheme
                                             .labelLarge!
-                                            .copyWith(
-                                              color: AppLightColor.fillButton,
-                                            ),
+                                            .copyWith(color: AppLightColor.fillButton,),
                                       ),
                                     ],
                                   ),

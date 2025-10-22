@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
@@ -42,9 +44,9 @@ class EditProfileScreen extends GetView<EditProfileController> {
                             decoration: BoxDecoration(
                               color: AppLightColor.elipsFill,
                               image: controller.pickedFile == null
-                                  ? DecorationImage(image:NetworkImage("https://api.peopli.ir/uploads/${controller.currentUser.avatar.split('/').last}"))
+                                  ? DecorationImage(image:NetworkImage("https://api.peopli.ir/uploads/${controller.currentUser.avatar}"),fit: BoxFit.cover)
                                   : DecorationImage(
-                                image: FileImage(controller.pickedFile!),
+                                image: FileImage(File(controller.pickedFile!.path)),
                                 fit: BoxFit.cover,
                               ),
                               borderRadius: BorderRadius.all(
@@ -83,9 +85,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                           child: Text("|"),
                                         ),
                                         InkWell(
-                                          onTap: () {
-                                            controller.updateLanguage(1);
-                                          },
+                                          onTap: () {controller.updateLanguage(1);},
                                           child: Text(
                                             "FA",
                                             style: controller.textStyleEn(1),
@@ -95,7 +95,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        controller.selectImageFromGallery(context);
+                                        controller.uploadImage();
                                       },
                                       child: Text(
                                         "Add Photos",
@@ -159,13 +159,14 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                           MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              controller.selectedDate != null
-                                                  ? DateFormat(
-                                                'yyyy/MM/dd – HH:mm',
-                                              ).format(
-                                                controller.selectedDate!,
-                                              )
-                                                  : "No date selected",
+                                              // controller.selectedDate != null
+                                              //     ? DateFormat(
+                                              //   'yyyy/MM/dd – HH:mm',
+                                              // ).format(
+                                              //   controller.selectedDate!,
+                                              // )
+                                              //     : "No date selected",            controller.selectedDate != null
+                                                  controller.selectedDate??'',
                                               style:
                                               appThemeData.textTheme.bodySmall,
                                             ),

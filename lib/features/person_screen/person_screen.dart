@@ -14,14 +14,10 @@ import '../person_add_memory/widget/more_add_memory.dart';
 import 'controller/person_controller.dart';
 
 class PersonScreen extends GetView<PersonController> {
-  final FaceEntity? face = Get.arguments;
+  final FaceEntity face = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
-    if(face == null){
-      Get.back();
-      return Scaffold();
-    }
     return Scaffold(
       backgroundColor: AppLightColor.withColor,
       appBar: AppBar(
@@ -29,7 +25,7 @@ class PersonScreen extends GetView<PersonController> {
         elevation: 0,
         backgroundColor: AppLightColor.withColor,
         title: Text(
-          face!.name??'Name does not exist',
+          face.name??'Name does not exist',
           style: appThemeData.textTheme.displayMedium,
         ),
         leading: IconButton(
@@ -76,7 +72,7 @@ class PersonScreen extends GetView<PersonController> {
                     height: 60.h,
                     width: 60.w,
                     child: CircleAvatar(
-                      backgroundImage: NetworkImage("https://api.peopli.ir/uploads/${face!.avatar}"),
+                      backgroundImage: NetworkImage("https://api.peopli.ir/uploads/${face.avatar ??''}"),
                     ),
                   ),
                   SizedBox(
@@ -171,7 +167,7 @@ class PersonScreen extends GetView<PersonController> {
                 ],
               ),
             ),
-            MorePerson(),
+            // MorePerson(),
             Container(
               width: double.infinity,
               height: 1,
