@@ -26,7 +26,7 @@ class NavigationBarWidget extends GetView<HomeController> {
             children: [
               BottomNavbarWidget(
                   assetsImage: AppAssetsPng.iconNavbarOne,
-                  colorIcon: controller.currentIndex == 0
+                  colorIcon: controller.index == 0
                       ? AppLightColor.rectangleBold
                       : AppLightColor.rectangle,
                       onTap: (){
@@ -35,7 +35,7 @@ class NavigationBarWidget extends GetView<HomeController> {
               ),
               BottomNavbarWidget(
                   assetsImage: AppAssetsPng.iconNavbarTwo,
-                  colorIcon: controller.currentIndex == 1
+                  colorIcon: controller.index == 1
                       ? AppLightColor.rectangleBold
                       : AppLightColor.rectangle
                 ,
@@ -45,7 +45,7 @@ class NavigationBarWidget extends GetView<HomeController> {
               ),
               BottomNavbarWidget(
                   assetsImage: AppAssetsPng.iconNavbarThree,
-                  colorIcon: controller.currentIndex == 2
+                  colorIcon: controller.index == 2
                       ? AppLightColor.rectangleBold
                       : AppLightColor.rectangle,
                 onTap: (){
@@ -53,7 +53,7 @@ class NavigationBarWidget extends GetView<HomeController> {
                 },),
               BottomNavbarWidget(
                   assetsImage: AppAssetsPng.iconNavbarFour,
-                  colorIcon: controller.currentIndex == 3
+                  colorIcon: controller.index == 3
                       ? AppLightColor.rectangleBold
                       : AppLightColor.rectangle,
                 onTap: (){

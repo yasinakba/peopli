@@ -3,19 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:get_storage/get_storage.dart';
+import 'package:test_test_test/features/first_screen/first_screen.dart';
 
 class HomeController extends GetxController{
-  int currentIndex=0;
+  Widget body = FirstScreen();
+  RxInt index = 0.obs;
   PageController pageController=PageController(initialPage: 0);
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
 
   void updateIndexNav(int index){
     pageController.jumpToPage(index);
-    currentIndex=index;
+    index=index;
     update();
   }
 

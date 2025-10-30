@@ -21,7 +21,7 @@ class CustomeAppBar extends GetView<HomeController>
       backgroundColor: Colors.white,
       leading: GetBuilder<HomeController>(
         builder: (a) => SizedBox(
-            child: controller.currentIndex == 0
+            child: controller.index == 0
                 ? SizedBox.shrink()
                 : SizedBox.shrink()),
       ),
@@ -32,8 +32,6 @@ class CustomeAppBar extends GetView<HomeController>
             GetBuilder<HomeController>(
               builder: (controller) => IconButton(
                   onPressed: () {
-                    // Get.changeTheme(Get.isDarkMode?ThemeData.light():ThemeData.dark());
-
                     if (Get.isDarkMode) {
                       controller.changeTheme(ThemeData.light());
                       controller.saveTheme(false);
@@ -52,7 +50,7 @@ class CustomeAppBar extends GetView<HomeController>
             GetBuilder<HomeController>(
               builder: (controller) => Padding(
                 padding: const EdgeInsets.only(top: 20, bottom: 15, right: 10),
-                child: controller.currentIndex == 1
+                child: controller.index == 1
                     ? Text(
                         'search',
                         style: appThemeData.textTheme.headlineMedium,

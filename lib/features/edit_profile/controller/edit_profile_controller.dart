@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
@@ -21,6 +20,7 @@ class EditProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    Get.lazyPut(() => DateController(),);
     fillProperties();
   }
 
@@ -31,7 +31,6 @@ class EditProfileController extends GetxController {
   TextEditingController dateTimeController = TextEditingController();
   int selectedRadio = 0;
   int selectedLanguage = 0;
-  XFile? pickedFile;
   String education = "";
   String jobs = "";
   final dio = Dio();
@@ -169,25 +168,7 @@ class EditProfileController extends GetxController {
         ? appThemeData.textTheme.headlineSmall
         : appThemeData.textTheme.bodyLarge;
   }
-  var isUploading = false.obs;
 
-    //   if (response.statusCode == 200) {
-    //     var status = response.data["status"];
-    //     var data = response.data["data"];
-    //     if (status == "ok") {
-    //       selectedImage.value = data;
-    //       selectedImage.refresh();
-    //     }
-    //   } else {
-    //     Get.snackbar('خطا در هنگام آپلود', response.statusM);
-    //   }
-    //
-    //   isUploading.value = false;
-    // } catch (e) {
-    //   print(e.toString());
-    //   Get.snackbar('خطا در هنگام آپلود', e.toString());
-    //   isUploading.value = false;
-    // }
 
 
   openDialogPerson(context) {

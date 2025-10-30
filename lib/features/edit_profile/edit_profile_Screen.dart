@@ -42,10 +42,10 @@ class EditProfileScreen extends GetView<EditProfileController> {
                             width: 100.w,
                             decoration: BoxDecoration(
                               color: AppLightColor.elipsFill,
-                              image: controller.pickedFile == null
+                              image: Get.find<UploadController>().pickedFile == null
                                   ? DecorationImage(image:NetworkImage("$baseImageURL/${controller.currentUser.avatar}"),fit: BoxFit.cover)
                                   : DecorationImage(
-                                image: FileImage(File(controller.pickedFile!.path)),
+                                image: FileImage(File(Get.find<UploadController>().pickedFile!.path)),
                                 fit: BoxFit.cover,
                               ),
                               borderRadius: BorderRadius.all(
