@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/profile_screen/entity/user_entity.dart';
 
 import '../../create_person/entity/face_entity.dart';
@@ -26,7 +27,7 @@ class ProfileController extends GetxController {
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Account',
+        '$baseURL/Api/Account',
         queryParameters: {
           'token': token.toString(),
         },
@@ -80,7 +81,6 @@ class ProfileController extends GetxController {
   );
   bool isLoadingMemories = false;
   bool isLoadingFaces= false;
-  int lastLoadedPage = 0;
 
   Future<void> readMemories() async {
     isLoadingMemories = true;
@@ -95,7 +95,7 @@ class ProfileController extends GetxController {
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Memories',
+        '$baseURL/Api/Memories',
         queryParameters: {
           'token':token,
           'page': 1,
@@ -139,7 +139,7 @@ class ProfileController extends GetxController {
         }
 
         final response = await dio.get(
-          'https://api.peopli.ir/Api/Memories',
+          '$baseURL/Api/Memories',
           queryParameters: {
             'token': token,
             'page': pageKey,
@@ -151,7 +151,6 @@ class ProfileController extends GetxController {
             contentType: Headers.formUrlEncodedContentType,
           ),
         );
-        print(response.data);
         if (response.statusCode == 200) {
           final List<dynamic> data = response.data['data']['memories'];
           totalPage = response.data['data']['pageCount'];
@@ -187,7 +186,7 @@ class ProfileController extends GetxController {
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Faces?token=$token&page=1&take=15&sortBy=closest',
+        '$baseURL/Api/Faces?token=$token&page=1&take=15&sortBy=closest',
         options: Options(
           headers: {
             'Accept': 'application/json',
@@ -221,7 +220,7 @@ class ProfileController extends GetxController {
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Faces?token=$token&page=$pageKey&take=15&sortBy=closest',
+        '$baseURL/Api/Faces?token=$token&page=$pageKey&take=15&sortBy=closest',
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
         ),
@@ -261,7 +260,7 @@ class ProfileController extends GetxController {
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Memories/comments?token=$token&memoryId=$memoryId&page=$commentPage&take=15&sortBy=latest',
+        '$baseURL/Api/Memories/comments?token=$token&memoryId=$memoryId&page=$commentPage&take=15&sortBy=latest',
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
         ),
@@ -293,7 +292,7 @@ class ProfileController extends GetxController {
       }
 
       final response = await dio.post(
-        'https://api.peopli.ir/Api/Memories/add-comment',
+        '$baseURL/Api/Memories/add-comment',
         data: {
           'token':token,
           'memoryId':memoryId,
@@ -304,7 +303,7 @@ class ProfileController extends GetxController {
           contentType: Headers.formUrlEncodedContentType,
         ),
       );
-      print(response.data);
+
       if (response.statusCode == 200) {
         // ✅ Success
         readComment(memoryId);
@@ -330,7 +329,7 @@ class ProfileController extends GetxController {
       }
 
       final response = await dio.post(
-        'https://api.peopli.ir/Api/Memories/delete-comment',
+        '$baseURL/Api/Memories/delete-comment',
         data: {
           'token':token,
           'commentId':commentId,
@@ -366,7 +365,7 @@ class ProfileController extends GetxController {
       }
 
       final response = await dio.post(
-        'https://api.peopli.ir/Api/Memories/edit-comment',
+        '$baseURL/Api/Memories/edit-comment',
         data: {
           'token':token,
           'commentId':commentId,
@@ -405,7 +404,7 @@ class ProfileController extends GetxController {
       }
 
       final response = await dio.post(
-        'https://api.peopli.ir/Api/Memories/like-memory',
+        '$baseURL/Api/Memories/like-memory',
         data: {
           'token':token.toString(),
           'memoryId':memoryId,
@@ -441,7 +440,7 @@ class ProfileController extends GetxController {
       }
 
       final response = await dio.post(
-        'https://api.peopli.ir/Api/Memories/remove-like',
+        '$baseURL/Api/Memories/remove-like',
         data: {
           'token':token,
           'memoryId':memoryId,

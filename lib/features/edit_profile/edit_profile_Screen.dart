@@ -2,21 +2,20 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
+import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
 import 'package:test_test_test/features/feature_job_and_education/controller/education_cotnroller.dart';
 import 'package:test_test_test/features/feature_location/controller/location_controller.dart';
+import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 
 import '../../config/app_colors/app_colors_light.dart';
-import '../../config/app_icons/app_assets_jpg.dart';
 
-import '../../config/app_route/route_names.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/customButton.dart';
 import '../create_account/widget/custom_textField.dart';
-import '../create_person/widget/textField_create.dart';
 import 'controller/edit_profile_controller.dart';
 
 class EditProfileScreen extends GetView<EditProfileController> {
@@ -44,7 +43,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                             decoration: BoxDecoration(
                               color: AppLightColor.elipsFill,
                               image: controller.pickedFile == null
-                                  ? DecorationImage(image:NetworkImage("https://api.peopli.ir/uploads/${controller.currentUser.avatar}"),fit: BoxFit.cover)
+                                  ? DecorationImage(image:NetworkImage("$baseImageURL/${controller.currentUser.avatar}"),fit: BoxFit.cover)
                                   : DecorationImage(
                                 image: FileImage(File(controller.pickedFile!.path)),
                                 fit: BoxFit.cover,
@@ -63,8 +62,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                 padding: const EdgeInsets.only(
                                     right: 20, left: 20),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
                                       children: [
@@ -95,7 +93,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        controller.uploadImage();
+                                        Get.find<UploadController>().uploadImage();
                                       },
                                       child: Text(
                                         "Add Photos",
@@ -141,48 +139,43 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                     Padding(
                                       padding: EdgeInsetsDirectional.only(
                                           top: 10),
-                                      child: Container(
+                                      child:Container(
                                         width: 360.w,
                                         height: 32.h,
-                                        padding: EdgeInsetsDirectional.only(
-                                          start: 10.w,
-                                        ),
+                                        padding: EdgeInsetsDirectional.only(start: 10.w),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(
-                                              25),
-                                          border: Border.all(
-                                              color: Colors.black),
+                                          borderRadius: BorderRadius.circular(25),
+                                          border: Border.all(color: Colors.black),
                                         ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              // controller.selectedDate != null
-                                              //     ? DateFormat(
-                                              //   'yyyy/MM/dd – HH:mm',
-                                              // ).format(
-                                              //   controller.selectedDate!,
-                                              // )
-                                              //     : "No date selected",            controller.selectedDate != null
-                                                  controller.selectedDate??'',
-                                              style:
-                                              appThemeData.textTheme.bodySmall,
-                                            ),
-                                            IconButton(
-                                              onPressed: () {
-                                                controller.pickDateTime(
-                                                    context);
-                                              },
-                                              icon: Icon(
-                                                Icons.calendar_today,
-                                                size: 15,
-                                                color: Colors.grey,
-                                              ),
-                                              color: Colors.blue,
-                                            ),
-                                          ],
+                                        child: GetBuilder<DateController>(
+                                          builder: (controller) {
+                                            final safeDate = controller.selectedDate;
+                                            final formattedDate = DateFormat('yyyy/MM/dd – HH:mm').format(safeDate);
+                                            return Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  formattedDate,
+                                                  style: appThemeData.textTheme.bodySmall ??
+                                                      const TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 14,
+                                                      ),
+                                                ),
+                                                IconButton(
+                                                  onPressed: () async {
+                                                      controller.pickDateTime(context);
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.calendar_today,
+                                                    size: 15,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
                                         ),
                                       ),
                                     ),

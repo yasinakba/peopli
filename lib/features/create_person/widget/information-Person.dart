@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
-import 'package:test_test_test/features/feature_job_and_education/controller/education_cotnroller.dart';
 import 'package:test_test_test/features/feature_job_and_education/controller/job_controller.dart';
 import 'package:test_test_test/features/feature_location/controller/location_controller.dart';
 
@@ -159,9 +158,7 @@ class InformationPerson extends GetView<CreatePersonController> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 15, top: 5),
                           child: Text(
-                            CreateAccountController.selectedJob != null
-                                ? CreateAccountController.selectedJob.name ?? ''
-                                : 'No selected Job',
+                            CreateAccountController.selectedJob.name ??'',
                             maxLines: 2,
                             style: appThemeData.textTheme.bodySmall,
                           ),

@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
-import '../../../config/app_route/route_names.dart';
 import '../../../config/widgets/customButton.dart';
 import '../controller/create_person_controller.dart';
 class CreateCancelPerson extends GetView<CreatePersonController> {

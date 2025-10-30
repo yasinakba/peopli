@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 
 import '../../../config/app_theme/app_theme.dart';
 
 class TextFieldCreate extends StatelessWidget {
- TextFieldCreate({super.key, required this.labelText,required this.controller});
-  String labelText;
-  TextEditingController controller;
+ const TextFieldCreate({super.key, required this.labelText,required this.controller});
+  final String labelText;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {

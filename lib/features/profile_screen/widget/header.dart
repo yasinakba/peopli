@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 
 
@@ -27,8 +28,8 @@ class HeaderProfile extends StatelessWidget {
                   height: 80.h,
                   child:CircleAvatar(
                     backgroundImage: controller.currentUser.isNotEmpty
-                        ? NetworkImage("https://api.peopli.ir/uploads/${controller.currentUser.first.avatar}")
-                        : const NetworkImage('https://api.peopli.ir/uploads/noavatar.png') as ImageProvider,
+                        ? NetworkImage("$baseImageURL/${controller.currentUser.first.avatar}")
+                        :  NetworkImage('$baseImageURL/noavatar.png') as ImageProvider,
                   ),
                 ),
                 Column(

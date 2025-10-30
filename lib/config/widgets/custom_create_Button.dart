@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 
 class CustomCreateButton extends StatelessWidget {
-  CustomCreateButton({required this.onPressed,required this.textColor,required this.color,required this.title,required this.height,required this.width});
-  void Function() onPressed;
-  Color textColor;
-  Color color;
-  String title;
-  double width;
-  double height;
+const  CustomCreateButton({required this.onPressed,required this.textColor,required this.color,required this.title,required this.height,required this.width});
+  final void Function() onPressed;
+ final  Color textColor;
+ final  Color color;
+ final  String title;
+ final  double width;
+ final  double height;
 
 
   @override

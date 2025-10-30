@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/edit_person/widget/information.dart';
 import 'package:test_test_test/features/edit_person/widget/save_person.dart';
+import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 
-import '../../config/app_icons/app_assets_jpg.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../create_account/widget/gender.dart';
 import '../create_person/widget/textField_create.dart';
@@ -25,16 +28,14 @@ class EditPersonScreen extends GetView<EditPersonController> {
             padding: const EdgeInsets.only(top: 10,bottom: 5),
             child: Align(
                 alignment: Alignment.center,
-                child: GetBuilder<EditPersonController>(builder: (controller) {
-
+                child: GetBuilder<UploadController>(builder: (controller) {
                   return Container(
                     height: 100.h,
                     width: 100.w,
                     decoration: BoxDecoration(
                       color: Colors.red,
-                      // color: AppLightColor.elipsFill,
-                      image:controller.pickedFile==null?DecorationImage(image:AssetImage(AppAssetsJpg.imagePerson),fit: BoxFit.cover): DecorationImage(image: FileImage(controller.pickedFile!),fit: BoxFit.cover),
-                      borderRadius: BorderRadius.all(Radius.circular(1000)),
+                      shape: BoxShape.circle,
+                      image:controller.pickedFile==null?DecorationImage(image:NetworkImage('$baseImageURL/noavatar.png'),fit: BoxFit.cover): DecorationImage(image: FileImage(File(controller.pickedFile!.path)),fit: BoxFit.cover),
                     ),
 
                   );
@@ -70,7 +71,7 @@ class EditPersonScreen extends GetView<EditPersonController> {
                       ),
                       InkWell(
                         onTap: (){
-                          controller.uploadImage();
+                          Get.find<UploadController>().uploadImage();
                         },
                         child: Text("Add Photos",style: appThemeData.textTheme.bodyLarge,),
                       ),

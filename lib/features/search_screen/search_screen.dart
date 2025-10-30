@@ -3,6 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:test_test_test/config/widgets/date_picker_widget.dart';
+import 'package:test_test_test/config/widgets/loading_widget.dart';
+import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 import 'package:test_test_test/features/search_screen/widget/search_list_tile.dart';
 import 'package:test_test_test/features/search_screen/widget/text_field_search.dart';
 
@@ -19,7 +22,12 @@ class SearchScreen extends GetView<SearchBottomController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GetBuilder<SearchBottomController>(
-        builder: (controller) => CustomScrollView(
+        initState: (state) {
+          Get.lazyPut(() => UploadController(),);
+          Get.lazyPut(() => DateController(),);
+        },
+        builder: (controller) =>
+        controller.loadingSearch ? LoadingWidget() : CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
               child: Column(
@@ -139,13 +147,15 @@ class SearchScreen extends GetView<SearchBottomController> {
                               //name & family
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                MainAxisAlignment.spaceAround,
                                 children: [
                                   SizedBox(
                                     width: 20.w,
                                     height: 20.h,
                                     child: InkWell(
-                                      onTap: () {},
+                                      onTap: () {
+                                        controller.searchFace(1);
+                                      },
                                       child: Image.asset(
                                         AppAssetsPng.iconNavbarTwo,
                                         color: AppLightColor.textBoldColor,
@@ -155,7 +165,8 @@ class SearchScreen extends GetView<SearchBottomController> {
                                   Padding(
                                     padding: const EdgeInsets.only(right: 33),
                                     child: TextFieldSearch(
-                                      controller: controller.displayNameController,
+                                      controller: controller
+                                          .displayNameController,
                                       labelText: 'Name & Family',
                                     ),
                                   ),
@@ -176,30 +187,35 @@ class SearchScreen extends GetView<SearchBottomController> {
                                     borderRadius: BorderRadius.circular(25),
                                     border: Border.all(color: Colors.black),
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        controller.selectedDate != null
-                                            ? DateFormat(
-                                                'yyyy/MM/dd – HH:mm',
-                                              ).format(controller.selectedDate!)
-                                            : "No date selected",
-                                        style: appThemeData.textTheme.bodySmall,
-                                      ),
-                                      IconButton(
-                                        onPressed: () {
-                                          controller.pickDateTime(context);
-                                        },
-                                        icon: Icon(
-                                          Icons.calendar_today,
-                                          size: 15,
-                                          color: Colors.grey,
-                                        ),
-                                        color: Colors.blue,
-                                      ),
-                                    ],
+                                  child:  GetBuilder<DateController>(
+                                    builder: (controller) {
+                                      // Safely handle null controller or date
+                                      final safeDate = controller.selectedDate;
+                                      final formattedDate = DateFormat('yyyy/MM/dd – HH:mm').format(safeDate);
+                                      return Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            formattedDate,
+                                            style: appThemeData.textTheme.bodySmall ??
+                                                const TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 14,
+                                                ),
+                                          ),
+                                          IconButton(
+                                            onPressed: () async {
+                                                 controller.pickDateTime(context);
+                                            },
+                                            icon: const Icon(
+                                              Icons.calendar_today,
+                                              size: 15,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
                                   ),
                                 ),
                               ),
@@ -223,7 +239,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                   ),
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
@@ -240,23 +256,34 @@ class SearchScreen extends GetView<SearchBottomController> {
                                             ),
                                             child: InkWell(
                                               onTap: () {
-                                                controller.searchWithLocation = true;
+                                                controller.searchWithLocation =
+                                                true;
                                                 controller
                                                     .openDialogLocation(
-                                                      context,
+                                                  context,
                                                 );
                                                 controller.update();
                                               },
-                                              child:controller.searchWithLocation? IconButton(onPressed: () {
-                                                controller.searchWithLocation = false;
+                                              child: controller
+                                                  .searchWithLocation
+                                                  ? IconButton(onPressed: () {
+                                                controller.searchWithLocation =
+                                                false;
                                                 controller.update();
-                                              }, icon: Icon(IconsaxPlusBold.tag_cross,color: Colors.deepPurpleAccent.shade200,)):Text(
+                                              },
+                                                  icon: Icon(
+                                                    IconsaxPlusBold.tag_cross,
+                                                    color: Colors
+                                                        .deepPurpleAccent
+                                                        .shade200,))
+                                                  : Text(
                                                 'Add',
                                                 style: appThemeData
                                                     .textTheme
                                                     .labelLarge!
                                                     .copyWith(
-                                                  color: AppLightColor.fillButton,
+                                                  color: AppLightColor
+                                                      .fillButton,
                                                 ),
                                               ),
                                             ),
@@ -265,11 +292,20 @@ class SearchScreen extends GetView<SearchBottomController> {
                                       ),
                                       Text(
                                         textAlign: TextAlign.start,
-                                        "${controller.selectedCountry.id != null&& controller.searchWithLocation?controller.selectedCountry.name:''} ${controller.selectedCity.id!=null && controller.searchWithLocation?controller.selectedCity.name:''}",
+                                        "${controller.selectedCountry.id !=
+                                            null &&
+                                            controller.searchWithLocation
+                                            ? controller.selectedCountry.name
+                                            : ''} ${controller.selectedCity
+                                            .id != null &&
+                                            controller.searchWithLocation
+                                            ? controller.selectedCity.name
+                                            : ''}",
                                         style: appThemeData
                                             .textTheme
                                             .labelLarge!
-                                            .copyWith(color: AppLightColor.fillButton,),
+                                            .copyWith(
+                                          color: AppLightColor.fillButton,),
                                       ),
                                     ],
                                   ),
@@ -291,7 +327,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                               ),
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   SizedBox(
                                     width: 220.w,
@@ -301,7 +337,10 @@ class SearchScreen extends GetView<SearchBottomController> {
                                         top: 5,
                                       ),
                                       child: Text(
-                                       controller.searchWithEducation? controller.selectedEducation.name??'':'',
+                                        controller.searchWithEducation
+                                            ? controller.selectedEducation
+                                            .name ?? ''
+                                            : '',
                                         maxLines: 2,
                                         style: appThemeData.textTheme.bodySmall,
                                       ),
@@ -315,10 +354,15 @@ class SearchScreen extends GetView<SearchBottomController> {
                                         controller.openDialogEducation(context);
                                         controller.update();
                                       },
-                                      child:controller.searchWithEducation? IconButton(onPressed: () {
+                                      child: controller.searchWithEducation
+                                          ? IconButton(onPressed: () {
                                         controller.searchWithEducation = false;
                                         controller.update();
-                                      }, icon: Icon(IconsaxPlusBold.tag_cross,color: Colors.deepPurpleAccent.shade200,)):Text(
+                                      },
+                                          icon: Icon(IconsaxPlusBold.tag_cross,
+                                            color: Colors.deepPurpleAccent
+                                                .shade200,))
+                                          : Text(
                                         'Add',
                                         style: appThemeData
                                             .textTheme
@@ -347,7 +391,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                               ),
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   SizedBox(
                                     width: 220.w,
@@ -357,7 +401,10 @@ class SearchScreen extends GetView<SearchBottomController> {
                                         top: 5,
                                       ),
                                       child: Text(
-                                        "${controller.selectedJob.id !=null && controller.searchWithJob?controller.selectedJob.name:''}",
+                                        "${controller.selectedJob.id != null &&
+                                            controller.searchWithJob
+                                            ? controller.selectedJob.name
+                                            : ''}",
                                         maxLines: 2,
                                         style: appThemeData.textTheme.bodySmall,
                                       ),
@@ -371,17 +418,22 @@ class SearchScreen extends GetView<SearchBottomController> {
                                         controller.openDialogJob(context);
                                         controller.update();
                                       },
-                                      child:controller.searchWithJob? IconButton(onPressed: () {
+                                      child: controller.searchWithJob
+                                          ? IconButton(onPressed: () {
                                         controller.searchWithJob = false;
                                         controller.update();
-                                      }, icon: Icon(IconsaxPlusBold.tag_cross,color: Colors.deepPurpleAccent.shade200,)):Text(
+                                      },
+                                          icon: Icon(IconsaxPlusBold.tag_cross,
+                                            color: Colors.deepPurpleAccent
+                                                .shade200,))
+                                          : Text(
                                         'Add',
                                         style: appThemeData
                                             .textTheme
                                             .labelLarge!
                                             .copyWith(
-                                              color: AppLightColor.fillButton,
-                                            ),
+                                          color: AppLightColor.fillButton,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -402,7 +454,11 @@ class SearchScreen extends GetView<SearchBottomController> {
                   horizontal: 20.w,
                   vertical: 5.h,
                 ),
-                child: SearchListTile(),
+                child: controller.faceList.isEmpty &&
+                    controller.displayNameController.text.isNotEmpty ? Center(
+                  child: Text('Not found', style: TextStyle(color: Colors.black,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18.sp),),) : SearchListTile(),
               ),
             ),
           ],

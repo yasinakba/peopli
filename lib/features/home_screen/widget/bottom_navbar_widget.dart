@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../config/app_colors/app_colors_light.dart';
 
 
 
 class BottomNavbarWidget extends StatelessWidget {
-  BottomNavbarWidget({required this.assetsImage,this.colorIcon,required this.onTap});
-String assetsImage;
-Color? colorIcon;
-  void Function()? onTap;
+  const BottomNavbarWidget({required this.assetsImage,this.colorIcon,required this.onTap});
+final String assetsImage;
+final Color? colorIcon;
+ final  void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +24,3 @@ Color? colorIcon;
     );
   }
 }
-// Container(
-// decoration: BoxDecoration(
-// borderRadius: BorderRadius.all(Radius.circular(100))
-// ),
-// child: ),

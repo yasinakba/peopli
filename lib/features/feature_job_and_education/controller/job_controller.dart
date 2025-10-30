@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
-import 'package:test_test_test/features/feature_job_and_education/entity/education_entity.dart';
 
 import '../entity/job_entity.dart';
 
@@ -15,7 +15,7 @@ class JobDropDownController extends GetxController{
   Future<void> getJob() async {
     try {
       final response = await dio.get(
-        "https://api.peopli.ir/Api/Jobs?page=1&take=999&sortBy=latest",
+        "$baseURL/Api/Jobs?page=1&take=999&sortBy=latest",
       );
       if(response.statusCode==200){
       List<dynamic> data = response.data['data']['jobs'];
@@ -25,7 +25,7 @@ class JobDropDownController extends GetxController{
       update();
       }
     } on DioException catch (e) {
-      print("GET error: ${e.response?.statusCode} - ${e.message}");
+      Get.snackbar("Error","GET error: ${e.response?.statusCode} - ${e.message}");
     }
   }
 

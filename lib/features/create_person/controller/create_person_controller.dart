@@ -1,18 +1,17 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
+import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
+import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_theme/app_theme.dart';
@@ -52,8 +51,8 @@ class CreatePersonController extends GetxController {
     super.onInit();
     Get.lazyPut(() => CreateAccountController(),);
     Get.lazyPut(() => LocationController(),);
-   CreateAccountController.selectedCity = LocationController.cityList[0];
-   CreateAccountController.selectedCountry = Get.find<LocationController>().countryList[0];
+   CreateAccountController.selectedCity = CityEntity();
+   CreateAccountController.selectedCountry = CountryEntity();
     Future.delayed(Duration.zero, () {
       update();
     });
@@ -77,12 +76,12 @@ class CreatePersonController extends GetxController {
        if (nameController.text.trim().isEmpty ||
            familyNameController.text.trim().isEmpty ||
            knowAsController.text.trim().isEmpty ||
-           gender == null ||
-           selectedImage.value.isEmpty ||
-           CreateAccountController.selectedCity.id == null ||
-           CreateAccountController.selectedEducation.id == null ||
-           CreateAccountController.selectedJob.id == null ||
-           selectedDate == null) {
+           gender == '' ||
+           Get.find<UploadController>().selectedImage.value.isEmpty ||
+           CreateAccountController.selectedCity.id == '' ||
+           CreateAccountController.selectedEducation.id == '' ||
+           CreateAccountController.selectedJob.id == '' ||
+           Get.find<DateController>().selectedDate == '') {
          Get.snackbar(
            'Error',
            'Please fill in all required fields before submitting.',
@@ -91,7 +90,7 @@ class CreatePersonController extends GetxController {
        }
 
        // ✅ Format date safely
-       final date = selectedDate!;
+       final date = Get.find<DateController>().selectedDate;
        final formattedDate =
            "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
 
@@ -102,7 +101,7 @@ class CreatePersonController extends GetxController {
          'lastName': familyNameController.text.trim(),
          'knownFor': knowAsController.text.trim(),
          'gender': gender,
-         'avatar': selectedImage.value,
+         'avatar': Get.find<UploadController>().selectedImage.value,
          'hometownId': CreateAccountController.selectedCity.id,
          'educationId': CreateAccountController.selectedEducation.id,
          'jobId': CreateAccountController.selectedJob.id,
@@ -111,7 +110,7 @@ class CreatePersonController extends GetxController {
 
        // ✅ Send POST request with token in headers
        final response = await dio.post(
-         'https://api.peopli.ir/Api/Faces/add',
+         '$baseURL/Api/Faces/add',
          data: data,
          options: Options(
            contentType: Headers.formUrlEncodedContentType, // crucial for .NET backend
@@ -154,7 +153,7 @@ class CreatePersonController extends GetxController {
          'filter': "${nameController.text} ${familyNameController.text}",
        };
        final response = await dio.get(
-         'https://api.peopli.ir/Api/Faces',
+         '$baseURL/Api/Faces',
          queryParameters: requestData,
        );
        if (response.statusCode == 200) {
@@ -170,69 +169,6 @@ class CreatePersonController extends GetxController {
        debugPrint("🔥 Exception while fetching memories: $e");
        debugPrint(stacktrace.toString());
        return faceList;
-     }
-   }
-   var isUploading = false.obs;
-   // RxString selectedImage = 'usericon.png'.obs;
-   RxString selectedImage = 'usericon.png'.obs;
-   final String uploadUrl = "https://api.peopli.ir/uploader";
-   Future<void> uploadImage() async {
-     final picker = ImagePicker();
-
-     // Pick an image
-     final file = await picker.pickImage(source: ImageSource.gallery);
-
-     if (file == null) {
-       print("No file selected");
-       return;
-     }
-     pickedFile = file;
-     File imageFile = File(file.path);
-
-     // Create multipart request
-     var request = http.MultipartRequest("POST", Uri.parse(uploadUrl));
-
-     // "file" must match your IFormFile parameter name
-     request.files.add(
-       await http.MultipartFile.fromPath("file", imageFile.path),
-     );
-
-     // Send request
-     var response = await request.send();
-
-     if (response.statusCode == 200) {
-     var responseBody= await response.stream.bytesToString();
-     var data = await json.decode(responseBody);
-     selectedImage.value = data['data']; // for ex// ample
-     update();
-     final respStr = await response.stream.bytesToString();
-       print("Upload success: $respStr");
-     } else {
-       print("Upload failed: ${response.statusCode}");
-     }
-   }
-
-   DateTime? selectedDate;
-
-   void pickDateTime(context) async {
-     DateTime now = DateTime.now();
-     DateTime initialDate = DateTime(now.year - 18); // default: 18 years ago
-     DateTime firstDate = DateTime(1900); // earliest selectable year
-     DateTime lastDate = now; // latest selectable date: today
-
-     final picked = await showDatePicker(
-       context: context,
-       initialDate: selectedDate ?? initialDate,
-       firstDate: firstDate,
-       lastDate: lastDate,
-       helpText: "Select your birth date",
-     );
-
-     if (picked != null && picked != selectedDate) {
-       selectedDate = picked;
-       dateTimeController.text = picked.toString();
-       update();
-       print("Selected birth date: $picked");
      }
    }
 

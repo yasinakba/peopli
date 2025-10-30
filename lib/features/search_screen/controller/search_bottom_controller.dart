@@ -43,8 +43,11 @@ class SearchBottomController extends GetxController {
   bool searchWithLocation = false;
   bool searchWithEducation = false;
   bool searchWithJob = false;
+  bool loadingSearch = false;
   List<FaceEntity> faceList = [];
   Future<List<FaceEntity>> searchFace(pageKey) async {
+    loadingSearch = true;
+    update();
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
@@ -77,41 +80,25 @@ class SearchBottomController extends GetxController {
       if (response.statusCode == 200) {
         List<dynamic> data = response.data['data']['faces'];
         faceList.addAll(data.map((i)=> FaceEntity.fromJson(i)));
+        loadingSearch = false;
         update();
         return faceList;
       } else {
         Get.snackbar("Error","❌ Error: ${response.statusCode} -> ${response.statusMessage}",);
+        loadingSearch = false;
+        update();
         return faceList;
       }
     } catch (e, stacktrace) {
       debugPrint("🔥 Exception while fetching memories: $e");
       debugPrint(stacktrace.toString());
+      loadingSearch = false;
+      update();
       return faceList;
     }
   }
 
-  DateTime? selectedDate;
-  void pickDateTime(context) async {
-    DateTime now = DateTime.now();
-    DateTime initialDate = DateTime(now.year - 18); // default: 18 years ago
-    DateTime firstDate = DateTime(1900); // earliest selectable year
-    DateTime lastDate = now; // latest selectable date: today
 
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate ?? initialDate,
-      firstDate: firstDate,
-      lastDate: lastDate,
-      helpText: "Select your birth date",
-    );
-
-    if (picked != null && picked != selectedDate) {
-      selectedDate = picked;
-      dateTimeController.text = picked.toString();
-      update();
-      print("Selected birth date: $picked");
-    }
-  }
 
   updateIndexButton(index) {
     selected = index;

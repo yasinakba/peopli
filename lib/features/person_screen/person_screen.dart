@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import '../../config/app_colors/app_colors_light.dart';
-import '../../config/app_icons/app_assets_jpg.dart';
 import '../../config/app_icons/app_assets_png.dart';
 import '../../config/app_route/route_names.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/customButton.dart';
-import '../home_screen/controller/home_controller.dart';
-import '../person_add_memory/widget/more_add_memory.dart';
 import 'controller/person_controller.dart';
 
 class PersonScreen extends GetView<PersonController> {
@@ -30,9 +26,7 @@ class PersonScreen extends GetView<PersonController> {
         ),
         leading: IconButton(
           onPressed: () {
-            Get.find<HomeController>().currentIndex=0;
-            Get.find<HomeController>().update();
-            Get.back();
+            Get.toNamed(NamedRoute.routeHomeScreen);
           },
           icon: Icon(Icons.arrow_back_ios_new),
           color: AppLightColor.rectangleBold,
@@ -82,7 +76,7 @@ class PersonScreen extends GetView<PersonController> {
                         SizedBox(
                           width: double.infinity,
                           child: Text(
-                            "${face!.name ?? ''} ${face!.lastName}",
+                            "${face.name ?? ''} ${face.lastName}",
                             style: appThemeData.textTheme.headlineLarge,
                             textAlign: TextAlign.start,
                           ),
@@ -90,7 +84,7 @@ class PersonScreen extends GetView<PersonController> {
                         SizedBox(
                           width: double.infinity,
                           child: Text(
-                            face!.country ?? 'your country null',
+                            face.country ?? 'your country null',
                             style: appThemeData.textTheme.bodyLarge,
                             textAlign: TextAlign.start,
                           ),
@@ -98,7 +92,7 @@ class PersonScreen extends GetView<PersonController> {
                         SizedBox(
                           width: double.infinity,
                           child: Text(
-                            "${face!.birthdate??'null'} - now",
+                            "${face.birthdate??'null'} - now",
                             style: appThemeData.textTheme.bodyLarge,
                             textAlign: TextAlign.start,
                           ),
@@ -106,7 +100,7 @@ class PersonScreen extends GetView<PersonController> {
                         SizedBox(
                           width: double.infinity,
                           child: Text(
-                            face!.homeTown??'your homeTown does not exist',
+                            face.homeTown??'your homeTown does not exist',
                             style: appThemeData.textTheme.bodyLarge,
                             textAlign: TextAlign.start,
                             maxLines: 1,

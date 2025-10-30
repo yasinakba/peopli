@@ -3,14 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frino_icons/frino_icons.dart';
 import 'package:get/get.dart';
 import 'package:test_test_test/features/login/controller/login_controller.dart';
-import 'package:test_test_test/features/splashscreen/controllers/login_controller.dart';
-
 import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_icons/app_assets_png.dart';
-import '../../config/app_route/binding/account_binding.dart';
 import '../../config/app_route/route_names.dart';
 import '../../config/app_theme/app_theme.dart';
-import '../create_account/create_account.dart';
 
 class LoginScreen extends StatelessWidget {
  final LoginController loginController = Get.put(LoginController());
@@ -135,7 +131,7 @@ class LoginScreen extends StatelessWidget {
                 child: Center(
                   child: InkWell(
                     onTap: () {
-                      Get.to(CreateAccountScreen(),binding: AccountBinding(),curve: Curves.fastLinearToSlowEaseIn,transition: Transition.leftToRight,duration: Duration(milliseconds: 400));
+                      Get.toNamed(NamedRoute.routeAccountScreen,);
                     },
                     child: RichText(
                       text: TextSpan(

@@ -1,12 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
-import '../../../config/app_icons/app_assets_jpg.dart';
 import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../controller/search_bottom_controller.dart';

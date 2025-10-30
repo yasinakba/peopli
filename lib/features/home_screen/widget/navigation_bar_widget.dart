@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
-import '../../../config/app_icons/app_assets_jpg.dart';
 import '../../../config/app_icons/app_assets_png.dart';
 import '../controller/home_controller.dart';
 import 'bottom_navbar_widget.dart';
@@ -31,10 +30,8 @@ class NavigationBarWidget extends GetView<HomeController> {
                       ? AppLightColor.rectangleBold
                       : AppLightColor.rectangle,
                       onTap: (){
-
                       controller.updateIndexNav(0);
                       },
-
               ),
               BottomNavbarWidget(
                   assetsImage: AppAssetsPng.iconNavbarTwo,
@@ -63,11 +60,10 @@ class NavigationBarWidget extends GetView<HomeController> {
                   controller.updateIndexNav(3);
                 },),
               BottomNavbarWidget(
-                  assetsImage: AppAssetsJpg.imagePerson,
+                  assetsImage: AppAssetsPng.iconPerson,
                 onTap: (){
                   controller.updateIndexNav(4);
                 },),
-
             ],
           ),
         ),

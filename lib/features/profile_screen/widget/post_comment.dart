@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:test_test_test/features/profile_screen/widget/tabbar_show.dart';
 import 'package:test_test_test/features/profile_screen/widget/tabbar_show_comment.dart';
 

@@ -1,32 +1,29 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide FormData;
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:image_picker/image_picker.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
+import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/feature_job_and_education/entity/education_entity.dart';
 import 'package:test_test_test/features/feature_job_and_education/entity/job_entity.dart';
 import 'package:test_test_test/features/feature_location/entity/city_entity.dart';
 import 'package:test_test_test/features/feature_location/entity/country_entity.dart';
 
-import 'package:flutter/foundation.dart';
 
 import 'package:test_test_test/features/feature_job_and_education/controller/education_cotnroller.dart';
+import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 
-import 'package:dio/dio.dart' as DioPackage;
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
 
 import '../../../config/widgets/customButton.dart';
-import '../../edit_profile/controller/edit_profile_controller.dart';
 
 import '../../feature_job_and_education/controller/job_controller.dart';
 import '../../feature_location/controller/location_controller.dart';
@@ -43,14 +40,12 @@ class CreateAccountController extends GetxController {
   XFile? pickedFile;
   String education = "";
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   final dio = Dio();
-
+  bool loading = false;
   Future<void> signUp() async {
+    loading = true;
+    update();
     SharedPreferences preferences = await SharedPreferences.getInstance();
 
     // ✅ Step 1: Input validation
@@ -58,10 +53,10 @@ class CreateAccountController extends GetxController {
         familyController.text.isEmpty ||
         userNameController.text.isEmpty ||
         passwordController.text.isEmpty ||
-        selectedImage.value == null ||
-        selectedDate == null ||
-        selectedCity == null ||
-        selectedEducation == null) {
+        Get.find<UploadController>().selectedImage.value == '' ||
+        Get.find<DateController>().selectedDate == '' ||
+        selectedCity == '' ||
+        selectedEducation == '') {
       Get.showSnackbar(
         const GetSnackBar(
           title: 'Validation Error',
@@ -73,18 +68,34 @@ class CreateAccountController extends GetxController {
     }
 
     try {
-
+      FormData formData = FormData.fromMap({
+        'displayName': '${nameController.text} ${familyController.text}',
+        'username': userNameController.text,
+        'password': passwordController.text,
+        'birthDate': Get.find<DateController>().selectedDate.toString(),
+        'cityId': selectedCity.id,
+        'educationId': selectedEducation.id,
+        'avatar': Get.find<UploadController>().selectedImage.value,
+      });
     // ✅ Step 4: Make POST request with body, not queryParameters
     final response = await dio.postUri(
       Uri.parse(
-        'https://api.peopli.ir/Api/register?displayName=${nameController.text} ${familyController.text}&username=${userNameController.text}&password=${passwordController.text}&birthDate=${selectedDate?.toString()}&cityId=${selectedCity.id}&educationId=${selectedEducation.id}&avatar=${selectedImage.value}',
+        '$baseURL/Api/register',
+      ),
+      data: formData,
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType, // crucial for .NET backend
       ),
     );
       print(response.data);
       if (response.statusCode == 200 && response.data['status'] == 'ok') {
       await preferences.setString('token', response.data['data']);
+      loading = false;
+      update();
       Get.toNamed(NamedRoute.routeHomeScreen);
     } else {
+        loading = false;
+        update();
       Get.showSnackbar(
         GetSnackBar(
           title: 'Error',
@@ -92,9 +103,12 @@ class CreateAccountController extends GetxController {
           duration: const Duration(seconds: 3),
         ),
       );
+
     }
     } on DioException catch (e) {
       print("POST error: ${e.response?.statusCode} - ${e.message}");
+      loading = false;
+      update();
       Get.showSnackbar(
         GetSnackBar(
           title: 'Error',
@@ -102,68 +116,6 @@ class CreateAccountController extends GetxController {
           duration: const Duration(seconds: 3),
         ),
       );
-    }
-  }
-  var isUploading = false.obs;
-  // RxString selectedImage = 'usericon.png'.obs;
-  RxString selectedImage = 'usericon.png'.obs;
-  final String uploadUrl = "https://api.peopli.ir/uploader";
-  Future<void> uploadImage() async {
-    final picker = ImagePicker();
-
-    // Pick an image
-    final file = await picker.pickImage(source: ImageSource.gallery);
-
-    if (file == null) {
-      print("No file selected");
-      return;
-    }
-    pickedFile = file;
-    File imageFile = File(file.path);
-
-    // Create multipart request
-    var request = http.MultipartRequest("POST", Uri.parse(uploadUrl));
-
-    // "file" must match your IFormFile parameter name
-    request.files.add(
-      await http.MultipartFile.fromPath("file", imageFile.path),
-    );
-
-    // Send request
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-      var responseBody= await response.stream.bytesToString();
-      var data = await json.decode(responseBody);
-      selectedImage.value = data['data']; // for ex// ample
-      update();
-      final respStr = await response.stream.bytesToString();
-      print("Upload success: $respStr");
-    } else {
-      print("Upload failed: ${response.statusCode}");
-    }
-  }
-  DateTime? selectedDate;
-
-  void pickDateTime(context) async {
-    DateTime now = DateTime.now();
-    DateTime initialDate = DateTime(now.year - 18); // default: 18 years ago
-    DateTime firstDate = DateTime(1900); // earliest selectable year
-    DateTime lastDate = now; // latest selectable date: today
-
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate ?? initialDate,
-      firstDate: firstDate,
-      lastDate: lastDate,
-      helpText: "Select your birth date",
-    );
-
-    if (picked != null && picked != selectedDate) {
-      selectedDate = picked;
-      dateTimeController.text = picked.toString();
-      update();
-      print("Selected birth date: $picked");
     }
   }
 
@@ -184,19 +136,7 @@ class CreateAccountController extends GetxController {
   }
 
 
-  selectImageFromGallery(context) async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 1080,
-    );
-    if (image != null) {
-      selectedImage = Get.find<EditProfileController>().selectedImage;
-      selectedImage.refresh();
-    }
-  }
-
-  static late EducationEntity selectedEducation;
+  static  EducationEntity selectedEducation = EducationEntity();
 
   static openDialogEducation(context) {
     showDialog(
@@ -272,8 +212,8 @@ class CreateAccountController extends GetxController {
     );
   }
 
-  static late CountryEntity selectedCountry;
-  static late CityEntity selectedCity;
+  static  CountryEntity selectedCountry = CountryEntity();
+  static  CityEntity selectedCity = CityEntity();
 
   //location
   static openDialogLocation(context) {
@@ -304,7 +244,6 @@ class CreateAccountController extends GetxController {
                           country?.name ?? "",
                       compareFn: (CountryEntity? a, CountryEntity? b) =>
                           a?.id == b?.id,
-                      // 👈 lets DropdownSearch know equality
                       onChanged: (value) {
                         selectedCountry = value!;
                         Get.lazyPut(() => LocationController());
@@ -419,7 +358,7 @@ class CreateAccountController extends GetxController {
     );
   }
 
-  static late JobEntity selectedJob;
+  static  JobEntity selectedJob = JobEntity();
 
   static openDialogJob(context) {
     showDialog(
@@ -535,14 +474,12 @@ class CreateAccountController extends GetxController {
               ),
               height: 300.0, // Change as per your requirement
               width: 300.0, // Change as per your requirement
-
               child: ListView.builder(
                 shrinkWrap: true,
                 itemCount: 10,
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
                     children: [
-                      //divider
                     ],
                   );
                 },

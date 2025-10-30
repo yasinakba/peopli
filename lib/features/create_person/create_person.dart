@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
+import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/create_person/widget/gender-person.dart';
 import 'package:test_test_test/features/create_person/widget/information-Person.dart';
 import 'package:test_test_test/features/create_person/widget/save_person.dart';
+import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 
 import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_theme/app_theme.dart';
@@ -22,20 +22,24 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GetBuilder<CreatePersonController>(builder: (controller) =>CustomScrollView(
+      body: GetBuilder<CreatePersonController>(  initState: (state) {
+        Get.lazyPut(() => UploadController(),);
+        Get.lazyPut(() => DateController(),);
+      },builder: (controller) =>CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.only(top: 10,bottom: 5),
               child: Align(
                   alignment: Alignment.center,
-                  child: GetBuilder<CreatePersonController>(builder: (controller) {
+                  child: GetBuilder<UploadController>(builder: (controller) {
                     return Container(
                       height: 100.h,
                       width: 100.w,
                       decoration: BoxDecoration(
                         color: AppLightColor.elipsFill,
-                        image:controller.pickedFile==null?null: DecorationImage(image: FileImage(File(controller.pickedFile!.path)),fit: BoxFit.cover),
+                        image:controller.pickedFile==null? DecorationImage(image: NetworkImage('$baseImageURL/noavatar.png'))
+                        : DecorationImage(image: FileImage(File(controller.pickedFile!.path)),fit: BoxFit.cover),
                         shape: BoxShape.circle,
                       ),
 
@@ -73,7 +77,7 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                         ),
                         InkWell(
                           onTap: (){
-                            controller.uploadImage();
+                            Get.find<UploadController>().uploadImage();
                           },
                           child: Text("Add Photos",style: appThemeData.textTheme.bodyLarge,),
                         ),
@@ -110,32 +114,35 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                               borderRadius: BorderRadius.circular(25),
                               border: Border.all(color: Colors.black),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  controller.selectedDate != null
-                                      ? DateFormat(
-                                    'yyyy/MM/dd – HH:mm',
-                                  ).format(
-                                    controller.selectedDate!,
-                                  )
-                                      : "No date selected",
-                                  style:
-                                  appThemeData.textTheme.bodySmall,
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    controller.pickDateTime(context);
-                                  },
-                                  icon: Icon(
-                                    Icons.calendar_today,
-                                    size: 15,
-                                    color: Colors.grey,
-                                  ),
-                                  color: Colors.blue,
-                                ),
-                              ],
+                            child:GetBuilder<DateController>(
+                              builder: (controller) {
+                                // Safely handle null controller or date
+                                final safeDate = controller.selectedDate ;
+                                final formattedDate = DateFormat('yyyy/MM/dd – HH:mm').format(safeDate);
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      formattedDate,
+                                      style: appThemeData.textTheme.bodySmall ??
+                                          const TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 14,
+                                          ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () async {
+                                          controller.pickDateTime(context);
+                                      },
+                                      icon: const Icon(
+                                        Icons.calendar_today,
+                                        size: 15,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
                             ),
                           ),
                         ),

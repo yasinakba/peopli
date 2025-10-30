@@ -1,24 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
-import 'package:test_test_test/features/home_screen/controller/home_controller.dart';
-import 'package:test_test_test/features/home_screen/home_screen.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
-import '../../../config/app_icons/app_assets_jpg.dart';
 import '../../../config/app_icons/app_assets_png.dart';
-import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../../login/controller/login_controller.dart';
-import '../../splashscreen/controllers/login_controller.dart';
 import 'comment_post.dart';
 
 class PostFirstScreen extends StatefulWidget {
@@ -49,7 +42,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    var profileController = Get.find<ProfileController>();
+    ProfileController profileController = Get.find<ProfileController>();
     return GetBuilder<FirstController>(
       initState: (state) {
         Get.lazyPut(() => ProfileController());
@@ -122,7 +115,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                             child: CircleAvatar(
                               radius: 80,
                               backgroundImage: NetworkImage(
-                                "https://api.peopli.ir/uploads/${widget.face.avatar??''}",
+                                "$baseImageURL/${widget.face.avatar??''}",
                               ),
                             ),
                           ),

@@ -23,11 +23,11 @@ class HomeScreen extends GetView<HomeController> {
           onWillPop: () async{
             return false;
           },
-          child: GetBuilder<HomeController>(
-            builder: (c) => Stack(
+          child: GetBuilder<HomeController>(builder: (controller){
+            return  Stack(
               children: [
                 PageView(
-                    // index: controller.currentIndex,
+                  // index: controller.currentIndex,
                   controller: controller.pageController,
                   onPageChanged: controller.updateIndexNav,
                   children: [
@@ -35,7 +35,7 @@ class HomeScreen extends GetView<HomeController> {
                     SearchScreen(),
                     CreatePersonScreen(),
                     HeartScreen(),
-                   ProfileScreen()
+                    ProfileScreen()
                   ],
                 ),
                 Align(
@@ -43,7 +43,8 @@ class HomeScreen extends GetView<HomeController> {
                     child: NavigationBarWidget()
                 ),
               ],
-            ),
+            );
+          }
           ),
         ));
   }

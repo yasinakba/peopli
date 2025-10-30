@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide FormData;
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/features/feature_job_and_education/controller/education_cotnroller.dart';
@@ -41,29 +41,33 @@ class LoginController extends GetxController{
     final password = passwordController.text.trim();
 
     if (username.isEmpty || password.isEmpty) {
-      print("Username or password is empty");
+      Get.snackbar("Error","Username or password is empty");
       return;
     }
 
     try {
+
       final response = await dio.post(
         "https://api.peopli.ir/Api/login",
         queryParameters: {
           "username": username,
           "password": password,
         },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType, // crucial for .NET backend
+        ),
       );
 
       if (response.statusCode == 200 && response.data['status'] == 'ok') {
         SharedPreferences preferences = await SharedPreferences.getInstance();
         preferences.setString('token', response.data['data']);
-        print("Login success: ${response.data}");
+        Get.snackbar("Success","Login success: ${response.data}");
         Get.toNamed(NamedRoute.routeHomeScreen);
       } else {
         Get.showSnackbar(GetSnackBar(title: 'Error',message: response.data['data'],duration: Duration(seconds: 2)));
       }
     } on DioException catch (e) {
-      print("POST error: ${e.response?.statusCode} - ${e.message}");
+      Get.snackbar("Error","POST error: ${e.response?.statusCode} - ${e.message}");
     }
   }
 

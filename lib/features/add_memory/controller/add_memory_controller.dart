@@ -1,47 +1,42 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart'as http;
+import 'package:test_test_test/config/app_route/route_names.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
+import 'package:test_test_test/config/widgets/date_picker_widget.dart';
+import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 
 class AddMemoryController extends GetxController {
-  final dateController = TextEditingController();
-  final subjectController = TextEditingController();
-  final typeController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
+  TextEditingController subjectController = TextEditingController();
+  TextEditingController typeController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   double latitude = 0.0;
   double longitude = 0.0;
   int selectedRadio = 0;
   String selectedRadioValue = 'Negative';
   XFile? pickedFile;
-
   @override
   void onInit() {
     super.onInit();
+
   }
   final dio = Dio();
-
   void addMemory(faceId) async {
-    // ✅ Step 1: Get token
-    final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token');
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+   String? token =  preferences.getString('token');
 
-    if (token == '') {
+    if (token == null) {
       Get.snackbar('Error', 'Token is invalid');
-      return;
+      return null;
     }
-
     // ✅ Step 2: Validate inputs
     if (faceId == null) {
       Get.snackbar('Error', 'Face ID is missing');
       return;
     }
-
     if (selectedRadioValue == '') {
       Get.snackbar('Error', 'Please select a title');
       return;
@@ -57,33 +52,35 @@ class AddMemoryController extends GetxController {
       return;
     }
 
-    if (selectedDate == null) {
+    if (Get.find<DateController>().selectedDate == '') {
       Get.snackbar('Error', 'Please select a date');
       return;
     }
 
     try {
       final response = await dio.post(
-        'https://api.peopli.ir/Api/Memories/add',
+        '$baseURL/Api/Memories/add',
         data: {
-          'token': token.toString(),
+          'token':  token.toString(),
           'faceId': faceId,
           'title': selectedRadio,
           'text': subjectController.text.trim(),
           'type': typeController.text.trim(),
           'lat': '', // fill if you have location data
           'lng': '',
-          'media': selectedImage.value, // make sure it's correctly encoded or uploaded
-          'date': "${selectedDate!.month}/${selectedDate!.day}/${selectedDate!.year}",
+          'media': Get.find<UploadController>().selectedImage.value, // make sure it's correctly encoded or uploaded
+          'date': "${date.month}/${date.day}/${date.year}",
         },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
         ),
       );
 
-      // ✅ Step 4: Handle response
-      print(response.data);
       if (response.statusCode == 200) {
+        dateController.clear();
+        subjectController.clear();
+        typeController.clear();
+        Get.toNamed(NamedRoute.routeHomeScreen);
         Get.snackbar('Success', 'Memory added successfully');
       } else {
         Get.snackbar('Error', 'Failed to add memory');
@@ -93,82 +90,21 @@ class AddMemoryController extends GetxController {
     }
   }
 
-  var isUploading = false.obs;
 
-  RxString selectedImage = 'usericon.png'.obs;
-  final String uploadUrl = "https://api.peopli.ir/uploader";
 
-  Future<void> uploadImage() async {
-    final picker = ImagePicker();
-
-    final file = await picker.pickImage(source: ImageSource.gallery);
-
-    if (file == null) {
-      print("No file selected");
-      return;
-    }
-    pickedFile = file;
-    File imageFile = File(file.path);
-
-    // Create multipart request
-    var request = http.MultipartRequest("POST", Uri.parse(uploadUrl));
-
-    // "file" must match your IFormFile parameter name
-    request.files.add(
-      await http.MultipartFile.fromPath("file", imageFile.path),
-    );
-
-    // Send request
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-      var responseBody = await response.stream.bytesToString();
-      var data = await json.decode(responseBody);
-      selectedImage.value = data['data']; // for ex// ample
-      update();
-      final respStr = await response.stream.bytesToString();
-      print("Upload success: $respStr");
-    } else {
-      print("Upload failed: ${response.statusCode}");
-    }
-  }
-
-  DateTime? selectedDate;
-
-  void pickDateTime(context) async {
-    DateTime now = DateTime.now();
-    DateTime initialDate = DateTime(now.year - 18); // default: 18 years ago
-    DateTime firstDate = DateTime(1900); // earliest selectable year
-    DateTime lastDate = now; // latest selectable date: today
-
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate ?? initialDate,
-      firstDate: firstDate,
-      lastDate: lastDate,
-      helpText: "Select your birth date",
-    );
-
-    if (picked != null && picked != selectedDate) {
-      selectedDate = picked;
-      update();
-      print("Selected birth date: $picked");
-    }
-  }
-
-  @override
+ var date = Get.find<DateController>().selectedDate;
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Pick Birth Date")),
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            pickDateTime(context);
+            Get.find<DateController>().pickDateTime(context);
           },
           child: Text(
-            selectedDate == null
+            Get.find<DateController>().selectedDate == ''
                 ? "Select Birth Date"
-                : "Birth Date: ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
+                : "Birth Date: ${date.day}/${date.month}/${date.year}",
           ),
         ),
       ),

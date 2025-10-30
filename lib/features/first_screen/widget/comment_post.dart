@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frino_icons/frino_icons.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
 import 'package:test_test_test/features/first_screen/entity/comment_entity.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
@@ -14,9 +14,9 @@ import '../../../config/app_theme/app_theme.dart';
 
 class CommentPost extends StatelessWidget {
   final MemoryEntity memoryEntity;
-  FirstController firstController = Get.put(FirstController());
-  bool isFromProfile = false;
-  CommentPost({required this.memoryEntity, required this.isFromProfile});
+  final FirstController firstController = Get.put(FirstController());
+  final bool isFromProfile;
+   CommentPost({required this.memoryEntity,this.isFromProfile = false});
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +82,7 @@ class CommentPost extends StatelessWidget {
                                         child: CircleAvatar(
                                           radius: 80,
                                           backgroundImage: NetworkImage(
-                                            "https://api.peopli.ir/uploads/${comment.user?.avatar ?? ''}",
+                                            "$baseImageURL/${comment.user?.avatar ?? ''}",
                                           ),
                                         ),
                                       ),
@@ -171,7 +171,7 @@ class CommentPost extends StatelessWidget {
                     ? CircleAvatar(
                   radius: 50,
                   backgroundImage: NetworkImage(
-                   "https://api.peopli.ir/uploads/${Get.find<ProfileController>()
+                   "$baseURL/${Get.find<ProfileController>()
                        .currentUser
                        .first
                        .avatar}" ,
@@ -180,7 +180,7 @@ class CommentPost extends StatelessWidget {
                     : CircleAvatar(
                   radius: 50,
                   backgroundImage: NetworkImage(
-                    "https://api.peopli.ir/uploads/noavatar.png",
+                    "$baseImageURL/noavatar.png",
                   ),
                 ),
               ),

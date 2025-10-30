@@ -1,11 +1,8 @@
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:test_test_test/features/add_memory/controller/add_memory_controller.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-import '../../feature_location/controller/location_controller.dart';
 
 class GetLocationController extends GetxController {
   var locationText = "Unknown".obs;

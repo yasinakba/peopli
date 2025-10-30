@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:test_test_test/features/create_person/entity/face_entity.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
 
 
 import '../first_screen/entity/comment_entity.dart';
@@ -46,7 +46,7 @@ class HeartController extends GetxController{
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Memorie/likes',
+        '$baseURL/Api/Memorie/likes',
         queryParameters: {
           'token':token,
           'page': 1,

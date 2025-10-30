@@ -1,16 +1,15 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
+import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
 import 'package:test_test_test/features/feature_job_and_education/controller/education_cotnroller.dart';
+import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 import 'package:test_test_test/features/profile_screen/entity/user_entity.dart';
-import 'package:dio/dio.dart'as DioPackage;
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_route/route_names.dart';
@@ -41,16 +40,13 @@ class EditProfileController extends GetxController {
     Get.lazyPut(() => CreateAccountController());
     Get.lazyPut(() => EducationController());
 
-    if (currentUser != null) {
       displayController.text = currentUser.displayName;
       userNameController.text = currentUser.username;
       emailController.text = currentUser.email ?? "";
-      selectedDate = currentUser.birthdate;
+      Get.find<DateController>().selectedDate == currentUser.birthdate;
 
       if (currentUser.birthdate != null) {
-        final bd = currentUser.birthdate!;
-        // dateTimeController.text = "${bd.year}/${bd.month}/${bd.day}";
-        dateTimeController.text = selectedDate??'';
+        dateTimeController.text = Get.find<DateController>().selectedDate.timeZoneName;
       } else {
         dateTimeController.clear();
       }
@@ -68,7 +64,6 @@ class EditProfileController extends GetxController {
         Get.find<CreateAccountController>().update();
         Get.find<EducationController>().update();
       });
-    }
   }
   Future<void> editProfile() async {
 
@@ -76,10 +71,10 @@ class EditProfileController extends GetxController {
       if (userNameController.text.isEmpty ||
           displayController.text.isEmpty ||
           emailController.text.isEmpty ||
-          CreateAccountController.selectedCity.id == null ||
-          selectedDate == null ||
-          selectedImage.value == null ||
-          CreateAccountController.selectedEducation.id == null) {
+          CreateAccountController.selectedCity.id == '' ||
+          Get.find<DateController>().selectedDate == '' ||
+          Get.find<UploadController>().selectedImage.value == '' ||
+          CreateAccountController.selectedEducation.id == '') {
         Get.showSnackbar(
           GetSnackBar(
             title: 'Error',
@@ -119,15 +114,14 @@ class EditProfileController extends GetxController {
     // 3️⃣ Prepare request
     try {
       final response = await dio.post(
-        'https://api.peopli.ir/Api/Account/edit-profile',
+        '$baseURL/Api/Account/edit-profile',
         queryParameters: {
           "username": userNameController.text,
           "displayName": displayController.text,
-          "avatar": selectedImage.value,
+          "avatar": Get.find<UploadController>().selectedImage.value,
           "email": emailController.text,
           "cityId": CreateAccountController.selectedCity.id,
-          // "birthDate": "${selectedDate!.year}-${selectedDate!.month}-${selectedDate!.day}",
-          "birthDate": selectedDate,
+          "birthDate": Get.find<DateController>().selectedDate,
           "educationId": CreateAccountController.selectedEducation.id,
           "token":t.toString(),
         },
@@ -149,7 +143,7 @@ class EditProfileController extends GetxController {
         );
       }
     } catch (e) {
-      debugPrint("${e}");
+      debugPrint("e");
       Get.showSnackbar(
         GetSnackBar(
           title: 'Error',
@@ -157,32 +151,6 @@ class EditProfileController extends GetxController {
           duration: Duration(seconds: 3),
         ),
       );
-    }
-  }
-
-
-  String? selectedDate;
-  DateTime? selectedDateTest;
-
-  void pickDateTime(context) async {
-    DateTime now = DateTime.now();
-    DateTime initialDate = DateTime(now.year - 18); // default: 18 years ago
-    DateTime firstDate = DateTime(1900); // earliest selectable year
-    DateTime lastDate = now; // latest selectable date: today
-
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDateTest ?? initialDate,
-      firstDate: firstDate,
-      lastDate: lastDate,
-      helpText: "Select your birth date",
-    );
-
-    if (picked != null && picked != selectedDate) {
-      selectedDateTest = picked;
-      dateTimeController.text = picked.toString();
-      update();
-      print("Selected birth date: $picked");
     }
   }
 
@@ -202,43 +170,6 @@ class EditProfileController extends GetxController {
         : appThemeData.textTheme.bodyLarge;
   }
   var isUploading = false.obs;
-  RxString selectedImage = 'usericon.png'.obs;
-  final String uploadUrl = "https://api.peopli.ir/uploader";
-  Future<void> uploadImage() async {
-    final picker = ImagePicker();
-
-    // Pick an image
-    final file = await picker.pickImage(source: ImageSource.gallery);
-
-    if (file == null) {
-      print("No file selected");
-      return;
-    }
-    pickedFile = file;
-    File imageFile = File(file.path);
-
-    // Create multipart request
-    var request = http.MultipartRequest("POST", Uri.parse(uploadUrl));
-
-    // "file" must match your IFormFile parameter name
-    request.files.add(
-      await http.MultipartFile.fromPath("file", imageFile.path),
-    );
-
-    // Send request
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-      var responseBody= await response.stream.bytesToString();
-      var data = await json.decode(responseBody);
-      selectedImage.value = data['data']; // for ex// ample
-      update();
-      final respStr = await response.stream.bytesToString();
-      print("Upload success: $respStr");
-    } else {
-      print("Upload failed: ${response.statusCode}");
-    }
-  }
 
     //   if (response.statusCode == 200) {
     //     var status = response.data["status"];

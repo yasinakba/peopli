@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../controller/edit_person_controller.dart';
-import 'flutter_map.dart';
 
 class Information extends GetView<EditPersonController> {
   const Information({Key? key}) : super(key: key);
@@ -49,7 +49,7 @@ class Information extends GetView<EditPersonController> {
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: InkWell(
-                    onTap: (){controller.editOpenDialogLocation(context);},
+                    onTap: (){CreateAccountController.openDialogLocation(context);},
                     child: Text(
                       'Add',
                       style: appThemeData.textTheme.labelLarge!
@@ -68,7 +68,7 @@ class Information extends GetView<EditPersonController> {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10, left: 10),
                     child: InkWell(
-                      onTap: (){controller.openDialog(context);},
+                      onTap: (){CreateAccountController.openDialogEducation(context);},
                       child: Text(
                         "Education :",
                         style: appThemeData.textTheme.bodyLarge,
@@ -93,7 +93,7 @@ class Information extends GetView<EditPersonController> {
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: InkWell(
-                    onTap: (){controller.openDialog(context);},
+                    onTap: (){CreateAccountController.openDialogEducation(context);},
                       child: Text(
                     'Add',
                     style: appThemeData.textTheme.labelLarge!
@@ -134,7 +134,7 @@ class Information extends GetView<EditPersonController> {
                   padding: const EdgeInsets.only(right: 10),
                   child: InkWell(
                     onTap: (){
-                      controller.openDialogJobs(context);
+                      CreateAccountController.openDialogJob(context);
                     },
                     child: Text(
                       'Add',

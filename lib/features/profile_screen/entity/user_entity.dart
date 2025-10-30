@@ -1,3 +1,4 @@
+import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 
 class  UserEntity {
@@ -17,7 +18,7 @@ class  UserEntity {
   final dynamic city;
   final List<dynamic> comment;
   final dynamic education;
-  final List<dynamic> face;
+  final List<FaceEntity> face;
   final List<dynamic> like;
   final List<MemoryEntity> memory;
   final List<dynamic> userOption;
@@ -64,7 +65,7 @@ class  UserEntity {
       city: json['city'],
       comment: json['comment'] != null ? List<dynamic>.from(json['comment']) : [],
       education: json['education'],
-      face: json['face'] != null ? List<dynamic>.from(json['face']) : [],
+      face: json['face'] != null ? List<FaceEntity>.from(json['face']) : [],
       like: json['like'] != null ? List<dynamic>.from(json['like']) : [],
       memory: json['memory'] != null
           ? List<MemoryEntity>.from(

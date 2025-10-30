@@ -9,25 +9,14 @@ class HomeController extends GetxController{
   PageController pageController=PageController(initialPage: 0);
   @override
   void onInit() {
-
+    super.onInit();
   }
-
-
 
 
   void updateIndexNav(int index){
     pageController.jumpToPage(index);
     currentIndex=index;
-
     update();
-
-
-
-
-
-
-
-
   }
 
   final _box=GetStorage();
@@ -44,10 +33,4 @@ class HomeController extends GetxController{
   void saveTheme(bool isDarkMode)=> _box.write(_key,isDarkMode);
   void changeTheme(ThemeData theme)=> Get.changeTheme(theme);
   void changeThemeMode(ThemeMode themeMode)=> Get.changeThemeMode(themeMode);
-
-
-
-
-
-
 }

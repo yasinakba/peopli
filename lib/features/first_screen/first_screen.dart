@@ -3,12 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
-import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/first_screen/widget/list_view_profile.dart';
 import 'package:test_test_test/features/first_screen/widget/post_first_screen.dart';
-import '';
 
 import '../../config/app_colors/app_colors_light.dart';
 
@@ -26,16 +25,7 @@ class _FirstScreenState extends State<FirstScreen> {
       body: GetBuilder<FirstController>(
         builder: (controller) {
           return controller.isLoadingMemories
-              ? SpinKitFadingCube(
-                  duration: Duration(seconds: 1),
-                  itemBuilder: (BuildContext context, int index) {
-                    return DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: index.isEven ? Colors.green : Colors.blue,
-                      ),
-                    );
-                  },
-                )
+              ? LoadingWidget()
               : CustomScrollView(
                   slivers: [
                     SliverToBoxAdapter(
@@ -113,7 +103,6 @@ class _FirstScreenState extends State<FirstScreen> {
                                               },
                                         ),
                                       ),
-
                                   newPageProgressIndicatorBuilder: (context) =>
                                       Padding(
                                         padding: EdgeInsets.all(10),

@@ -1,11 +1,10 @@
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
 import 'package:test_test_test/features/feature_location/entity/city_entity.dart';
 import 'package:test_test_test/features/feature_location/entity/country_entity.dart';
 class LocationController extends GetxController{
-
-
   final dio = Dio();
   List<CountryEntity> countryList = [];
   List<String> countryName = [];
@@ -15,7 +14,7 @@ class LocationController extends GetxController{
   Future<void> getCountry() async {
     try {
       final response = await dio.get(
-        "https://api.peopli.ir/Api/admin/Countries?page=1&take=15&sortBy=latest",
+        "$baseURL/Api/admin/Countries?page=1&take=15&sortBy=latest",
       );
       if(response.statusCode== 200){
       List<dynamic> data = response.data['data']['countries'];
@@ -26,7 +25,7 @@ class LocationController extends GetxController{
       update(['country']);
       }
     } on DioException catch (e) {
-      print("GET error: ${e.response?.statusCode} - ${e.message}");
+      Get.snackbar("Error","GET error: ${e.response?.statusCode} - ${e.message}");
     }
   }
   Future<void> getCity(countryId) async {
@@ -34,7 +33,7 @@ class LocationController extends GetxController{
     LocationController.cityList.clear();
     try {
       final response = await dio.get(
-        "https://api.peopli.ir/Api/admin/Countries/cities?page=1&take=15&sortBy=latest&countryId=${countryId}",
+        "$baseURL/Api/admin/Countries/cities?page=1&take=15&sortBy=latest&countryId=${countryId}",
       );
       if(response.statusCode == 200){
       List<dynamic> data = response.data['data']['cities'];
@@ -44,7 +43,7 @@ class LocationController extends GetxController{
       update();
       }
     } on DioException catch (e) {
-      print("GET error: ${e.response?.statusCode} - ${e.message}");
+      Get.snackbar("Error","GET error: ${e.response?.statusCode} - ${e.message}");
     }
   }
 
