@@ -15,16 +15,16 @@ class CustomElevatedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-          width: width,
-        height: height,
-        child: ElevatedButton(
-             style:ButtonStyle(
-                 shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))),
-                 backgroundColor: MaterialStateProperty.all(color),foregroundColor: MaterialStateProperty.all(textColor)),
-            onPressed:onPressed,
+      width: width,
+      height: height,
+      child: ElevatedButton(
+           style:ButtonStyle(
+               shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))),
+               backgroundColor: MaterialStateProperty.all(color),foregroundColor: MaterialStateProperty.all(textColor)),
+          onPressed:onPressed,
 
-            child:Text(title)
-        )
+          child:Text(title),
+      ),
     );
   }
 }

@@ -24,7 +24,6 @@ class TabBarShowComment extends StatelessWidget {
                   width: 375.w,
                   child: TabBar(
                     unselectedLabelColor: AppLightColor.elipsFill,
-
                     labelColor: AppLightColor.textBoldColor,
                     indicatorColor: AppLightColor.withColor,
                     tabs: [

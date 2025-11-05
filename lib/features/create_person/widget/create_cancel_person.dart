@@ -10,14 +10,21 @@ class CreateCancelPerson extends GetView<CreatePersonController> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Padding(
         padding: const EdgeInsets.only(right: 20,left: 20,top: 20,bottom: 10),
         child: GetBuilder<CreatePersonController>(builder: (controller) => Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CustomElevatedButton(onPressed: (){Get.back();}, textColor: AppLightColor.textBoldColor, color: AppLightColor.cancelButtonFill, title: "Cancel", height: 29.h, width: 90.w),
-            CustomElevatedButton(onPressed: (){controller.addFace();}, textColor: AppLightColor.withColor, color: AppLightColor.saveButton, title: "Create", height: 29.h, width: 90.w),
-          ],
+            ElevatedButton(
+                onPressed: () {
+              Get.back();
+            }, child: Text('Cancel',style: theme.textTheme.labelMedium!.copyWith(),)),
+          ElevatedButton(
+                onPressed: () {
+                  controller.addFace();
+            }, child: Text('Create',style: theme.textTheme.labelMedium!.copyWith(),)),
+             ],
         ),)
     );
   }

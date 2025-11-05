@@ -46,7 +46,4 @@ class LocationController extends GetxController{
       Get.snackbar("Error","GET error: ${e.response?.statusCode} - ${e.message}");
     }
   }
-
-
-
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
+import 'package:test_test_test/features/first_screen/first_screen.dart';
 
 import '../../config/widgets/custom_appbar.dart';
 import '../create_person/create_person.dart';
@@ -17,52 +18,59 @@ class HomeScreen extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomeAppBar(),
-      body: WillPopScope(
-        onWillPop: () async {
-          return false;
-        },
-        child: controller.body,
-      ),
-      bottomNavigationBar: Obx(() {
-      return AnimatedBottomNavigationBar(
-        inactiveColor: Colors.black54,
-        activeColor: Colors.black,
-        icons: [
-          IconsaxPlusBold.home_2,
-          IconsaxPlusBold.search_normal_1,
-          IconsaxPlusBold.add_square,
-          IconsaxPlusBold.heart,
-          IconsaxPlusBold.profile,
-        ],
-        activeIndex: controller.index.value,
-        gapLocation: GapLocation.none,
-        notchSmoothness: NotchSmoothness.smoothEdge,
-        leftCornerRadius: 32,
-        rightCornerRadius: 32,
-        onTap: (index) {
-          controller.index.value = index;
-          switch (index) {
-            case 0:
-              controller.body = HomeScreen();
-              break;
-            case 1:
-              controller.body = SearchScreen();
-              break;
-            case 2:
-              controller.body = CreatePersonScreen();
-              break;
-            case 3:
-              controller.body = HeartScreen();
-              break;
-            case 4:
-              controller.body = ProfileScreen();
-              break;
-          }
-        },
-      );
-    }
-    ));
+        appBar: CustomeAppBar(),
+        body: GetBuilder<HomeController>(builder: (controller) {
+          return WillPopScope(
+            onWillPop: () async {
+              return false;
+            },
+            child: controller.body,
+          );
+        }),
+        bottomNavigationBar: Obx(() {
+          return AnimatedBottomNavigationBar(
+            inactiveColor: Colors.black54,
+            activeColor: Colors.black,
+            icons: [
+              IconsaxPlusBold.home_2,
+              IconsaxPlusBold.search_normal_1,
+              IconsaxPlusBold.add_square,
+              IconsaxPlusBold.heart,
+              IconsaxPlusBold.profile,
+            ],
+            activeIndex: controller.index.value,
+            gapLocation: GapLocation.none,
+            notchSmoothness: NotchSmoothness.smoothEdge,
+            leftCornerRadius: 32,
+            rightCornerRadius: 32,
+            onTap: (index) {
+              controller.index.value = index;
+              switch (index) {
+                case 0:
+                  controller.body = FirstScreen();
+                  controller.update();
+                  break;
+                case 1:
+                  controller.body = SearchScreen();
+                  controller.update();
+                  break;
+                case 2:
+                  controller.body = CreatePersonScreen();
+                  controller.update();
+                  break;
+                case 3:
+                  controller.body = HeartScreen();
+                  controller.update();
+                  break;
+                case 4:
+                  controller.body = ProfileScreen();
+                  controller.update();
+                  break;
+              }
+            },
+          );
+        }
+        ));
   }
 }
 

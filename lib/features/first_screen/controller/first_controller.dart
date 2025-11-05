@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import 'package:test_test_test/features/first_screen/entity/comment_entity.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
@@ -67,7 +68,7 @@ class FirstController extends GetxController {
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Memories',
+        '$baseURL/Api/Memories',
         queryParameters: {
           'token':token,
           'page': 1,
@@ -176,6 +177,7 @@ class FirstController extends GetxController {
     }
   }
   Future<List<FaceEntity>> readMoreFace(pageKey) async{
+    if (facePage >= pageKey)
     isLoadingFaces = true;
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -198,7 +200,6 @@ class FirstController extends GetxController {
         facePage = response.data['data']['pageCount'];
         List<dynamic> data = response.data['data']['faces'];
         faceList.addAll(data.map((e) => FaceEntity.fromJson(e),));
-        debugPrint("Faces: ${response.data}");
         isLoadingFaces =false;
         update();
         return faceList;

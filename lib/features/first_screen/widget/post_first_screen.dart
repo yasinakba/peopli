@@ -156,7 +156,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                             : CircleAvatar(
                                 radius: 80,
                                 backgroundImage: NetworkImage(
-                                  "https://api.peopli.ir/uploads/${profileController.currentUser.first.avatar}",
+                                  "$baseImageURL/${profileController.currentUser.first.avatar}",
                                 ),
                               ),
                       ),

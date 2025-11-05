@@ -35,24 +35,28 @@ class EditProfileScreen extends GetView<EditProfileController> {
                     padding: const EdgeInsets.only(top: 100),
                     child: Column(
                       children: [
-                        Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            height: 100.h,
-                            width: 100.w,
-                            decoration: BoxDecoration(
-                              color: AppLightColor.elipsFill,
-                              image: Get.find<UploadController>().pickedFile == null
-                                  ? DecorationImage(image:NetworkImage("$baseImageURL/${controller.currentUser.avatar}"),fit: BoxFit.cover)
-                                  : DecorationImage(
-                                image: FileImage(File(Get.find<UploadController>().pickedFile!.path)),
-                                fit: BoxFit.cover,
+                        GetBuilder<UploadController>(builder: (logic) {
+                          return Align(
+                            alignment: Alignment.center,
+                            child: Container(
+                              height: 100.h,
+                              width: 100.w,
+                              decoration: BoxDecoration(
+                                color: AppLightColor.elipsFill,
+                                image: logic.pickedFile == null ? DecorationImage(image: NetworkImage(
+                                    "$baseImageURL/${controller.currentUser
+                                        .avatar}"), fit: BoxFit.cover)
+                                    : DecorationImage(
+                                  image: FileImage(File(logic.pickedFile!
+                                      .path)),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(100)),
                               ),
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(100)),
                             ),
-                          ),
-                        ),
+                          );
+                        }),
                         SizedBox(
                           width: 292.w,
                           child: Column(
@@ -62,7 +66,8 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                 padding: const EdgeInsets.only(
                                     right: 20, left: 20),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .spaceBetween,
                                   children: [
                                     Row(
                                       children: [
@@ -83,7 +88,9 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                           child: Text("|"),
                                         ),
                                         InkWell(
-                                          onTap: () {controller.updateLanguage(1);},
+                                          onTap: () {
+                                            controller.updateLanguage(1);
+                                          },
                                           child: Text(
                                             "FA",
                                             style: controller.textStyleEn(1),
@@ -93,7 +100,9 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        Get.find<UploadController>().uploadImage();
+                                        Get
+                                            .find<UploadController>()
+                                            .uploadImage();
                                       },
                                       child: Text(
                                         "Add Photos",
@@ -112,7 +121,8 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                       padding: const EdgeInsets.only(top: 10),
                                       child: TextFieldCreateAccount(
                                         labelText: 'name',
-                                        controller: controller.displayController,
+                                        controller: controller
+                                            .displayController,
                                       ),
                                     ),
                                     Padding(
@@ -121,7 +131,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                         labelText: 'UserNAme',
                                         controller: controller
                                             .userNameController,),
-                                    ),  Padding(
+                                    ), Padding(
                                       padding: const EdgeInsets.only(top: 5),
                                       child: TextFieldCreateAccount(
                                         labelText: 'Email',
@@ -139,25 +149,33 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                     Padding(
                                       padding: EdgeInsetsDirectional.only(
                                           top: 10),
-                                      child:Container(
+                                      child: Container(
                                         width: 360.w,
                                         height: 32.h,
-                                        padding: EdgeInsetsDirectional.only(start: 10.w),
+                                        padding: EdgeInsetsDirectional.only(
+                                            start: 10.w),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius: BorderRadius.circular(25),
-                                          border: Border.all(color: Colors.black),
+                                          borderRadius: BorderRadius.circular(
+                                              25),
+                                          border: Border.all(
+                                              color: Colors.black),
                                         ),
                                         child: GetBuilder<DateController>(
                                           builder: (controller) {
-                                            final safeDate = controller.selectedDate;
-                                            final formattedDate = DateFormat('yyyy/MM/dd – HH:mm').format(safeDate);
+                                            final safeDate = controller
+                                                .selectedDate;
+                                            final formattedDate = DateFormat(
+                                                'yyyy/MM/dd – HH:mm').format(
+                                                safeDate);
                                             return Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment: MainAxisAlignment
+                                                  .spaceBetween,
                                               children: [
                                                 Text(
                                                   formattedDate,
-                                                  style: appThemeData.textTheme.bodySmall ??
+                                                  style: appThemeData.textTheme
+                                                      .bodySmall ??
                                                       const TextStyle(
                                                         color: Colors.grey,
                                                         fontSize: 14,
@@ -165,7 +183,8 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                                 ),
                                                 IconButton(
                                                   onPressed: () async {
-                                                      controller.pickDateTime(context);
+                                                    controller.pickDateTime(
+                                                        context);
                                                   },
                                                   icon: const Icon(
                                                     Icons.calendar_today,
@@ -246,7 +265,8 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                 );
                               }),
                               SizedBox(height: 5.h,),
-                              GetBuilder<EducationController>(builder: (controller) {
+                              GetBuilder<EducationController>(builder: (
+                                  controller) {
                                 return SizedBox(
                                   width: double.infinity,
                                   child: Padding(

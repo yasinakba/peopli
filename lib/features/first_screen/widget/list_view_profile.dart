@@ -27,8 +27,8 @@ class ListViewProfile extends StatelessWidget {
            newPageProgressIndicatorBuilder: (context) =>
                LoadingWidget(),
            itemBuilder: (context, item, index) {
+            if(index < controller.faceList.length){
             FaceEntity face = controller.faceList[index];
-            if(index <= controller.faceList.length){
               return SizedBox(
                 width: 80,
                 height: 87,
