@@ -40,6 +40,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
           GetBuilder<AddMemoryController>(
             initState: (state) {
               Get.lazyPut(() => GetLocationController());
+              Get.lazyPut(() => DateController());
             },
             builder: (controller) =>
                 Column(

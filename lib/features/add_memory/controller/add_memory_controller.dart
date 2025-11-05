@@ -6,10 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_route/route_names.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
+import 'package:test_test_test/features/feature_getlocation_fromgps/controller/get_location_controller.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 
 class AddMemoryController extends GetxController {
-  TextEditingController dateController = TextEditingController();
   TextEditingController subjectController = TextEditingController();
   TextEditingController typeController = TextEditingController();
   TextEditingController locationController = TextEditingController();
@@ -18,6 +18,8 @@ class AddMemoryController extends GetxController {
   int selectedRadio = 0;
   String selectedRadioValue = 'Negative';
   XFile? pickedFile;
+ // GetLocationController locationController =  Get.put(GetLocationController());
+  DateController dateController = Get.put( DateController());
   @override
   void onInit() {
     super.onInit();
@@ -52,10 +54,6 @@ class AddMemoryController extends GetxController {
       return;
     }
 
-    if (Get.find<DateController>().selectedDate == '') {
-      Get.snackbar('Error', 'Please select a date');
-      return;
-    }
 
     try {
       final response = await dio.post(
@@ -77,7 +75,6 @@ class AddMemoryController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        dateController.clear();
         subjectController.clear();
         typeController.clear();
         Get.toNamed(NamedRoute.routeHomeScreen);

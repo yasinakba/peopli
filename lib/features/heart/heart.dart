@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:test_test_test/config/widgets/custom_appbar.dart';
+import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/heart/heart_controller.dart';
 
 import '../create_person/entity/face_entity.dart';
@@ -18,8 +19,6 @@ class HeartScreen extends StatefulWidget {
 }
 
 class _HeartScreenState extends State<HeartScreen> {
- final HeartController heartController = Get.put(HeartController());
- final ProfileController profileController = Get.put(ProfileController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +29,7 @@ class _HeartScreenState extends State<HeartScreen> {
             child: GetBuilder<HeartController>(
                 initState: (state) {
                   Get.lazyPut(() => ProfileController());
+                  Get.lazyPut(() => DateController());
                   Get.lazyPut(() => HeartController(),);
                   Get.lazyPut(() => FirstController(),);
                 },
@@ -84,11 +84,7 @@ class _HeartScreenState extends State<HeartScreen> {
                                     padding: EdgeInsets.all(10),
                                     child: SpinKitFadingCube(
                                       duration: Duration(seconds: 1),
-                                      itemBuilder:
-                                          (
-                                          BuildContext context,
-                                          int index,
-                                          ) {
+                                      itemBuilder: (BuildContext context, int index,) {
                                         return DecoratedBox(
                                           decoration: BoxDecoration(
                                             color: index.isEven
@@ -100,8 +96,8 @@ class _HeartScreenState extends State<HeartScreen> {
                                     ),
                                   ),
                               noItemsFoundIndicatorBuilder: (context) =>
-                              const Center(
-                                child: Text("No memories found."),
+                               Center(
+                                child: Text("No memories found.",style: TextStyle(fontSize: 17.sp,fontWeight: FontWeight.w700,color: Colors.black45),),
                               ),
                             ),
                           ),

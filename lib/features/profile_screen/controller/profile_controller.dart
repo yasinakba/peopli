@@ -142,7 +142,7 @@ class ProfileController extends GetxController {
 
         final response = await dio.get(
           '$baseURL/Api/Faces?token=$token&page=$pageKey&take=15&sortBy=closest',
-          options: Options(
+           options: Options(
             contentType: Headers.formUrlEncodedContentType,
           ),
         );

@@ -212,13 +212,13 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                   height: 141.h,
                   child: widget.memory.media != null
                       ? Image.network(
-                          'https://api.peopli.ir/uploads/${widget.memory.media?.split('/').last}',
+                          '$baseImageURL/${widget.memory.media?.split('/').last}',
                           fit: BoxFit.fitWidth,
                         )
                       : Image.network(
-                          'https://api.peopli.ir/uploads/usericon.png',
+                          '$baseImageURL/usericon.png',
                           fit: BoxFit.fitWidth,
-                        ),
+                  ),
                 ),
               ),
               //comment Like && share
@@ -227,7 +227,6 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    //comment
                     Row(
                       children: [
                         InkWell(

@@ -82,7 +82,7 @@ class CommentPost extends StatelessWidget {
                                         child: CircleAvatar(
                                           radius: 80,
                                           backgroundImage: NetworkImage(
-                                            "$baseImageURL/${comment.user?.avatar ?? ''}",
+                                            "$baseImageURL/${comment.user?.avatar??''}",
                                           ),
                                         ),
                                       ),
@@ -94,7 +94,7 @@ class CommentPost extends StatelessWidget {
                                           SizedBox(
                                             width: 130.w,
                                             child: Text(
-                                              comment.user?.displayName ?? '',
+                                              comment.user?.displayName??'',
                                               style: appThemeData
                                                   .textTheme
                                                   .labelMedium,
@@ -171,7 +171,7 @@ class CommentPost extends StatelessWidget {
                     ? CircleAvatar(
                   radius: 50,
                   backgroundImage: NetworkImage(
-                   "$baseURL/${Get.find<ProfileController>()
+                   "$baseImageURL/${Get.find<ProfileController>()
                        .currentUser
                        .first
                        .avatar}" ,

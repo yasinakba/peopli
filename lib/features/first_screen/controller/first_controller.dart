@@ -198,7 +198,7 @@ class FirstController extends GetxController {
       );
       print(response.data);
       if (response.statusCode == 200) {
-        // ✅ Success
+        commentTextFieldController.clear();
         readComment(memoryId);
         debugPrint("Comments: ${response.data}");
         update();

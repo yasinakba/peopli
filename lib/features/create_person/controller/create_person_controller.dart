@@ -121,6 +121,9 @@ class CreatePersonController extends GetxController {
          nameController.clear();
          familyNameController.clear();
          knowAsController.clear();
+         pickedFile!.path == '';
+         selectedRadio = -1;
+         update();
          Get.snackbar('Success', 'Face added successfully!');
        } else {
          debugPrint("❌ Error: ${response.statusCode} -> ${response.data}");
