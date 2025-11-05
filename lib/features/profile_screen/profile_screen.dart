@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/config/widgets/custom_appbar.dart';
 
 import '../../config/app_colors/app_colors_light.dart';
 import 'controller/profile_controller.dart';
@@ -13,14 +14,17 @@ class ProfileScreen extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppLightColor.withColor,
-      body:Column(
-        children: [
-          HeaderProfile(),
-          Padding(
+      body:CustomScrollView(
+        slivers: [
+          CustomeAppBar(),
+          SliverToBoxAdapter(child: HeaderProfile()),
+          SliverPadding(
             padding: const EdgeInsets.only(top: 20),
-            child: Container(
-                height: 500.h,
-                child: PostComment()),
+            sliver: SliverToBoxAdapter(
+              child: Container(
+                  height: 520.h,
+                  child: PostComment()),
+            ),
           ),
 
         ],

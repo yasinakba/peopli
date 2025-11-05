@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_icons/app_assets_png.dart';
@@ -33,7 +34,6 @@ class _PostProfileState extends State<PostProfile> {
       initState: (state) {
         Get.lazyPut(() => ProfileController());
         Get.lazyPut(() => FirstController());
-        Get.find<FirstController>().readFace();
       },
       builder: (controller) {
         return Container(
@@ -108,7 +108,7 @@ class _PostProfileState extends State<PostProfile> {
                               child: CircleAvatar(
                                 radius: 80,
                                 backgroundImage: NetworkImage(
-                                  "https://api.peopli.ir/uploads/${widget.face.avatar ?? ''}",
+                                  "$baseImageURL/${widget.face.avatar ?? ''}",
                                 ),
                               ),
                             ),
@@ -150,7 +150,7 @@ class _PostProfileState extends State<PostProfile> {
                             : CircleAvatar(
                           radius: 80,
                           backgroundImage: NetworkImage(
-                            "https://api.peopli.ir/uploads/${profileController.currentUser.first.avatar}",
+                            "$baseImageURL/${profileController.currentUser.first.avatar}",
                           ),
                         ),
                       ),

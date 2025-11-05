@@ -14,7 +14,8 @@ class CustomeAppBar extends GetView<HomeController>
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
+    return SliverAppBar(
+      pinned: false,
       automaticallyImplyLeading: false,
       elevation: 0,
       titleSpacing: 0,

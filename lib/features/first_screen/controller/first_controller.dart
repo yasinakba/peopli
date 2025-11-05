@@ -31,8 +31,6 @@ class FirstController extends GetxController {
   @override
  void onInit() {
     super.onInit();
-    readFace();
-    readMemories();
     Get.lazyPut<LocationController>(() => LocationController());
     Get.lazyPut<JobDropDownController>(() => JobDropDownController());
     Get.lazyPut<EducationController>(() => EducationController());
@@ -49,55 +47,10 @@ class FirstController extends GetxController {
 
   }
 
-
-  @override
-  void dispose() {
-    // scrollMemoryController.dispose();
-    super.dispose();
-  }
-  Future<void> readMemories() async {
-    isLoadingMemories = true;
-    memoryList.clear();
-    try {
-      final preferences = await SharedPreferences.getInstance();
-      final token = preferences.getString('token');
-
-      if (token == null) {
-        debugPrint("⚠️ No token found in SharedPreferences");
-        return;
-      }
-
-      final response = await dio.get(
-        '$baseURL/Api/Memories',
-        queryParameters: {
-          'token':token,
-          'page': 1,
-          'take': 15,
-          'sortBy': 'closet',
-        },
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-        ),
-      );
-      if (response.statusCode == 200 && response.data['status'] == 'ok') {
-        // ✅ Success
-        List<dynamic> data = response.data['data']['memories'];
-        memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e),));
-        totalPage = response.data['data']['pageCount'];
-        isLoadingMemories = false;
-        update();
-        debugPrint("Memories: ${response.data}");
-      } else {
-        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
-      }
-    } catch (e, stacktrace) {
-      debugPrint("🔥 Exception while fetching memories: $e");
-      debugPrint(stacktrace.toString());
-    }
-  }
   int totalPage = 0;
   int totalFacePage = 0;
   Future<List<MemoryEntity>> readMoreMemories(pageKey) async {
+    if(pageKey > totalPage) return[];
       memoryPage++;
       try {
         final preferences = await SharedPreferences.getInstance();
@@ -109,7 +62,7 @@ class FirstController extends GetxController {
         }
 
         final response = await dio.get(
-          'https://api.peopli.ir/Api/Memories',
+          '$baseURL/Api/Memories',
           queryParameters: {
             'token': token,
             'page': pageKey,
@@ -141,43 +94,8 @@ class FirstController extends GetxController {
         if (!isClosed) isLoadingMemories = false;
       }
     }
-  Future<void> readFace() async{
-    isLoadingFaces = true;
-    faceList.clear();
-    try {
-      final preferences = await SharedPreferences.getInstance();
-      final token = preferences.getString('token');
-
-      if (token == null) {
-        debugPrint("⚠️ No token found in SharedPreferences");
-        return;
-      }
-
-      final response = await dio.get(
-        'https://api.peopli.ir/Api/Faces?token=$token&page=1&take=15&sortBy=closest',
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        // ✅ Success
-        List<dynamic> data = response.data['data']['faces'];
-        faceList.addAll(data.map((e) => FaceEntity.fromJson(e),));
-        debugPrint("Faces: ${response.data}");
-        update();
-      } else {
-        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
-      }
-    } catch (e, stacktrace) {
-      debugPrint("🔥 Exception while fetching memories: $e");
-      debugPrint(stacktrace.toString());
-    }
-  }
   Future<List<FaceEntity>> readMoreFace(pageKey) async{
-    if (facePage >= pageKey)
+    if (pageKey > totalFacePage) return[];
     isLoadingFaces = true;
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -189,7 +107,7 @@ class FirstController extends GetxController {
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Faces?token=$token&page=$pageKey&take=15&sortBy=closest',
+        '$baseURL/Api/Faces?token=$token&page=$pageKey&take=15&sortBy=closest',
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
         ),
@@ -228,7 +146,7 @@ class FirstController extends GetxController {
       }
 
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Memories/comments?token=$token&memoryId=$memoryId&page=$commentPage&take=15&sortBy=latest',
+        '$baseURL/Api/Memories/comments?token=$token&memoryId=$memoryId&page=$commentPage&take=15&sortBy=latest',
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
         ),
@@ -260,7 +178,7 @@ class FirstController extends GetxController {
       }
 
       final response = await dio.post(
-        'https://api.peopli.ir/Api/Memories/add-comment',
+        '$baseURL/Api/Memories/add-comment',
         data: {
           'token':token,
           'memoryId':memoryId,
@@ -297,7 +215,7 @@ class FirstController extends GetxController {
       }
 
       final response = await dio.post(
-        'https://api.peopli.ir/Api/Memories/delete-comment',
+        '$baseURL/Api/Memories/delete-comment',
         data: {
           'token':token,
           'commentId':commentId,
@@ -333,7 +251,7 @@ class FirstController extends GetxController {
       }
 
       final response = await dio.post(
-        'https://api.peopli.ir/Api/Memories/edit-comment',
+        '$baseURL/Api/Memories/edit-comment',
         data: {
           'token':token,
           'commentId':commentId,

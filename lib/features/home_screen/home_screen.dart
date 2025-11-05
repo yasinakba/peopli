@@ -18,7 +18,6 @@ class HomeScreen extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomeAppBar(),
         body: GetBuilder<HomeController>(builder: (controller) {
           return WillPopScope(
             onWillPop: () async {

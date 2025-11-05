@@ -71,24 +71,22 @@ class CreatePersonController extends GetxController {
          Get.snackbar('Error', 'Please login first.');
          return;
        }
-
-       // ✅ Input validation
-       if (nameController.text.trim().isEmpty ||
+       if (
+       nameController.text.trim().isEmpty ||
            familyNameController.text.trim().isEmpty ||
            knowAsController.text.trim().isEmpty ||
            gender == '' ||
            Get.find<UploadController>().selectedImage.value.isEmpty ||
-           CreateAccountController.selectedCity.id == '' ||
-           CreateAccountController.selectedEducation.id == '' ||
-           CreateAccountController.selectedJob.id == '' ||
-           Get.find<DateController>().selectedDate == '') {
+           CreateAccountController.selectedCity.id == null ||
+           CreateAccountController.selectedEducation.id == null ||
+           CreateAccountController.selectedJob.id == null) {
          Get.snackbar(
            'Error',
            'Please fill in all required fields before submitting.',
          );
          return;
        }
-
+       Get.lazyPut(() => DateController(),);
        // ✅ Format date safely
        final date = Get.find<DateController>().selectedDate;
        final formattedDate =
@@ -119,8 +117,10 @@ class CreatePersonController extends GetxController {
 
        // ✅ Handle response safely
        if (response.statusCode == 200 && response.data['status'] == 'ok') {
-
-         debugPrint('✅ Face added successfully: ${response.data}');
+         Get.back();
+         nameController.clear();
+         familyNameController.clear();
+         knowAsController.clear();
          Get.snackbar('Success', 'Face added successfully!');
        } else {
          debugPrint("❌ Error: ${response.statusCode} -> ${response.data}");
@@ -179,9 +179,9 @@ class CreatePersonController extends GetxController {
 
   setSelectedRadio(int val) {
     if(val == 1){
-      gender == 'male';
+      gender = 'male';
     }else if(val ==0){
-      gender == 'female';
+      gender = 'female';
     }
     selectedRadio = val;
     update();

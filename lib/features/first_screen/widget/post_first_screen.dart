@@ -36,7 +36,6 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
     if (!Get.isRegistered<FirstController>()) {
       Get.put(FirstController());
     }
-    Get.find<FirstController>().readFace();
   }
 
   @override
@@ -47,7 +46,6 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
       initState: (state) {
         Get.lazyPut(() => ProfileController());
         Get.lazyPut(() => FirstController());
-        Get.find<FirstController>().readFace();
       },
       builder: (controller) {
         return Container(

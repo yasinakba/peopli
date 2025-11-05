@@ -60,8 +60,7 @@ class ProfileController extends GetxController {
           debugPrint("❌ Unexpected data type: ${data.runtimeType}");
         }
 
-        update();      // If using GetX
-        readMemories(); // Your function
+        update();
       } else {
         debugPrint("❌ Data is null");
       }
@@ -81,53 +80,10 @@ class ProfileController extends GetxController {
   );
   bool isLoadingMemories = false;
   bool isLoadingFaces= false;
-
-  Future<void> readMemories() async {
-    isLoadingMemories = true;
-    memoryList.clear();
-    try {
-      final preferences = await SharedPreferences.getInstance();
-      final token = preferences.getString('token');
-
-      if (token == null) {
-        debugPrint("⚠️ No token found in SharedPreferences");
-        return;
-      }
-
-      final response = await dio.get(
-        '$baseURL/Api/Memories',
-        queryParameters: {
-          'token':token,
-          'page': 1,
-          'take': 15,
-          'sortBy': 'closet',
-        },
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-        ),
-      );
-      if (response.statusCode == 200 && response.data['status'] == 'ok') {
-        // ✅ Success
-        List<dynamic> data = response.data['data']['memories'];
-        List<MemoryEntity> memories = [];
-        memories.addAll(data.map((e) => MemoryEntity.fromJson(e),));
-        memoryList.add(memories.firstWhere((i) => i.userId == currentUser.first.id,orElse: () => MemoryEntity(),));
-        totalPage = response.data['data']['pageCount'];
-        isLoadingMemories = false;
-        update();
-        debugPrint("Memories: ${response.data}");
-      } else {
-        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
-      }
-    } catch (e, stacktrace) {
-      debugPrint("🔥 Exception while fetching memories: $e");
-      debugPrint(stacktrace.toString());
-    }
-  }
   int totalPage = 0;
   int totalFacePage = 0;
   Future<List<MemoryEntity>> readMoreMemories(pageKey) async {
-    if(totalPage >= pageKey){
+    if(pageKey > totalPage) return[];
       memoryPage++;
       try {
         final preferences = await SharedPreferences.getInstance();
@@ -170,8 +126,6 @@ class ProfileController extends GetxController {
       } finally {
         if (!isClosed) isLoadingMemories = false;
       }
-    }
-   return memoryList;
   }
   Future<void> readFace() async{
     isLoadingFaces = true;

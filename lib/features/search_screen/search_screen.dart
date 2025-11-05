@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:test_test_test/config/widgets/custom_appbar.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
@@ -29,13 +31,13 @@ class SearchScreen extends GetView<SearchBottomController> {
         builder: (controller) =>
         controller.loadingSearch ? LoadingWidget() : CustomScrollView(
           slivers: [
+            CustomeAppBar(),
             SliverToBoxAdapter(
               child: Column(
                 children: [
                   //divider
-                  Container(
-                    width: double.infinity,
-                    height: 1,
+                  Divider(
+                    height: 2,
                     color: AppLightColor.cancelButtonFill,
                   ),
                   //search
@@ -188,6 +190,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                     border: Border.all(color: Colors.black),
                                   ),
                                   child:  GetBuilder<DateController>(
+                                    initState: (state) => Get.lazyPut(() => DateController(),),
                                     builder: (controller) {
                                       // Safely handle null controller or date
                                       final safeDate = controller.selectedDate;
@@ -456,9 +459,17 @@ class SearchScreen extends GetView<SearchBottomController> {
                 ),
                 child: controller.faceList.isEmpty &&
                     controller.displayNameController.text.isNotEmpty ? Center(
-                  child: Text('Not found', style: TextStyle(color: Colors.black,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18.sp),),) : SearchListTile(),
+                  child: Container(
+                    height: 355.h,
+                    decoration: BoxDecoration(
+                      border:Border.all(width: 2,color: Colors.black12),
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(textAlign: TextAlign.center,'Not found', style: TextStyle(color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18.sp),),
+                  ),) : SearchListTile(),
               ),
             ),
           ],

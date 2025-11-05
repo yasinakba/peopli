@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:test_test_test/config/widgets/custom_appbar.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
@@ -28,6 +29,7 @@ class _FirstScreenState extends State<FirstScreen> {
               ? LoadingWidget()
               : CustomScrollView(
                   slivers: [
+                    CustomeAppBar(),
                     SliverToBoxAdapter(
                       child: Column(
                         children: [
@@ -47,7 +49,6 @@ class _FirstScreenState extends State<FirstScreen> {
                         ],
                       ),
                     ),
-
                     //divider
                     SliverToBoxAdapter(
                       child: Container(
@@ -58,7 +59,7 @@ class _FirstScreenState extends State<FirstScreen> {
                     ),
                     SliverToBoxAdapter(
                       child: SizedBox(
-                        height: 590.h,
+                        height: 540.h,
                         width: 360.w,
                         child: PagingListener(
                           controller: controller.pagingMemoryController,

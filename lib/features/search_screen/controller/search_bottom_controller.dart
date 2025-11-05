@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
@@ -74,10 +75,11 @@ class SearchBottomController extends GetxController {
             : '', // ensure API gets a valid string
       };
       final response = await dio.get(
-        'https://api.peopli.ir/Api/Faces',
+        '$baseURL/Api/Faces',
         queryParameters: requestData,
       );
       if (response.statusCode == 200) {
+        faceList.clear();
         List<dynamic> data = response.data['data']['faces'];
         faceList.addAll(data.map((i)=> FaceEntity.fromJson(i)));
         loadingSearch = false;

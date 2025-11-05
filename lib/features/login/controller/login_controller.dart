@@ -61,7 +61,6 @@ class LoginController extends GetxController{
       if (response.statusCode == 200 && response.data['status'] == 'ok') {
         SharedPreferences preferences = await SharedPreferences.getInstance();
         preferences.setString('token', response.data['data']);
-        Get.snackbar("Success","Login success: ${response.data}");
         Get.toNamed(NamedRoute.routeHomeScreen);
       } else {
         Get.showSnackbar(GetSnackBar(title: 'Error',message: response.data['data'],duration: Duration(seconds: 2)));
