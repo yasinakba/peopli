@@ -80,11 +80,10 @@ class ProfileController extends GetxController {
   );
   bool isLoadingMemories = false;
   bool isLoadingFaces= false;
-  int totalPage = 0;
-  int totalFacePage = 0;
+  int totalPage = 1;
+  int totalFacePage = 1;
   Future<List<MemoryEntity>> readMoreMemories(pageKey) async {
-    if(pageKey > totalPage) return[];
-      memoryPage++;
+    if(pageKey <= totalPage){
       try {
         final preferences = await SharedPreferences.getInstance();
         final token = preferences.getString('token');
@@ -126,79 +125,48 @@ class ProfileController extends GetxController {
       } finally {
         if (!isClosed) isLoadingMemories = false;
       }
-  }
-  Future<void> readFace() async{
-    isLoadingFaces = true;
-    faceList.clear();
-    try {
-      final preferences = await SharedPreferences.getInstance();
-      final token = preferences.getString('token');
-
-      if (token == null) {
-        debugPrint("⚠️ No token found in SharedPreferences");
-        return;
-      }
-
-      final response = await dio.get(
-        '$baseURL/Api/Faces?token=$token&page=1&take=15&sortBy=closest',
-        options: Options(
-          headers: {
-            'Accept': 'application/json',
-          },
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        // ✅ Success
-        List<dynamic> data = response.data['data']['faces'];
-        faceList.addAll(data.map((e) => FaceEntity.fromJson(e),));
-        debugPrint("Faces: ${response.data}");
-        update();
-      } else {
-        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
-      }
-    } catch (e, stacktrace) {
-      debugPrint("🔥 Exception while fetching memories: $e");
-      debugPrint(stacktrace.toString());
     }
+    return [];
   }
   Future<List<FaceEntity>> readMoreFace(pageKey) async{
-    isLoadingFaces = true;
-    try {
-      final preferences = await SharedPreferences.getInstance();
-      final token = preferences.getString('token');
+    if(pageKey <= totalFacePage) {
+      isLoadingFaces = true;
+      try {
+        final preferences = await SharedPreferences.getInstance();
+        final token = preferences.getString('token');
 
-      if (token == null) {
-        debugPrint("⚠️ No token found in SharedPreferences");
+        if (token == null) {
+          debugPrint("⚠️ No token found in SharedPreferences");
+          return faceList;
+        }
+
+        final response = await dio.get(
+          '$baseURL/Api/Faces?token=$token&page=$pageKey&take=15&sortBy=closest',
+          options: Options(
+            contentType: Headers.formUrlEncodedContentType,
+          ),
+        );
+
+        if (response.statusCode == 200) {
+          facePage = response.data['data']['pageCount'];
+          List<dynamic> data = response.data['data']['faces'];
+          faceList.addAll(data.map((e) => FaceEntity.fromJson(e),));
+          debugPrint("Faces: ${response.data}");
+          isLoadingFaces = false;
+          update();
+          return faceList;
+        } else {
+          debugPrint(
+              "❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+          return faceList;
+        }
+      } catch (e, stacktrace) {
+        debugPrint("🔥 Exception while fetching memories: $e");
+        debugPrint(stacktrace.toString());
         return faceList;
       }
-
-      final response = await dio.get(
-        '$baseURL/Api/Faces?token=$token&page=$pageKey&take=15&sortBy=closest',
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        // ✅ Success
-        facePage = response.data['data']['pageCount'];
-        List<dynamic> data = response.data['data']['faces'];
-        faceList.addAll(data.map((e) => FaceEntity.fromJson(e),));
-        debugPrint("Faces: ${response.data}");
-        isLoadingFaces =false;
-        update();
-        return faceList;
-      } else {
-        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
-        return faceList;
-      }
-    } catch (e, stacktrace) {
-      debugPrint("🔥 Exception while fetching memories: $e");
-      debugPrint(stacktrace.toString());
-      return faceList;
-
     }
+    return [];
   }
   List<CommentEntity> commentList = [];
   int commentPage = 1;
