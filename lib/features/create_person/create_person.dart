@@ -118,8 +118,7 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                             ),
                             child:GetBuilder<DateController>(
                               builder: (controller) {
-                                // Safely handle null controller or date
-                                final safeDate = controller.selectedDate ;
+                                final safeDate = controller.selectedDate;
                                 final formattedDate = DateFormat('yyyy/MM/dd – HH:mm').format(safeDate);
                                 return Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -133,7 +132,7 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                                           ),
                                     ),
                                     IconButton(
-                                      onPressed: () async {
+                                      onPressed: () {
                                           controller.pickDateTime(context);
                                       },
                                       icon: const Icon(
@@ -151,14 +150,9 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                       ],
                     ),
                   ),
-
-                  //Gender
-
-                  GenderPerson(),
-                  //information
+                   GenderPerson(),
                    InformationPerson(),
-                  //SavePerson
-                  SavePerson()
+                   SavePerson(),
                 ],
               ),
             ),

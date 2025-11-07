@@ -28,7 +28,7 @@ class MemoryEntity {
       num? lat, 
       num? lng, 
       String? media, 
-      num? likesCount, 
+      int? likesCount,
       bool? isLiked, 
       num? commentsCount, 
       String? date, 
@@ -80,7 +80,7 @@ class MemoryEntity {
   num? _lat;
   num? _lng;
   String? _media;
-  num? _likesCount;
+  int? _likesCount;
   bool? _isLiked;
   num? _commentsCount;
   String? _date;
@@ -96,7 +96,7 @@ MemoryEntity copyWith({  num? id,
   num? lat,
   num? lng,
   String? media,
-  num? likesCount,
+  int? likesCount,
   bool? isLiked,
   num? commentsCount,
   String? date,
@@ -129,7 +129,7 @@ MemoryEntity copyWith({  num? id,
   num? get lat => _lat;
   num? get lng => _lng;
   String? get media => _media;
-  num? get likesCount => _likesCount;
+  int? get likesCount => _likesCount;
   bool? get isLiked => _isLiked;
   num? get commentsCount => _commentsCount;
   String? get date => _date;

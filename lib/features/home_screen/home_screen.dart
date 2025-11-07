@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:test_test_test/features/first_screen/first_screen.dart';
 
-import '../../config/widgets/custom_appbar.dart';
 import '../create_person/create_person.dart';
 import '../heart/heart.dart';
 import '../profile_screen/profile_screen.dart';

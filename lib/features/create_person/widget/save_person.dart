@@ -16,7 +16,7 @@ class SavePerson extends GetView<CreatePersonController> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           CustomElevatedButton(onPressed: (){Get.back();}, textColor: AppLightColor.textBoldColor, color: AppLightColor.cancelButtonFill, title: "Cancel", height: 29.h, width: 90.w),
-          CustomElevatedButton(onPressed: (){controller.openDialogPerson(context);}, textColor: AppLightColor.withColor, color: AppLightColor.saveButton, title: "Save", height: 29.h, width: 90.w),
+          CustomElevatedButton(onPressed: (){controller.searchFace(1);controller.openDialogPerson(context);}, textColor: AppLightColor.withColor, color: AppLightColor.saveButton, title: "Save", height: 29.h, width: 90.w),
         ],
       ),)
     );

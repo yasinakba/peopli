@@ -52,7 +52,7 @@ class GetLocationController extends GetxController {
           controller.update();
         }
       } catch (e) {
-        Get.snackbar("Error", "Failed to get address: $e");
+        Get.snackbar("Error", "Failed to get address Please enter manual your address");
         controller.locationController.text = "Unknown";
       }
     } else {

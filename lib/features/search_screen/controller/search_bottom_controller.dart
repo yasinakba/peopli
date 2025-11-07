@@ -31,13 +31,7 @@ class SearchBottomController extends GetxController {
   );
   int selected = 0;
 
-  //2
   int selectedItem = 0;
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   final dio = Dio();
   int facePage = 1;
@@ -52,50 +46,26 @@ class SearchBottomController extends GetxController {
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
-
-      if (token == null) {
-        debugPrint("⚠️ No token found in SharedPreferences");
-        return faceList;
-      }
-      if (selectedCity.id == null || selectedEducation.id == null || selectedJob.id == null) {
+      if (selectedCity.id == null || selectedEducation.id == null || selectedJob.id == null ||dateTimeController.text.isEmpty) {
         Get.snackbar("Error","⚠️ One or more required fields are null");
         return faceList;
       }
 
-      final requestData = {
-        'token': token,
-        'page': 1,
-        'take': 15,
-        'filter': displayNameController.text,
-        'hometownId':searchWithLocation? selectedCity.id:null,
-        'educationId':searchWithEducation? selectedEducation.id:null,
-        'jobId':searchWithJob?selectedJob.id:null,
-        'birthDate': dateTimeController.text.isNotEmpty
-            ? dateTimeController.text
-            : '', // ensure API gets a valid string
-      };
-      final response = await dio.get(
-        '$baseURL/Api/Faces',
-        queryParameters: requestData,
-      );
+      final requestData = {'token': token, 'page': 1, 'take': 15, 'filter': displayNameController.text, 'hometownId':searchWithLocation? selectedCity.id:null, 'educationId':searchWithEducation? selectedEducation.id:null, 'jobId':searchWithJob?selectedJob.id:null, 'birthDate': dateTimeController.text,};
+      final response = await dio.get('$baseURL/Api/Faces', queryParameters: requestData,);
       if (response.statusCode == 200) {
+        facePage = response.data['data']['pageCount'];
         faceList.clear();
         List<dynamic> data = response.data['data']['faces'];
         faceList.addAll(data.map((i)=> FaceEntity.fromJson(i)));
         loadingSearch = false;
         update();
         return faceList;
-      } else {
-        Get.snackbar("Error","❌ Error: ${response.statusCode} -> ${response.statusMessage}",);
-        loadingSearch = false;
-        update();
-        return faceList;
       }
-    } catch (e, stacktrace) {
-      debugPrint("🔥 Exception while fetching memories: $e");
-      debugPrint(stacktrace.toString());
       loadingSearch = false;
-      update();
+      return faceList;
+    } catch (e, stacktrace) {
+      loadingSearch = false;
       return faceList;
     }
   }
@@ -381,7 +351,7 @@ class SearchBottomController extends GetxController {
 
   JobEntity selectedJob = JobEntity(
     id: 24,
-    name: "۲۲۲۲۲",
+    name: "Artist",
     icon: "icon.png",
     createdAt: "2025-03-20T15:35:53",
   );

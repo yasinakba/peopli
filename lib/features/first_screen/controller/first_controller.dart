@@ -51,7 +51,6 @@ class FirstController extends GetxController {
   }
 
   int totalPage = 1;
-  int totalFacePage = 1;
 
   Future<List<MemoryEntity>> readMoreMemories(pageKey) async {
     if (pageKey <= totalPage) {
@@ -59,10 +58,6 @@ class FirstController extends GetxController {
         final preferences = await SharedPreferences.getInstance();
         final token = preferences.getString('token');
 
-        if (token == null) {
-          debugPrint("⚠️ No token found in SharedPreferences");
-          return memoryList;
-        }
 
         final response = await dio.get(
           '$baseURL/Api/Memories',
@@ -81,25 +76,17 @@ class FirstController extends GetxController {
           memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e)));
           update();
           return memoryList;
-        } else {
-          debugPrint(
-            "❌ Error: ${response.statusCode} -> ${response.statusMessage}",
-          );
-          return memoryList;
         }
       } catch (e, stacktrace) {
-        debugPrint("🔥 Exception while fetching memories: $e");
         debugPrint(stacktrace.toString());
         return memoryList;
-      } finally {
-        if (!isClosed) isLoadingMemories = false;
       }
     }
     return [];
   }
 
   Future<List<FaceEntity>> readMoreFace(pageKey) async {
-    if (pageKey <= totalFacePage) {
+    if (facePage >= pageKey) {
       isLoadingFaces = true;
       try {
         final preferences = await SharedPreferences.getInstance();
@@ -290,64 +277,50 @@ class FirstController extends GetxController {
       final preferences = await SharedPreferences.getInstance();
       String? token = preferences.getString('token');
 
-      if (token == null) {
-        debugPrint("⚠️ No token found in SharedPreferences");
-        return;
-      }
-
       final response = await dio.post(
-        'https://api.peopli.ir/Api/Memories/like-memory',
-        data: {'token': token.toString(), 'memoryId': memoryId},
+        '$baseURL/Api/Memories/like-memory',
+        data: {
+          'token': token.toString(),
+          'memoryId': memoryId
+        },
         options: Options(contentType: Headers.formUrlEncodedContentType),
       );
-      print(response.data['data']);
-      if (response.statusCode == 200) {
-        // ✅ Success
-        List<dynamic> data = response.data['data']['faces'];
-        commentList.addAll(data.map((e) => CommentEntity.fromJson(e)));
-        debugPrint("Faces: ${response.data}");
-        update();
-      } else {
-        debugPrint(
-          "❌ Error: ${response.statusCode} -> ${response.statusMessage}",
-        );
-      }
     } catch (e, stacktrace) {
       debugPrint("🔥 Exception while fetching memories: $e");
       debugPrint(stacktrace.toString());
     }
   }
 
-  Future<void> removeLike(memoryId) async {
-    commentList.clear();
-    try {
-      final preferences = await SharedPreferences.getInstance();
-      final token = preferences.getString('token');
-
-      if (token == null) {
-        debugPrint("⚠️ No token found in SharedPreferences");
-        return;
-      }
-
-      final response = await dio.post(
-        'https://api.peopli.ir/Api/Memories/remove-like',
-        data: {'token': token, 'memoryId': memoryId},
-        options: Options(contentType: Headers.formUrlEncodedContentType),
-      );
-
-      if (response.statusCode == 200) {
-        // ✅ Success
-
-        debugPrint("Faces: ${response.data}");
-        update();
-      } else {
-        debugPrint(
-          "❌ Error: ${response.statusCode} -> ${response.statusMessage}",
-        );
-      }
-    } catch (e, stacktrace) {
-      debugPrint("🔥 Exception while fetching memories: $e");
-      debugPrint(stacktrace.toString());
-    }
-  }
+  // Future<void> removeLike(memoryId) async {
+  //   commentList.clear();
+  //   try {
+  //     final preferences = await SharedPreferences.getInstance();
+  //     final token = preferences.getString('token');
+  //
+  //     if (token == null) {
+  //       debugPrint("⚠️ No token found in SharedPreferences");
+  //       return;
+  //     }
+  //
+  //     final response = await dio.post(
+  //       '$baseURL/Api/Memories/remove-like',
+  //       data: {'token': token, 'memoryId': memoryId},
+  //       options: Options(contentType: Headers.formUrlEncodedContentType),
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       // ✅ Success
+  //
+  //       debugPrint("Faces: ${response.data}");
+  //       update();
+  //     } else {
+  //       debugPrint(
+  //         "❌ Error: ${response.statusCode} -> ${response.statusMessage}",
+  //       );
+  //     }
+  //   } catch (e, stacktrace) {
+  //     debugPrint("🔥 Exception while fetching memories: $e");
+  //     debugPrint(stacktrace.toString());
+  //   }
+  // }
 }

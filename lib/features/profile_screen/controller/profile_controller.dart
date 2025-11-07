@@ -12,10 +12,6 @@ import '../../first_screen/entity/memory_entity.dart';
 
 class ProfileController extends GetxController {
   final dio = Dio();
-  @override
-  void onInit() {
-    super.onInit();
-  }
   Future<void> getCurrentAccount() async {
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -34,36 +30,15 @@ class ProfileController extends GetxController {
       );
 
       final data = response.data['data'];
-
-      if (data != null) {
         if (data is Map<String, dynamic>) {
             final user = UserEntity.fromJson(data);
             currentUser.add(user);
             debugPrint("✅ Single user added: ${user.username}");
-        } else if (data is List) {
-          // Multiple users
-          for (var item in data) {
-            if (item is Map<String, dynamic>) {
-              try {
-                final user = UserEntity.fromJson(item);
-                currentUser.add(user);
-              } catch (e, st) {
-                debugPrint("❌ Error parsing user in list: $e");
-                debugPrint("$st");
-              }
-            } else {
-              debugPrint("❌ Unexpected item type in list: ${item.runtimeType}");
-            }
-          }
-          debugPrint("✅ Added ${currentUser.length} users from list");
         } else {
           debugPrint("❌ Unexpected data type: ${data.runtimeType}");
         }
 
         update();
-      } else {
-        debugPrint("❌ Data is null");
-      }
 
     } catch (e, stacktrace) {
       debugPrint("🔥 Exception while fetching account: $e");
@@ -88,11 +63,6 @@ class ProfileController extends GetxController {
         final preferences = await SharedPreferences.getInstance();
         final token = preferences.getString('token');
 
-        if (token == null) {
-          debugPrint("⚠️ No token found in SharedPreferences");
-          return memoryList;
-        }
-
         final response = await dio.get(
           '$baseURL/Api/Memories',
           queryParameters: {
@@ -113,17 +83,11 @@ class ProfileController extends GetxController {
           memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e)));
           update();
           return memoryList;
-        } else {
-          debugPrint(
-              "❌ Error: ${response.statusCode} -> ${response.statusMessage}");
-          return memoryList;
         }
       } catch (e, stacktrace) {
         debugPrint("🔥 Exception while fetching memories: $e");
         debugPrint(stacktrace.toString());
         return memoryList;
-      } finally {
-        if (!isClosed) isLoadingMemories = false;
       }
     }
     return [];
@@ -134,11 +98,6 @@ class ProfileController extends GetxController {
       try {
         final preferences = await SharedPreferences.getInstance();
         final token = preferences.getString('token');
-
-        if (token == null) {
-          debugPrint("⚠️ No token found in SharedPreferences");
-          return faceList;
-        }
 
         final response = await dio.get(
           '$baseURL/Api/Faces?token=$token&page=$pageKey&take=15&sortBy=closest',
@@ -154,10 +113,6 @@ class ProfileController extends GetxController {
           debugPrint("Faces: ${response.data}");
           isLoadingFaces = false;
           update();
-          return faceList;
-        } else {
-          debugPrint(
-              "❌ Error: ${response.statusCode} -> ${response.statusMessage}");
           return faceList;
         }
       } catch (e, stacktrace) {
@@ -350,7 +305,7 @@ class ProfileController extends GetxController {
       debugPrint(stacktrace.toString());
     }
   }
-  Future<void> removeLike(memoryId) async{
+  Future<void> removeLike(memoryId) async {
     commentList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -364,8 +319,8 @@ class ProfileController extends GetxController {
       final response = await dio.post(
         '$baseURL/Api/Memories/remove-like',
         data: {
-          'token':token,
-          'memoryId':memoryId,
+          'token': token,
+          'memoryId': memoryId,
         },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
@@ -378,11 +333,15 @@ class ProfileController extends GetxController {
         debugPrint("Faces: ${response.data}");
         update();
       } else {
-        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+        debugPrint(
+            "❌ Error: ${response.statusCode} -> ${response.statusMessage}");
       }
     } catch (e, stacktrace) {
       debugPrint("🔥 Exception while fetching memories: $e");
       debugPrint(stacktrace.toString());
     }
   }
+
+
+
 }

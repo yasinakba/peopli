@@ -78,52 +78,13 @@ class _FirstScreenState extends State<FirstScreen> {
                                       orElse: () =>
                                           FaceEntity(), // Return empty face if not found
                                     );
-                                    return Padding(
-                                      padding: EdgeInsets.only(bottom: 10.h),
-                                      child: PostFirstScreen(
-                                        memory,
-                                        index,
-                                        face,
-                                      ),
-                                    );
+                                    return Padding(padding: EdgeInsets.only(bottom: 10.h), child: PostFirstScreen(memory,index,face));
                                   },
                                   // Optional placeholders for better UX
                                   firstPageProgressIndicatorBuilder:
-                                      (context) => Padding(
-                                        padding: EdgeInsets.all(10),
-                                        child: SpinKitFadingCube(
-                                          duration: Duration(seconds: 1),
-                                          itemBuilder: (BuildContext context, int index) {
-                                                return DecoratedBox(
-                                                  decoration: BoxDecoration(
-                                                    color: index.isEven
-                                                        ? Colors.green
-                                                        : Colors.blue,
-                                                  ),
-                                                );
-                                              },
-                                        ),
-                                      ),
+                                      (context) => LoadingWidget(),
                                   newPageProgressIndicatorBuilder: (context) =>
-                                      Padding(
-                                        padding: EdgeInsets.all(10),
-                                        child: SpinKitFadingCube(
-                                          duration: Duration(seconds: 1),
-                                          itemBuilder:
-                                              (
-                                                BuildContext context,
-                                                int index,
-                                              ) {
-                                                return DecoratedBox(
-                                                  decoration: BoxDecoration(
-                                                    color: index.isEven
-                                                        ? Colors.green
-                                                        : Colors.blue,
-                                                  ),
-                                                );
-                                              },
-                                        ),
-                                      ),
+                                      LoadingWidget(),
 
                                   noItemsFoundIndicatorBuilder: (context) =>
                                       const Center(

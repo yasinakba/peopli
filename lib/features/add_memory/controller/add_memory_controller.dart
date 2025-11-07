@@ -29,32 +29,10 @@ class AddMemoryController extends GetxController {
   void addMemory(faceId) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
    String? token =  preferences.getString('token');
-
-    if (token == null) {
-      Get.snackbar('Error', 'Token is invalid');
-      return null;
-    }
-    // ✅ Step 2: Validate inputs
-    if (faceId == null) {
-      Get.snackbar('Error', 'Face ID is missing');
-      return;
-    }
-    if (selectedRadioValue == '') {
-      Get.snackbar('Error', 'Please select a title');
-      return;
-    }
-
-    if (subjectController.text.trim().isEmpty) {
+    if (subjectController.text.trim().isEmpty||typeController.text.isEmpty||selectedRadioValue == '') {
       Get.snackbar('Error', 'Subject cannot be empty');
       return;
     }
-
-    if (typeController.text.isEmpty) {
-      Get.snackbar('Error', 'Type cannot be empty');
-      return;
-    }
-
-
     try {
       final response = await dio.post(
         '$baseURL/Api/Memories/add',
