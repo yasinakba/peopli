@@ -37,8 +37,6 @@ class CreateAccountController extends GetxController {
 
   int selectedRadio = 0;
   int selectedLanguage = 0;
-  XFile? pickedFile;
-  String education = "";
 
 
   final dio = Dio();
@@ -54,9 +52,9 @@ class CreateAccountController extends GetxController {
         userNameController.text.isEmpty ||
         passwordController.text.isEmpty ||
         Get.find<UploadController>().selectedImage.value == '' ||
-        Get.find<DateController>().selectedDate == '' ||
-        selectedCity == '' ||
-        selectedEducation == '') {
+        Get.find<DateController>().selectedDate.timeZoneName == '' ||
+        selectedCity.id == null ||
+        selectedEducation.id == null) {
       Get.showSnackbar(
         const GetSnackBar(
           title: 'Validation Error',
@@ -88,11 +86,11 @@ class CreateAccountController extends GetxController {
       ),
     );
       print(response.data);
-      if (response.statusCode == 200 && response.data['status'] == 'ok') {
+      if (response.statusCode == 200) {
       await preferences.setString('token', response.data['data']);
       loading = false;
       update();
-      Get.toNamed(NamedRoute.routeHomeScreen);
+      Get.back();
     } else {
         loading = false;
         update();
@@ -106,7 +104,6 @@ class CreateAccountController extends GetxController {
 
     }
     } on DioException catch (e) {
-      print("POST error: ${e.response?.statusCode} - ${e.message}");
       loading = false;
       update();
       Get.showSnackbar(

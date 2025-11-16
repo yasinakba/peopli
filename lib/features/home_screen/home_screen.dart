@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
+import 'package:test_test_test/config/widgets/custom_appbar.dart';
 import 'package:test_test_test/features/first_screen/first_screen.dart';
 
 import '../create_person/create_person.dart';
@@ -72,27 +73,3 @@ class HomeScreen extends GetView<HomeController> {
   }
 }
 
-// GetBuilder<HomeController>(
-// builder: (controller) {
-// return Stack(
-// children: [
-// PageView(
-// // index: controller.currentIndex,
-// controller: controller.pageController,
-// onPageChanged: controller.updateIndexNav,
-// children: [
-// FirstScreen(),
-// SearchScreen(),
-// CreatePersonScreen(),
-// HeartScreen(),
-// ProfileScreen(),
-// ],
-// ),
-// Align(
-// alignment: Alignment.bottomCenter,
-// child: NavigationBarWidget(),
-// ),
-// ],
-// );
-// },
-// )

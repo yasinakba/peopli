@@ -12,7 +12,7 @@ class GenderPerson extends GetView<CreatePersonController> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 10,left: 50,right: 50,bottom: 10),
+      padding: const EdgeInsets.only(top: 10,left: 20,right: 20,bottom: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

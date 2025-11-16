@@ -17,7 +17,6 @@ class UploadController extends GetxController{
     final file = await picker.pickImage(source: ImageSource.gallery);
 
     if (file == null) {
-      print("No file selected");
       return;
     }
     pickedFile = file;

@@ -1,12 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/config/app_route/route_names.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
@@ -17,9 +16,6 @@ import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../../feature_location/controller/location_controller.dart';
-import '../../feature_location/entity/city_entity.dart';
-import '../../feature_location/entity/country_entity.dart';
-import '../../search_screen/controller/search_bottom_controller.dart';
 import '../widget/create_cancel_person.dart';
 import '../widget/listTile_create.dart';
 import 'package:flutter/foundation.dart';
@@ -42,7 +38,6 @@ class CreatePersonController extends GetxController {
   );
   int selectedRadio = 0;
   int selectedLanguage = 0;
-  XFile? pickedFile;
   String gender = '';
   DateController dateController = Get.put(DateController());
 
@@ -51,16 +46,10 @@ class CreatePersonController extends GetxController {
     super.onInit();
     Get.lazyPut(() => CreateAccountController());
     Get.lazyPut(() => LocationController());
-    CreateAccountController.selectedCity = CityEntity();
-    CreateAccountController.selectedCountry = CountryEntity();
-    Future.delayed(Duration.zero, () {
-      update();
-    });
   }
 
   final dio = Dio();
 
-  /// Simple POST request with error handling
   Future<void> addFace() async {
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -90,9 +79,9 @@ class CreatePersonController extends GetxController {
 
       final data = {
         'token': token.toString(),
-        'name': nameController.text.trim(),
-        'lastName': familyNameController.text.trim(),
-        'knownFor': knowAsController.text.trim(),
+        'name': nameController.text,
+        'lastName': familyNameController.text,
+        'knownFor': knowAsController.text,
         'gender': gender,
         'avatar': Get
             .find<UploadController>()
@@ -116,7 +105,7 @@ class CreatePersonController extends GetxController {
         nameController.clear();
         familyNameController.clear();
         knowAsController.clear();
-        pickedFile = null;
+        Get.find<UploadController>().pickedFile = null;
         selectedRadio = -1;
         Get.back();
         update();
@@ -132,17 +121,13 @@ class CreatePersonController extends GetxController {
   int facePage = 1;
 
   Future<List<FaceEntity>> searchFace(pageKey) async {
+    faceList.clear();
     if (pageKey <= facePage) {
       try {
         final preferences = await SharedPreferences.getInstance();
         final token = preferences.getString('token');
 
-        if (CreateAccountController.selectedCity.id == null ||
-            CreateAccountController.selectedEducation.id == null ||
-            CreateAccountController.selectedJob.id == null) {
-          Get.snackbar("Error", "⚠️ One or more required fields are null");
-          return faceList;
-        }
+        if (CreateAccountController.selectedCity.id == null || CreateAccountController.selectedEducation.id == null || CreateAccountController.selectedJob.id == null) {Get.snackbar("Error", "⚠️ One or more required fields are null");return faceList;}
 
         final requestData = {
           'token': token,
@@ -168,7 +153,7 @@ class CreatePersonController extends GetxController {
         return faceList;
       } catch (e, stacktrace) {
         debugPrint(stacktrace.toString());
-        return faceList;
+        return [];
       }
     }
     return [];
@@ -245,7 +230,10 @@ class CreatePersonController extends GetxController {
                                   dynamic>(
                                 itemBuilder: (context, memory, index) {
                                   FaceEntity face = faceList[index];
+                                  if(index <= faceList.length-1){
                                   return ListTileCreate(face: face);
+                                  }
+                                  return Container(color: Colors.teal,width: 50.w,height: 50.w,);
                                 },
                                 firstPageProgressIndicatorBuilder: (context) =>
                                     LoadingWidget(),

@@ -163,7 +163,7 @@ class _PostProfileState extends State<PostProfile> {
                         SizedBox(
                           width: 130.w,
                           child: Text(
-                            widget.memory.user ?? 'null',
+                            widget.memory.face ?? 'null',
                             style: appThemeData.textTheme.labelMedium,
                             textAlign: TextAlign.start,
                           ),
@@ -208,11 +208,11 @@ class _PostProfileState extends State<PostProfile> {
                   height: 141.h,
                   child: widget.memory.media != null
                       ? Image.network(
-                    'https://api.peopli.ir/uploads/${widget.memory.media?.split('/').last}',
+                    '$baseImageURL/${widget.memory.media?.split('/').last}',
                     fit: BoxFit.fitWidth,
                   )
                       : Image.network(
-                    'https://api.peopli.ir/uploads/usericon.png',
+                    '$baseImageURL/usericon.png',
                     fit: BoxFit.fitWidth,
                   ),
                 ),

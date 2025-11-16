@@ -31,7 +31,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
             GetBuilder<CreateAccountController>(
               builder: (controller) {
                 if (controller.loading == true) {
-                 LoadingWidget();
+                  LoadingWidget();
                 }
                 return Padding(
                   padding: const EdgeInsets.only(top: 100),
@@ -39,22 +39,22 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                     children: [
                       Align(
                         alignment: Alignment.center,
-                        child: Container(
-                          height: 115.h,
-                          width: 100.w,
-                          decoration: BoxDecoration(
-                            color: AppLightColor.elipsFill,
-                            image: controller.pickedFile == null
-                                ? DecorationImage(image: NetworkImage(
-                                '$baseImageURL/noavatar.png'))
-                                : DecorationImage(
-                              image: FileImage(
-                                  File(controller.pickedFile!.path)),
-                              fit: BoxFit.cover,
+                        child: GetBuilder<UploadController>(builder: (controller) {
+                          return Container(
+                            height: 115.h,
+                            width: 100.w,
+                            decoration: BoxDecoration(
+                              color: AppLightColor.elipsFill,
+                              image: controller.pickedFile == null
+                                  ? DecorationImage(image: NetworkImage(
+                                  '$baseImageURL/noavatar.png',))
+                                  : DecorationImage(image: FileImage(
+                                  File(controller.pickedFile!.path,),),
+                                fit: BoxFit.cover,
+                              ), shape: BoxShape.circle,
                             ),
-                            shape: BoxShape.circle,
-                          ),
-                        ),
+                          );
+                        }),
                       ),
                       SizedBox(
                         width: 292.w,
@@ -99,7 +99,9 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      Get.find<UploadController>().uploadImage();
+                                      Get
+                                          .find<UploadController>()
+                                          .uploadImage();
                                     },
                                     child: Text(
                                       "Add Photos",
@@ -148,10 +150,11 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                   Padding(
                                     padding: EdgeInsetsDirectional.only(
                                         top: 10),
-                                    child:Container(
+                                    child: Container(
                                       width: 360.w,
                                       height: 32.h,
-                                      padding: EdgeInsetsDirectional.only(start: 10.w),
+                                      padding: EdgeInsetsDirectional.only(
+                                          start: 10.w),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(25),
@@ -160,14 +163,19 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                       child: GetBuilder<DateController>(
                                         builder: (controller) {
                                           // Safely handle null controller or date
-                                          final safeDate = controller.selectedDate;
-                                          final formattedDate = DateFormat('yyyy/MM/dd – HH:mm').format(safeDate);
+                                          final safeDate = controller
+                                              .selectedDate;
+                                          final formattedDate = DateFormat(
+                                              'yyyy/MM/dd – HH:mm').format(
+                                              safeDate);
                                           return Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment: MainAxisAlignment
+                                                .spaceBetween,
                                             children: [
                                               Text(
                                                 formattedDate,
-                                                style: appThemeData.textTheme.bodySmall ??
+                                                style: appThemeData.textTheme
+                                                    .bodySmall ??
                                                     const TextStyle(
                                                       color: Colors.grey,
                                                       fontSize: 14,
@@ -175,7 +183,8 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                               ),
                                               IconButton(
                                                 onPressed: () async {
-                                                     controller.pickDateTime(context);
+                                                  controller.pickDateTime(
+                                                      context);
                                                 },
                                                 icon: const Icon(
                                                   Icons.calendar_today,
@@ -221,7 +230,8 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                         child: Text(
                                           "${CreateAccountController
                                               .selectedCountry
-                                              .name??''} ${CreateAccountController
+                                              .name ??
+                                              ''} ${CreateAccountController
                                               .selectedCity.name ??
                                               "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France"}",
                                           maxLines: 2,

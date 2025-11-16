@@ -17,11 +17,6 @@ class ProfileController extends GetxController {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.get('token');
 
-      if (token == null) {
-        debugPrint("⚠️ No token found in SharedPreferences");
-        return;
-      }
-
       final response = await dio.get(
         '$baseURL/Api/Account',
         queryParameters: {
@@ -124,7 +119,39 @@ class ProfileController extends GetxController {
     return [];
   }
   List<CommentEntity> commentList = [];
+  List<CommentEntity> myCommentList = [];
   int commentPage = 1;
+  Future<void> readMyComment(memoryId) async{
+    commentList.clear();
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final token = preferences.getString('token');
+
+      if (token == null) {
+        debugPrint("⚠️ No token found in SharedPreferences");
+        return;
+      }
+
+      final response = await dio.get(
+        '$baseURL/Api/Memories/my-comments?token=$token&memoryId=$memoryId&page=$commentPage&take=15&sortBy=latest',
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = response.data['data']['comments'];
+        myCommentList.addAll(data.map((e) => CommentEntity.fromJson(e),));
+        debugPrint("Comments: ${response.data}");
+        update();
+      } else {
+        debugPrint("❌ Error: ${response.statusCode} -> ${response.statusMessage}");
+      }
+    } catch (e, stacktrace) {
+      debugPrint("🔥 Exception while fetching memories: $e");
+      debugPrint(stacktrace.toString());
+    }
+  }
   Future<void> readComment(memoryId) async{
     commentList.clear();
     try {
@@ -182,7 +209,6 @@ class ProfileController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        // ✅ Success
         readComment(memoryId);
         debugPrint("Comments: ${response.data}");
         update();
@@ -290,7 +316,6 @@ class ProfileController extends GetxController {
           contentType: Headers.formUrlEncodedContentType,
         ),
       );
-      print(response.data['data']);
       if (response.statusCode == 200) {
         // ✅ Success
         List<dynamic> data = response.data['data']['faces'];

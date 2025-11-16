@@ -14,18 +14,15 @@ class CustomeAppBar extends GetView<HomeController>
 
   @override
   Widget build(BuildContext context) {
-    return SliverAppBar(
-      pinned: false,
+    return AppBar(
       automaticallyImplyLeading: false,
       elevation: 0,
       titleSpacing: 0,
       backgroundColor: Colors.white,
+
       leading: GetBuilder<HomeController>(
-        builder: (a) => SizedBox(
-            child: controller.index == 0
-                ? SizedBox.shrink()
-                : SizedBox.shrink()),
-      ),
+        builder: (a) =>controller.index == 0
+            ? SizedBox.shrink():Container()),
       title: Text("Peopli", style: appThemeData.textTheme.displayMedium),
       actions: [
         Row(

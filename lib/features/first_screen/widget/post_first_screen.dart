@@ -85,7 +85,6 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: Text(
-                              // "${m} - now",
                               "${widget.face.birthdate.toString()} -now",
                               style: appThemeData.textTheme.bodyLarge,
                               textAlign: TextAlign.start,

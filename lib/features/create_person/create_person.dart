@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
-import 'package:test_test_test/config/widgets/custom_appbar.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/create_person/widget/gender-person.dart';
 import 'package:test_test_test/features/create_person/widget/information-Person.dart';
@@ -26,11 +25,9 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
       body: GetBuilder<CreatePersonController>(  initState: (state) {
         Get.lazyPut(() => UploadController(),);
         Get.lazyPut(() => DateController(),);
-      },builder: (controller) =>CustomScrollView(
-        slivers: [
-          CustomeAppBar(),
-          SliverToBoxAdapter(
-            child: Padding(
+      },builder: (controller) =>Column(
+        children: [
+           Padding(
               padding: const EdgeInsets.only(top: 10,bottom: 5),
               child: Align(
                   alignment: Alignment.center,
@@ -49,13 +46,10 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                   },)
               ),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: SizedBox(
+           SizedBox(
               width: 292.w,
               child: Column(
                 children: [
-                  //En && AddPhotoes
                   Padding(
                     padding: const EdgeInsets.only(right: 20,left: 20),
                     child: Row(
@@ -156,7 +150,6 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                 ],
               ),
             ),
-          )
         ],
       ) )
     );

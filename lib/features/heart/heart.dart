@@ -22,11 +22,9 @@ class _HeartScreenState extends State<HeartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          CustomeAppBar(),
-          SliverToBoxAdapter(
-            child: GetBuilder<HeartController>(
+      body: Column(
+        children: [
+          GetBuilder<HeartController>(
                 initState: (state) {
                   Get.lazyPut(() => ProfileController());
                   Get.lazyPut(() => DateController());
@@ -104,7 +102,6 @@ class _HeartScreenState extends State<HeartScreen> {
                     ),
                   );
             }),
-          ),
         ],
       ),
     );

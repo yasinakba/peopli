@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:intl/intl.dart';
-import 'package:test_test_test/config/widgets/custom_appbar.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
-import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 import 'package:test_test_test/features/search_screen/widget/search_list_tile.dart';
 import 'package:test_test_test/features/search_screen/widget/text_field_search.dart';
 
@@ -24,456 +21,419 @@ class SearchScreen extends GetView<SearchBottomController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GetBuilder<SearchBottomController>(
-        initState: (state) {
-          Get.lazyPut(() => UploadController(),);
-          Get.lazyPut(() => DateController(),);
-        },
-        builder: (controller) =>
-        controller.loadingSearch ? LoadingWidget() : CustomScrollView(
-          slivers: [
-            CustomeAppBar(),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  //divider
-                  Divider(
-                    height: 2,
-                    color: AppLightColor.cancelButtonFill,
+        builder: (controller) {
+          bool notFound = controller.faceList.isEmpty && controller.displayNameController.text.isNotEmpty;
+          return  Column(
+            children: [
+              //divider
+              Divider(
+                height: 2,
+                color: AppLightColor.cancelButtonFill,
+              ),
+              //search
+              Container(
+              padding:  EdgeInsets.symmetric(
+           horizontal: 10.w,
+                vertical: 10.h
+              ), margin: EdgeInsets.only(top: 5.h),
+                width: 375.w,
+                constraints: BoxConstraints(
+                  // maxHeight: 500.h,
+                  minHeight: 350.h,
+                ),
+                decoration: BoxDecoration(
+                  color: AppLightColor.withColor,
+                  borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(50),
+                    bottomLeft: Radius.circular(50),
                   ),
-                  //search
-                  Container(
-                    width: 375.w,
-                    constraints: BoxConstraints(
-                      // maxHeight: 500.h,
-                      minHeight: 370.h,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppLightColor.cancelButtonFill,
+                      spreadRadius: 2,
+                      blurRadius: 7,
+                      offset: Offset(0, 3), // changes position of shadow
                     ),
-                    decoration: BoxDecoration(
-                      color: AppLightColor.withColor,
-                      borderRadius: BorderRadius.only(
-                        bottomRight: Radius.circular(50),
-                        bottomLeft: Radius.circular(50),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppLightColor.cancelButtonFill,
-                          spreadRadius: 2,
-                          blurRadius: 7,
-                          offset: Offset(0, 3), // changes position of shadow
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        CustomRadioButton(
+                          onPressed: () =>
+                              controller.updateIndexButton(0),
+                          style: controller.textColorCustomButton(0),
+                          color: controller.colorCustomButton(0),
+                          title: 'Item',
+                          height: 22.h,
+                          width: 103.w,
+                        ),
+                        SizedBox(width: 60.w),
+                        CustomRadioButton(
+                          onPressed: () =>
+                              controller.updateIndexButton(1),
+                          style: controller.textColorCustomButton(1),
+                          color: controller.colorCustomButton(1),
+                          title: 'Map',
+                          height: 22.h,
+                          width: 103.h,
                         ),
                       ],
                     ),
-                    child: Column(
+                    //row2
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 30,
-                            right: 30,
-                            left: 30,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              CustomRadioButton(
-                                onPressed: () =>
-                                    controller.updateIndexButton(0),
-                                style: controller.textColorCustomButton(0),
-                                color: controller.colorCustomButton(0),
-                                title: 'Item',
-                                height: 22.h,
-                                width: 103.w,
-                              ),
-                              SizedBox(width: 60.w),
-                              CustomRadioButton(
-                                onPressed: () =>
-                                    controller.updateIndexButton(1),
-                                style: controller.textColorCustomButton(1),
-                                color: controller.colorCustomButton(1),
-                                title: 'Map',
-                                height: 22.h,
-                                width: 103.h,
-                              ),
-                            ],
-                          ),
+                        CustomRadioButton(
+                          onPressed: () =>
+                              controller.updateIndexButtonItem(0),
+                          style: controller.textColorCustomButtonItem(0),
+                          color: controller.colorCustomButtonItem(0),
+                          title: 'Newest',
+                          height: 22.h,
+                          width: 84.w,
                         ),
-                        //row2
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 30,
-                            right: 30,
-                            left: 30,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              CustomRadioButton(
-                                onPressed: () =>
-                                    controller.updateIndexButtonItem(0),
-                                style: controller.textColorCustomButtonItem(0),
-                                color: controller.colorCustomButtonItem(0),
-                                title: 'Newest',
-                                height: 22.h,
-                                width: 84.w,
-                              ),
-                              CustomRadioButton(
-                                onPressed: () =>
-                                    controller.updateIndexButtonItem(1),
-                                style: controller.textColorCustomButtonItem(1),
-                                color: controller.colorCustomButtonItem(1),
-                                title: 'Oldest',
-                                height: 22.h,
-                                width: 84.w,
-                              ),
-                              CustomRadioButton(
-                                onPressed: () =>
-                                    controller.updateIndexButtonItem(2),
-                                style: controller.textColorCustomButtonItem(2),
-                                color: controller.colorCustomButtonItem(2),
-                                title: 'Popular',
-                                height: 22.h,
-                                width: 84.w,
-                              ),
-                            ],
-                          ),
+                        CustomRadioButton(
+                          onPressed: () =>
+                              controller.updateIndexButtonItem(1),
+                          style: controller.textColorCustomButtonItem(1),
+                          color: controller.colorCustomButtonItem(1),
+                          title: 'Oldest',
+                          height: 22.h,
+                          width: 84.w,
                         ),
+                        CustomRadioButton(
+                          onPressed: () =>
+                              controller.updateIndexButtonItem(2),
+                          style: controller.textColorCustomButtonItem(2),
+                          color: controller.colorCustomButtonItem(2),
+                          title: 'Popular',
+                          height: 22.h,
+                          width: 84.w,
+                        ),
+                      ],
+                    ),
 
-                        //textField
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 12,
-                            right: 8,
-                            left: 8,
-                            bottom: 8,
-                          ),
-                          child: Column(
+                    //textField
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 12,
+                        right: 8,
+                        left: 8,
+                        bottom: 8,
+                      ),
+                      child: Column(
+                        children: [
+                          //name & family
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceAround,
                             children: [
-                              //name & family
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceAround,
-                                children: [
-                                  SizedBox(
-                                    width: 20.w,
-                                    height: 20.h,
-                                    child: InkWell(
-                                      onTap: () {
-                                        controller.searchFace(1);
-                                      },
-                                      child: Image.asset(
-                                        AppAssetsPng.iconNavbarTwo,
-                                        color: AppLightColor.textBoldColor,
-                                      ),
-                                    ),
+                              SizedBox(
+                                width: 20.w,
+                                height: 20.h,
+                                child: InkWell(
+                                  onTap: () {
+                                    controller.searchFace(1);
+                                  },
+                                  child: Image.asset(
+                                    AppAssetsPng.iconNavbarTwo,
+                                    color: AppLightColor.textBoldColor,
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 33),
-                                    child: TextFieldSearch(
-                                      controller: controller
-                                          .displayNameController,
-                                      labelText: 'Name & Family',
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-
-                              //birth
                               Padding(
-                                padding: EdgeInsetsDirectional.only(top: 10),
-                                child: Container(
-                                  width: 285.w,
-                                  height: 32.h,
-                                  padding: EdgeInsetsDirectional.only(
-                                    start: 10.w,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(25),
-                                    border: Border.all(color: Colors.black),
-                                  ),
-                                  child:  GetBuilder<DateController>(
-                                    initState: (state) => Get.lazyPut(() => DateController(),),
-                                    builder: (controller) {
-                                      // Safely handle null controller or date
-                                      final safeDate = controller.selectedDate;
-                                      final formattedDate = DateFormat('yyyy/MM/dd – HH:mm').format(safeDate);
-                                      return Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            formattedDate,
-                                            style: appThemeData.textTheme.bodySmall ??
-                                                const TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 14,
-                                                ),
-                                          ),
-                                          IconButton(
-                                            onPressed: () async {
-                                                 controller.pickDateTime(context);
-                                            },
-                                            icon: const Icon(
-                                              Icons.calendar_today,
-                                              size: 15,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
+                                padding: const EdgeInsets.only(right: 33),
+                                child: TextFieldSearch(
+                                  controller: controller
+                                      .displayNameController,
+                                  labelText: 'Name & Family',
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        //location
-                        Container(
-                          margin: EdgeInsetsDirectional.symmetric(
-                            horizontal: 23.w,
-                            vertical: 5.h,
-                          ),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                width: double.infinity,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 5,
-                                    left: 10,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Home Location :",
-                                            style: appThemeData
-                                                .textTheme
-                                                .bodyLarge,
+
+                          //birth
+                          Container(
+                            width: 285.w,
+                            height: 32.h,
+                            margin: EdgeInsets.only(top: 10),
+                            padding: EdgeInsetsDirectional.only(
+                              start: 10.w,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(25),
+                              border: Border.all(color: Colors.black),
+                            ),
+                            child:  GetBuilder<DateController>(
+                              initState: (state) => Get.lazyPut(() => DateController(),),
+                              builder: (controller) {
+                                // Safely handle null controller or date
+                                final safeDate = controller.selectedDate;
+                                final formattedDate = DateFormat('yyyy/MM/dd – HH:mm').format(safeDate);
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      formattedDate,
+                                      style: appThemeData.textTheme.bodySmall ??
+                                          const TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 14,
                                           ),
-                                          Spacer(),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              right: 10,
-                                            ),
-                                            child: InkWell(
-                                              onTap: () {
-                                                controller.searchWithLocation =
-                                                true;
-                                                controller
-                                                    .openDialogLocation(
-                                                  context,
-                                                );
-                                                controller.update();
-                                              },
-                                              child: controller
-                                                  .searchWithLocation
-                                                  ? IconButton(onPressed: () {
-                                                controller.searchWithLocation =
-                                                false;
-                                                controller.update();
-                                              },
-                                                  icon: Icon(
-                                                    IconsaxPlusBold.tag_cross,
-                                                    color: Colors
-                                                        .deepPurpleAccent
-                                                        .shade200,))
-                                                  : Text(
-                                                'Add',
-                                                style: appThemeData
-                                                    .textTheme
-                                                    .labelLarge!
-                                                    .copyWith(
-                                                  color: AppLightColor
-                                                      .fillButton,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                    ),
+                                    IconButton(
+                                      onPressed: () async {
+                                        controller.pickDateTime(context);
+                                      },
+                                      icon: const Icon(
+                                        Icons.calendar_today,
+                                        size: 15,
+                                        color: Colors.grey,
                                       ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //location
+                    Container(
+                      margin: EdgeInsetsDirectional.symmetric(
+                        horizontal: 23.w,
+                        vertical: 5.h,
+                      ),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 5,
+                                left: 10,
+                              ),
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
                                       Text(
-                                        textAlign: TextAlign.start,
-                                        "${controller.selectedCountry.id !=
-                                            null &&
-                                            controller.searchWithLocation
-                                            ? controller.selectedCountry.name
-                                            : ''} ${controller.selectedCity
-                                            .id != null &&
-                                            controller.searchWithLocation
-                                            ? controller.selectedCity.name
-                                            : ''}",
+                                        "Home Location :",
                                         style: appThemeData
                                             .textTheme
-                                            .labelLarge!
-                                            .copyWith(
-                                          color: AppLightColor.fillButton,),
+                                            .bodyLarge,
+                                      ),
+                                      Spacer(),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 10,
+                                        ),
+                                        child: InkWell(
+                                          onTap: () {
+                                            controller.searchWithLocation =
+                                            true;
+                                            controller
+                                                .openDialogLocation(
+                                              context,
+                                            );
+                                            controller.update();
+                                          },
+                                          child: controller
+                                              .searchWithLocation
+                                              ? IconButton(onPressed: () {
+                                            controller.searchWithLocation =
+                                            false;
+                                            controller.update();
+                                          },
+                                              icon: Icon(
+                                                IconsaxPlusBold.tag_cross,
+                                                color: Colors
+                                                    .deepPurpleAccent
+                                                    .shade200,))
+                                              : Text(
+                                            'Add',
+                                            style: appThemeData
+                                                .textTheme
+                                                .labelLarge!
+                                                .copyWith(
+                                              color: AppLightColor
+                                                  .fillButton,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ),
-                              SizedBox(height: 5.h),
-                              SizedBox(
-                                width: double.infinity,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    top: 5,
-                                    left: 10,
-                                  ),
-                                  child: Text(
-                                    "Education :",
-                                    style: appThemeData.textTheme.bodyLarge,
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    width: 220.w,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 15,
-                                        top: 5,
-                                      ),
-                                      child: Text(
-                                        controller.searchWithEducation
-                                            ? controller.selectedEducation
-                                            .name ?? ''
-                                            : '',
-                                        maxLines: 2,
-                                        style: appThemeData.textTheme.bodySmall,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: InkWell(
-                                      onTap: () {
-                                        controller.searchWithEducation = true;
-                                        controller.openDialogEducation(context);
-                                        controller.update();
-                                      },
-                                      child: controller.searchWithEducation
-                                          ? IconButton(onPressed: () {
-                                        controller.searchWithEducation = false;
-                                        controller.update();
-                                      },
-                                          icon: Icon(IconsaxPlusBold.tag_cross,
-                                            color: Colors.deepPurpleAccent
-                                                .shade200,))
-                                          : Text(
-                                        'Add',
-                                        style: appThemeData
-                                            .textTheme
-                                            .labelLarge!
-                                            .copyWith(
-                                          color: AppLightColor.fillButton,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                 controller.searchWithLocation? Text(
+                                    textAlign: TextAlign.start,
+                                    "${controller.selectedCountry.name} ${ controller.selectedCity.name}",
+                                    style: appThemeData
+                                        .textTheme
+                                        .labelLarge!
+                                        .copyWith(
+                                      color: AppLightColor.fillButton,),
+                                  ):Text(''),
                                 ],
                               ),
-                              SizedBox(height: 5.h),
+                            ),
+                          ),
+                          SizedBox(height: 5.h),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 5,
+                                left: 10,
+                              ),
+                              child: Text(
+                                "Education :",
+                                style: appThemeData.textTheme.bodyLarge,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
                               SizedBox(
-                                width: double.infinity,
+                                width: 220.w,
                                 child: Padding(
                                   padding: const EdgeInsets.only(
+                                    left: 15,
                                     top: 5,
-                                    left: 10,
                                   ),
                                   child: Text(
-                                    "Job :",
-                                    style: appThemeData.textTheme.bodyLarge,
+                                    controller.searchWithEducation
+                                        ? controller.selectedEducation
+                                        .name ??'':'',
+                                    maxLines: 2,
+                                    style: appThemeData.textTheme.bodySmall,
                                   ),
                                 ),
                               ),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    width: 220.w,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 15,
-                                        top: 5,
-                                      ),
-                                      child: Text(
-                                        "${controller.selectedJob.id != null &&
-                                            controller.searchWithJob
-                                            ? controller.selectedJob.name
-                                            : ''}",
-                                        maxLines: 2,
-                                        style: appThemeData.textTheme.bodySmall,
-                                      ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: InkWell(
+                                  onTap: () {
+                                    controller.searchWithEducation = true;
+                                    controller.openDialogEducation(context);
+                                    controller.update();
+                                  },
+                                  child: controller.searchWithEducation
+                                      ? IconButton(onPressed: () {
+                                    controller.searchWithEducation = false;
+                                    controller.update();
+                                  },
+                                      icon: Icon(IconsaxPlusBold.tag_cross,
+                                        color: Colors.deepPurpleAccent
+                                            .shade200,))
+                                      : Text(
+                                    'Add',
+                                    style: appThemeData
+                                        .textTheme
+                                        .labelLarge!
+                                        .copyWith(
+                                      color: AppLightColor.fillButton,
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: InkWell(
-                                      onTap: () {
-                                        controller.searchWithJob = true;
-                                        controller.openDialogJob(context);
-                                        controller.update();
-                                      },
-                                      child: controller.searchWithJob
-                                          ? IconButton(onPressed: () {
-                                        controller.searchWithJob = false;
-                                        controller.update();
-                                      },
-                                          icon: Icon(IconsaxPlusBold.tag_cross,
-                                            color: Colors.deepPurpleAccent
-                                                .shade200,))
-                                          : Text(
-                                        'Add',
-                                        style: appThemeData
-                                            .textTheme
-                                            .labelLarge!
-                                            .copyWith(
-                                          color: AppLightColor.fillButton,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 5.h),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 5,
+                                left: 10,
+                              ),
+                              child: Text(
+                                "Job :",
+                                style: appThemeData.textTheme.bodyLarge,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: 220.w,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 15,
+                                    top: 5,
+                                  ),
+                                  child: Text(
+                                    "${controller.searchWithJob
+                                        ? controller.selectedJob.name
+                                        : ''}",
+                                    maxLines: 2,
+                                    style: appThemeData.textTheme.bodySmall,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: InkWell(
+                                  onTap: () {
+                                    controller.searchWithJob = true;
+                                    controller.openDialogJob(context);
+                                    controller.update();
+                                  },
+                                  child: controller.searchWithJob
+                                      ? IconButton(onPressed: () {
+                                    controller.searchWithJob = false;
+                                    controller.update();
+                                  },
+                                      icon: Icon(IconsaxPlusBold.tag_cross,
+                                        color: Colors.deepPurpleAccent
+                                            .shade200,))
+                                      : Text(
+                                    'Add',
+                                    style: appThemeData
+                                        .textTheme
+                                        .labelLarge!
+                                        .copyWith(
+                                      color: AppLightColor.fillButton,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ), //searchListTile
-                ],
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsetsDirectional.symmetric(
-                  horizontal: 20.w,
-                  vertical: 5.h,
+                  ],
                 ),
-                child: controller.faceList.isEmpty &&
-                    controller.displayNameController.text.isNotEmpty ? Center(
-                  child: Container(
-                    height: 355.h,
-                    decoration: BoxDecoration(
-                      border:Border.all(width: 2,color: Colors.black12),
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(textAlign: TextAlign.center,'Not found', style: TextStyle(color: Colors.black,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18.sp),),
-                  ),) : SearchListTile(),
-              ),
-            ),
-          ],
-        ),
+              ), //searchListTile
+              SizedBox(height: 6.h,),
+              notFound ? Container(
+                // margin: EdgeInsetsDirectional.only(top: 10.h),
+                padding: EdgeInsetsDirectional.symmetric(horizontal: 20.w, vertical: 5.h,
+                ),
+                height: 355.h,
+                decoration: BoxDecoration(
+                  border:Border.all(width: 2,color: Colors.black12),
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                alignment: Alignment.center,
+                child: Text(textAlign: TextAlign.center,'Not found', style: TextStyle(color: Colors.black,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18.sp),),
+              ) :controller.loadingSearch? LoadingWidget():SearchListTile(),
+            ],
+          );
+        }
       ),
     );
   }

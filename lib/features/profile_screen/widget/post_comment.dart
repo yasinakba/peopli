@@ -10,9 +10,9 @@ class PostComment extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(length: 2,
         initialIndex: 0,
-        child: Scaffold(
-   backgroundColor: AppLightColor.withColor,
-      body: Column(
+        child: Material(
+   color: AppLightColor.withColor,
+      child: Column(
         children: [
           Container(
             color: AppLightColor.backgoundPost,

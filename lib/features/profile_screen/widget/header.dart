@@ -29,7 +29,7 @@ class HeaderProfile extends StatelessWidget {
                   child:CircleAvatar(
                     backgroundImage: controller.currentUser.isNotEmpty
                         ? NetworkImage("$baseImageURL/${controller.currentUser.first.avatar}")
-                        :  NetworkImage('$baseImageURL/noavatar.png') as ImageProvider,
+                        :  NetworkImage('$baseImageURL/noavatar.png'),
                   ),
                 ),
                 Column(

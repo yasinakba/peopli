@@ -21,6 +21,7 @@ import '../../feature_location/entity/city_entity.dart';
 import '../../feature_location/entity/country_entity.dart';
 
 class SearchBottomController extends GetxController {
+
   TextEditingController displayNameController = TextEditingController();
   TextEditingController knowAsController = TextEditingController();
   TextEditingController locationController = TextEditingController();
@@ -46,10 +47,6 @@ class SearchBottomController extends GetxController {
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
-      if (selectedCity.id == null || selectedEducation.id == null || selectedJob.id == null ||dateTimeController.text.isEmpty) {
-        Get.snackbar("Error","⚠️ One or more required fields are null");
-        return faceList;
-      }
 
       final requestData = {'token': token, 'page': 1, 'take': 15, 'filter': displayNameController.text, 'hometownId':searchWithLocation? selectedCity.id:null, 'educationId':searchWithEducation? selectedEducation.id:null, 'jobId':searchWithJob?selectedJob.id:null, 'birthDate': dateTimeController.text,};
       final response = await dio.get('$baseURL/Api/Faces', queryParameters: requestData,);

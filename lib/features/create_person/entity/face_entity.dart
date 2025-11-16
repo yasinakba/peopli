@@ -1,31 +1,31 @@
-/// id : 58
+/// id : 100
 /// homeTownId : 55
 /// homeTown : "vegas"
 /// jobId : 24
 /// job : "۲۲۲۲۲"
 /// education : "Worker3333"
 /// country : "united state "
-/// name : "Yasdfasf"
-/// lastName : "teest"
-/// knownFor : "test"
-/// birthdate : "2007-01-04"
-/// avatar : "42_880b.jpg"
-/// createdAt : "2025-10-13T16:45:53"
+/// name : "Test"
+/// lastName : "t"
+/// knownFor : "faf"
+/// birthdate : "2025-11-12"
+/// avatar : "42_367f.jpg"
+/// createdAt : "2025-11-12T12:03:07"
 
 class FaceEntity {
   FaceEntity({
-      num? id,
-      num? homeTownId,
-      String? homeTown,
-      num? jobId,
-      String? job,
-      String? education,
-      String? country,
-      String? name,
-      String? lastName,
-      String? knownFor,
-      String? birthdate,
-      String? avatar,
+      num? id, 
+      num? homeTownId, 
+      String? homeTown, 
+      num? jobId, 
+      String? job, 
+      String? education, 
+      String? country, 
+      String? name, 
+      String? lastName, 
+      String? knownFor, 
+      String? birthdate, 
+      String? avatar, 
       String? createdAt,}){
     _id = id;
     _homeTownId = homeTownId;
