@@ -39,6 +39,7 @@ class CreatePersonController extends GetxController {
   int selectedRadio = 0;
   int selectedLanguage = 0;
   String gender = '';
+  UploadController uploadController = Get.put(UploadController());
   DateController dateController = Get.put(DateController());
 
   @override
@@ -46,11 +47,14 @@ class CreatePersonController extends GetxController {
     super.onInit();
     Get.lazyPut(() => CreateAccountController());
     Get.lazyPut(() => LocationController());
+    Get.lazyPut(() => UploadController());
+    searchFace(1);
   }
 
   final dio = Dio();
 
   Future<void> addFace() async {
+    Get.lazyPut(() => UploadController(),);
     try {
       final preferences = await SharedPreferences.getInstance();
       String? token = preferences.getString('token');
@@ -83,10 +87,7 @@ class CreatePersonController extends GetxController {
         'lastName': familyNameController.text,
         'knownFor': knowAsController.text,
         'gender': gender,
-        'avatar': Get
-            .find<UploadController>()
-            .selectedImage
-            .value,
+        'avatar': uploadController.selectedImage.value,
         'hometownId': CreateAccountController.selectedCity.id,
         'educationId': CreateAccountController.selectedEducation.id,
         'jobId': CreateAccountController.selectedJob.id,
@@ -105,7 +106,7 @@ class CreatePersonController extends GetxController {
         nameController.clear();
         familyNameController.clear();
         knowAsController.clear();
-        Get.find<UploadController>().pickedFile = null;
+        uploadController.pickedFile = null;
         selectedRadio = -1;
         Get.back();
         update();
@@ -118,11 +119,10 @@ class CreatePersonController extends GetxController {
     }
   }
 
-  int facePage = 1;
+  int facePage = 2;
 
   Future<List<FaceEntity>> searchFace(pageKey) async {
-    faceList.clear();
-    if (pageKey <= facePage) {
+    if (pageKey < facePage) {
       try {
         final preferences = await SharedPreferences.getInstance();
         final token = preferences.getString('token');
@@ -229,16 +229,10 @@ class CreatePersonController extends GetxController {
                               builderDelegate: PagedChildBuilderDelegate<
                                   dynamic>(
                                 itemBuilder: (context, memory, index) {
-                                  FaceEntity face = faceList[index];
-                                  if(index <= faceList.length-1){
-                                  return ListTileCreate(face: face);
-                                  }
-                                  return Container(color: Colors.teal,width: 50.w,height: 50.w,);
+                                  if(faceList.isNotEmpty){return ListTileCreate(face: memory);}return Container();
                                 },
-                                firstPageProgressIndicatorBuilder: (context) =>
-                                    LoadingWidget(),
-                                newPageProgressIndicatorBuilder: (context) =>
-                                    LoadingWidget(),
+                                firstPageProgressIndicatorBuilder: (context) => LoadingWidget(),
+                                newPageProgressIndicatorBuilder: (context) => LoadingWidget(),
                                 noItemsFoundIndicatorBuilder: (context) =>
                                 const Center(child: Text("No memories found.")),
                               ),

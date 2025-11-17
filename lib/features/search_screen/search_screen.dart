@@ -147,8 +147,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                               Padding(
                                 padding: const EdgeInsets.only(right: 33),
                                 child: TextFieldSearch(
-                                  controller: controller
-                                      .displayNameController,
+                                  controller: controller.displayNameController,
                                   labelText: 'Name & Family',
                                 ),
                               ),
@@ -239,8 +238,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                           onTap: () {
                                             controller.searchWithLocation =
                                             true;
-                                            controller
-                                                .openDialogLocation(
+                                            controller.openDialogLocation(
                                               context,
                                             );
                                             controller.update();
