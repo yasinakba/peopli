@@ -69,7 +69,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: Text(
-                              widget.face.name ??'null',
+                              widget.memory.username ?? 'null',
                               style: appThemeData.textTheme.headlineLarge,
                               textAlign: TextAlign.start,
                             ),
@@ -82,14 +82,14 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: Text(
-                              "${widget.face.birthdate.toString()} -now",
-                              style: appThemeData.textTheme.bodyLarge,
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
+                          // SizedBox(
+                          //   width: double.infinity,
+                          //   child: Text(
+                          //     "${widget.memory.use.birthdate.toString()} -now",
+                          //     style: appThemeData.textTheme.bodyLarge,
+                          //     textAlign: TextAlign.start,
+                          //   ),
+                          // ),
                           SizedBox(
                             width: double.infinity,
                             child: Text(
@@ -112,7 +112,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                             child: CircleAvatar(
                               radius: 80,
                               backgroundImage: NetworkImage(
-                                "$baseImageURL/${widget.face.avatar??''}",
+                                "$baseImageURL/${widget.memory.userAvatar??'noavatar.png'}",
                               ),
                             ),
                           ),
@@ -143,19 +143,12 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                       child: SizedBox(
                         width: 44.w,
                         height: 44.h,
-                        child: profileController.currentUser.isEmpty
-                            ? const CircleAvatar(
-                                radius: 80,
-                                backgroundImage: AssetImage(
-                                  AppAssetsPng.iconPerson,
-                                ),
-                              )
-                            : CircleAvatar(
-                                radius: 80,
-                                backgroundImage: NetworkImage(
-                                  "$baseImageURL/${profileController.currentUser.first.avatar}",
-                                ),
-                              ),
+                        child: CircleAvatar(
+                          radius: 80,
+                          backgroundImage:NetworkImage(
+                            "$baseImageURL/${widget.memory.faceAvatar??'noavatar.png'}",
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -166,7 +159,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                         SizedBox(
                           width: 130.w,
                           child: Text(
-                            widget.memory.user??'null',
+                            widget.memory.face ?? 'null',
                             style: appThemeData.textTheme.labelMedium,
                             textAlign: TextAlign.start,
                           ),
@@ -193,7 +186,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                 padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
                 child: SizedBox(
                   child: AutoSizeText(
-                    widget.memory.title??'null',
+                    widget.memory.title ?? 'null',
                     maxLines: 3,
                     style: appThemeData.textTheme.headlineLarge,
                     textAlign: TextAlign.start,
@@ -201,11 +194,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                  bottom: 5,
-                ),
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 5),
                 child: SizedBox(
                   width: 293.w,
                   height: 141.h,
@@ -217,7 +206,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                       : Image.network(
                           '$baseImageURL/usericon.png',
                           fit: BoxFit.fitWidth,
-                  ),
+                        ),
                 ),
               ),
               //comment Like && share

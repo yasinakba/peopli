@@ -2,7 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
+import 'package:test_test_test/features/first_screen/entity/comment_entity.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
+import 'package:test_test_test/features/profile_screen/entity/comment_entity.dart';
 import 'package:test_test_test/features/profile_screen/entity/user_entity.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
@@ -17,10 +21,11 @@ class CommentProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ProfileController>(builder: (controller) {
-      return Center(
-        child: ListView.builder(
-          itemCount: currentUser.first.comment.length,
-          itemBuilder: (BuildContext context, int index) {
+      return Expanded(
+        child: PagingListener(
+          controller: controller.pagingCommentPerfectController,
+          builder: (context,comment, index) {
+            MyCommentEntity c = controller.myCommentList.first;
             return Padding(
               padding: const EdgeInsets.only(top: 20),
               child: Container(
@@ -48,7 +53,7 @@ class CommentProfile extends StatelessWidget {
                                   SizedBox(
                                     width: double.infinity,
                                     child: Text(
-                                      currentUser.first.face[index].name ?? 'null',
+                                      c.text ?? 'null',
                                       style: appThemeData.textTheme
                                           .headlineLarge,
                                       textAlign: TextAlign.start,
@@ -65,8 +70,7 @@ class CommentProfile extends StatelessWidget {
                                   SizedBox(
                                     width: double.infinity,
                                     child: Text(
-                                      // "${m} - now",
-                                      "${ currentUser.first.face[index].birthdate.toString()} -now",
+                                      "${c.createdAt} - now",
                                       style: appThemeData.textTheme.bodyLarge,
                                       textAlign: TextAlign.start,
                                     ),
@@ -93,7 +97,7 @@ class CommentProfile extends StatelessWidget {
                                     child: CircleAvatar(
                                       radius: 80,
                                       backgroundImage: NetworkImage(
-                                        "https://api.peopli.ir/uploads/${currentUser.first.face[index].birthdate ?? ''}",
+                                        "$baseImageURL/${c.user?.avatar??''}",
                                       ),
                                     ),
                                   ),
@@ -124,18 +128,16 @@ class CommentProfile extends StatelessWidget {
                             height: 44.h,
                             child: CircleAvatar(
                               radius: 80,
-                              backgroundImage: AssetImage(
-                                  AppAssetsJpg.userPost),
+                              backgroundImage: NetworkImage('$baseImageURL/${c.faceAvatar}'),
                             ),
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 5),
                           child: Column(
-
                             children: [
                               SizedBox(width: 130.w,
-                                  child: Text("John Smith ",
+                                  child: Text(c.faceName??'',
                                     style: appThemeData.textTheme.labelMedium,
                                     textAlign: TextAlign.start,)),
                               SizedBox(width: 130.w,
@@ -148,46 +150,8 @@ class CommentProfile extends StatelessWidget {
                             ],
                           ),
                         ),
-
                       ],
                     ),
-                    //Description
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20,
-                          right: 20,
-                          top: 5),
-                      child: SizedBox(
-
-                          child: AutoSizeText(
-                            'Your Power" each peaked within the top 10 in the US and UK. Eilish has received several accolades',
-                            maxLines: 3,
-                            style: appThemeData.textTheme.headlineLarge,
-                            textAlign: TextAlign.start,)),
-                    ),
-                    //Location
-                    // Padding(
-                    //   padding: const EdgeInsets.only(left: 12,right: 20,bottom: 5,top: 5),
-                    //   child: Row(
-                    //     children: [
-                    //       Icon(Icons.location_on),
-                    //       AutoSizeText('Pais School, Versue Street, Paris',maxLines: 3,style:appThemeData.textTheme.bodySmall,textAlign: TextAlign.start ,)
-                    //
-                    //     ],
-                    //   ),
-                    //
-                    // ),
-                    //imagepost
-                    // Padding(
-                    //   padding: const EdgeInsets.only(left: 20,right: 20,bottom: 5),
-                    //   child: SizedBox(
-                    //       width: 293.w,
-                    //       height: 141.h,
-                    //       child: Image.asset(AppAssetsJpg.postImage,fit: BoxFit.cover,)),
-                    // ),
-                    //Like && share
-
-
-                    //Comment
                     SizedBox(
                       width: 350,
                       child: Padding(
@@ -212,10 +176,9 @@ class CommentProfile extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(top: 5),
                                   child: Column(
-
                                     children: [
                                       SizedBox(width: 130.w,
-                                          child: Text("David Garet ",
+                                          child: Text(c.text??'',
                                             style: appThemeData.textTheme
                                                 .labelMedium,
                                             textAlign: TextAlign.start,)),
@@ -240,7 +203,7 @@ class CommentProfile extends StatelessWidget {
                               child: SizedBox(
 
                                   child: AutoSizeText(
-                                    'Your Power" each peaked within the top 10 in the US and UK. Eilish has received several accolades',
+                                    c.memoryTitle??'',
                                     maxLines: 3,
                                     style: appThemeData.textTheme.labelLarge,
                                     textAlign: TextAlign.start,)),
@@ -248,8 +211,19 @@ class CommentProfile extends StatelessWidget {
                           ],
                         ),
                       ),
-                    )
-
+                    ),
+                    //Description
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20,
+                          right: 20,
+                          top: 5),
+                      child: SizedBox(
+                          child: AutoSizeText(
+                            c.text??'',
+                            maxLines: 3,
+                            style: appThemeData.textTheme.headlineLarge,
+                            textAlign: TextAlign.start,)),
+                    ),
 
                   ],
                 ),

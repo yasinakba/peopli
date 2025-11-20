@@ -108,7 +108,7 @@ class CreatePersonController extends GetxController {
         knowAsController.clear();
         uploadController.pickedFile = null;
         selectedRadio = -1;
-        Get.back();
+        Get.toNamed(NamedRoute.routePersonScreen,arguments: FaceEntity.fromJson(response.data['data']));
         update();
         Get.snackbar('Success', 'Face added successfully!');
       }

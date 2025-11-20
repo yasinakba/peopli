@@ -46,9 +46,7 @@ class TabBarShowComment extends StatelessWidget {
                     child: TabBarView(
                       children: [
                         CommentProfile(controller.currentUser),
-                        Center(
-                            child: CommentProfile2()
-                        ),
+                        Center(child: CommentProfile2()),
                       ],
                     ),
                   ),

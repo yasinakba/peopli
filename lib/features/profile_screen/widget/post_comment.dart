@@ -22,7 +22,6 @@ class PostComment extends StatelessWidget {
               unselectedLabelColor: AppLightColor.textBoldColor,
               labelColor: AppLightColor.withColor,
               indicator: BoxDecoration(
-
                 border: Border.all(
                   color: AppLightColor.strokePositive
                 ),
@@ -31,30 +30,23 @@ class PostComment extends StatelessWidget {
               ),
               tabs: [
                 Container(
-
                   width: 112.w,
                   height: 16.h,
                   child: Text("Post",textAlign: TextAlign.center,),
                 ),
-
                 Container(
                   width: 112.w,
                   height: 16.h,
-                  child: Text("Commment",textAlign: TextAlign.center,),
+                  child: Text("Comment",textAlign: TextAlign.center,),
                 ),
-
-
-
               ],
             ),
           ),
-
 
           Expanded(
             child: Container(
               color: AppLightColor.withColor,
               child: TabBarView(
-
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -63,14 +55,11 @@ class PostComment extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TabBarShowComment(),
-                  )
-
+                  ),
                 ],
               ),
             ),
           ),
-
-
         ],
       ),
 
