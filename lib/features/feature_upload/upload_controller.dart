@@ -32,11 +32,11 @@ class UploadController extends GetxController{
 
     // Send request
     var response = await request.send();
-
     if (response.statusCode == 200) {
       var responseBody = await response.stream.bytesToString();
       var data = await jsonDecode(responseBody);
-      selectedImage.value = data['data']; // for ex// ample
+      selectedImage.value = data['data']; //// for ex// ample
+      Get.snackbar("Success","Success");
       update();
     } else {
       Get.snackbar("Error","Upload failed: ${response.statusCode}");

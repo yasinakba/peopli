@@ -67,7 +67,7 @@ class HeaderProfile extends StatelessWidget {
                       //         .textTheme.bodyLarge, textAlign: TextAlign
                       //         .start,)),
                       SizedBox(width: double.infinity,
-                          child: Text(controller.currentUser.isNotEmpty?"${controller.currentUser.first.birthdate.toString()} - now":'null', style: appThemeData
+                          child: Text(controller.currentUser.isNotEmpty?"${controller.currentUser.first.birthdate?.toString().substring(0,4)} - now":'null', style: appThemeData
                               .textTheme.bodyLarge, textAlign: TextAlign
                               .start,)),
                       // SizedBox(width: double.infinity,

@@ -31,14 +31,14 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
               padding: const EdgeInsets.only(top: 10,bottom: 5),
               child: Align(
                   alignment: Alignment.center,
-                  child: GetBuilder<UploadController>(builder: (controller) {
+                  child: GetBuilder<UploadController>(builder: (logic) {
                     return Container(
                       height: 90.h,
                       width: 100.w,
                       decoration: BoxDecoration(
                         color: AppLightColor.elipsFill,
-                        image:controller.pickedFile==null? DecorationImage(image: NetworkImage('$baseImageURL/noavatar.png'))
-                        : DecorationImage(image: FileImage(File(controller.pickedFile!.path)),fit: BoxFit.cover),
+                        image:logic.pickedFile==null? DecorationImage(image: NetworkImage('$baseImageURL/noavatar.png'))
+                        : DecorationImage(image: FileImage(File(logic.pickedFile!.path)),fit: BoxFit.cover),
                         shape: BoxShape.circle,
                       ),
 

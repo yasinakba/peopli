@@ -27,9 +27,7 @@ class CreatePersonController extends GetxController {
   TextEditingController knowAsController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   TextEditingController dateTimeController = TextEditingController();
-  bool searchWithLocation = false;
-  bool searchWithEducation = false;
-  bool searchWithJob = false;
+
   List<FaceEntity> faceList = [];
   late final pagingFaceController = PagingController<int, dynamic>(
     getNextPageKey: (state) =>

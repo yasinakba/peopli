@@ -13,7 +13,7 @@ class ProfileScreen extends GetView<ProfileController> {
       children: [
         HeaderProfile(),
         Container(
-          height: 570.h,
+          height: 520.h,
           padding: const EdgeInsets.only(top: 20),
           child: PostComment(),
         ),
