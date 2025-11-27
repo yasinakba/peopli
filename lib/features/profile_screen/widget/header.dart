@@ -34,7 +34,7 @@ class HeaderProfile extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    Text("12", style: appThemeData.textTheme.displaySmall,),
+                    Text(controller.memoryList.length.toString(), style: appThemeData.textTheme.displaySmall,),
                     Text("Posts", style: appThemeData.textTheme.titleMedium,),
                   ],
                 ),
@@ -86,8 +86,8 @@ class HeaderProfile extends StatelessWidget {
                       textColor: AppLightColor.strokePositive,
                       color: AppLightColor.withColor,
                       title: "Edit Profile",
-                      height: 27.h,
-                      width: 100.w),
+                      height: 31.h,
+                      width: 130.w),
                 )
               ],
             ),

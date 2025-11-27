@@ -8,9 +8,9 @@ import '../app_colors/app_colors_light.dart';
 import '../app_theme/app_theme.dart';
 import 'customButton.dart';
 
-class CustomeAppBar extends GetView<HomeController>
+class CustomAppBar extends GetView<HomeController>
     implements PreferredSizeWidget {
-  const CustomeAppBar({Key? key}) : super(key: key);
+  const CustomAppBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +19,7 @@ class CustomeAppBar extends GetView<HomeController>
       elevation: 0,
       titleSpacing: 0,
       backgroundColor: Colors.white,
+      surfaceTintColor: Colors.white,
 
       leading: GetBuilder<HomeController>(
         builder: (a) =>controller.index == 0

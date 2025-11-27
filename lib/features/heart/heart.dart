@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:test_test_test/config/widgets/custom_appbar.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/heart/heart_controller.dart';
 
@@ -21,8 +20,7 @@ class HeartScreen extends StatefulWidget {
 class _HeartScreenState extends State<HeartScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    return  Column(
         children: [
           GetBuilder<HeartController>(
                 initState: (state) {
@@ -33,7 +31,7 @@ class _HeartScreenState extends State<HeartScreen> {
                 },
                 builder: (controller) {
                   return  SizedBox(
-                    height: 690.h,
+                    height: 665.h,
                     width: 360.w,
                     child: PagingListener(
                       controller: controller.pagingMemoryController,
@@ -103,7 +101,6 @@ class _HeartScreenState extends State<HeartScreen> {
                   );
             }),
         ],
-      ),
-    );
+      );
   }
 }

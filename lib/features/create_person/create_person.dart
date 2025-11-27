@@ -33,7 +33,7 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                   alignment: Alignment.center,
                   child: GetBuilder<UploadController>(builder: (controller) {
                     return Container(
-                      height: 100.h,
+                      height: 90.h,
                       width: 100.w,
                       decoration: BoxDecoration(
                         color: AppLightColor.elipsFill,
@@ -82,7 +82,7 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                   ),
                   //textField
                   SizedBox(
-                    height: 200.h,
+                    height: 180.h,
                     child: Column(
                       children: [
                         Padding(

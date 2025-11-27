@@ -22,7 +22,6 @@ class CustomElevatedButton extends StatelessWidget {
                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))),
                backgroundColor: MaterialStateProperty.all(color),foregroundColor: MaterialStateProperty.all(textColor)),
           onPressed:onPressed,
-
           child:Text(title),
       ),
     );

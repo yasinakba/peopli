@@ -19,8 +19,7 @@ class _FirstScreenState extends State<FirstScreen> {
   FirstController firstController = Get.put(FirstController());
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GetBuilder<FirstController>(
+    return GetBuilder<FirstController>(
         builder: (controller) {
           return controller.isLoadingMemories
               ? LoadingWidget()
@@ -44,8 +43,8 @@ class _FirstScreenState extends State<FirstScreen> {
                       height: 1,
                       color: AppLightColor.cancelButtonFill,
                     ),
-                    SizedBox(
-                      height: 620.h,
+                    Container(
+                      height: 541.h,
                       width: 360.w,
                       child: PagingListener(
                         controller: controller.pagingMemoryController,
@@ -61,8 +60,7 @@ class _FirstScreenState extends State<FirstScreen> {
                                 itemBuilder: (context, memory, index) {
                                   final face = controller.faceList.firstWhere(
                                     (i) => i.id == memory.faceId,
-                                    orElse: () =>
-                                        FaceEntity(), // Return empty face if not found
+                                    orElse: () => FaceEntity(), // Return empty face if not found
                                   );
                                   return Padding(
                                     padding: EdgeInsets.only(bottom: 10.h),
@@ -70,15 +68,10 @@ class _FirstScreenState extends State<FirstScreen> {
                                   );
                                 },
                                 // Optional placeholders for better UX
-                                firstPageProgressIndicatorBuilder: (context) =>
-                                    LoadingWidget(),
-                                newPageProgressIndicatorBuilder: (context) =>
-                                    LoadingWidget(),
-
+                                firstPageProgressIndicatorBuilder: (context) => LoadingWidget(),
+                                newPageProgressIndicatorBuilder: (context) => LoadingWidget(),
                                 noItemsFoundIndicatorBuilder: (context) =>
-                                    const Center(
-                                      child: Text("No memories found."),
-                                    ),
+                                    const Center(child: Text("No memories found."),),
                               ),
                             ),
                       ),
@@ -86,7 +79,6 @@ class _FirstScreenState extends State<FirstScreen> {
                   ],
                 );
         },
-      ),
-    );
+      );
   }
 }

@@ -17,8 +17,9 @@ class SearchListTile extends StatelessWidget {
     ThemeData theme = Theme.of(context);
     return GetBuilder<SearchBottomController>(builder: (logic) {
       return Container(
+        margin: EdgeInsets.only(top: 6.h),
           width: 295.w,
-          height: 355.h,
+          height: 300.h,
           decoration: BoxDecoration(
               color: AppLightColor.withColor,
               borderRadius: BorderRadius.all(Radius.circular(25)),
