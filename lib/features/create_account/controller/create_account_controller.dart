@@ -37,7 +37,12 @@ class CreateAccountController extends GetxController {
 
   int selectedRadio = 0;
   int selectedLanguage = 0;
-
+  
+  @override
+  void onInit() {
+    super.onInit();
+    checkInternet();
+  }
 
   final dio = Dio();
   bool loading = false;
@@ -55,6 +60,7 @@ class CreateAccountController extends GetxController {
         Get.find<DateController>().selectedDate.timeZoneName == '' ||
         selectedCity.id == null ||
         selectedEducation.id == null) {
+      loading = false;
       Get.showSnackbar(
         const GetSnackBar(
           title: 'Validation Error',
@@ -85,7 +91,7 @@ class CreateAccountController extends GetxController {
         contentType: Headers.formUrlEncodedContentType, // crucial for .NET backend
       ),
     );
-      print(response.data);
+
       if (response.statusCode == 200) {
       await preferences.setString('token', response.data['data']);
       loading = false;
@@ -378,12 +384,6 @@ class CreateAccountController extends GetxController {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 ),
-                title: Text(
-                  "Jobs",
-                  style: appThemeData.textTheme.headlineSmall,
-                ),
-                backgroundColor: AppLightColor.backgoundPost,
-
                 actions: [
                   Container(
                     height: 300.0, // Change as per your requirement

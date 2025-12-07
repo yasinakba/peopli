@@ -98,6 +98,7 @@ class CreatePersonController extends GetxController {
         data: data,
         options: Options(contentType: Headers.formUrlEncodedContentType,),
       );
+      print(response.data);
 
       // ✅ Handle response safely
       if (response.statusCode == 200) {

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
+import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/add_memory/widget/negativ_pasetiv.dart';
 import 'package:test_test_test/features/add_memory/widget/textFild_memory.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
+import 'package:test_test_test/features/feature_location/controller/location_controller.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 
 import '../../config/app_colors/app_colors_light.dart';
@@ -62,8 +65,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                             width: 60.w,
                             child: CircleAvatar(
                               backgroundImage: NetworkImage(
-                                  "$baseImageURL/${face
-                                      .avatar}"),
+                                  "$baseImageURL/${face.avatar}"),
                             ),
                           ),
                           SizedBox(
@@ -89,7 +91,8 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                                 SizedBox(
                                   width: double.infinity,
                                   child: Text(
-                                    "${face.birthdate ?? 'null'} - now",
+                                    "${face.birthdate?.substring(0, 4) ??
+                                        'null'} - now",
                                     style: appThemeData.textTheme.bodyLarge,
                                     textAlign: TextAlign.start,
                                   ),
@@ -147,16 +150,22 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                         Padding(
                           padding: const EdgeInsets.only(left: 20, top: 5),
                           child: InkWell(
-                            child: TextFiildMemory(
-                              labelText: 'Location',
-                              iconT: Icon(Icons.location_on),
-                              onPressed: () {
-                                Get
-                                    .find<GetLocationController>()
-                                    .getLocationFromGPS(controller);
-                              },
-                              controller: controller.locationController,
-                            ),
+                            child: GetBuilder<GetLocationController>(initState: (state) {
+                              Get.lazyPut(() => GetLocationController(),);
+                            },builder: (logic) {
+                              return logic.loading?Container(
+                                  width: 250.w,
+                                  child: LoadingWidget()):TextFiildMemory(
+                                labelText: 'Location',
+                                iconT: Icon(Icons.location_on,
+                                  color: Colors.green.shade400,),
+                                onPressed: () {
+                                  controller.getLocationController
+                                      .getLocationFromGPS(controller);
+                                },
+                                controller: controller.locationController,
+                              );
+                            }),
                           ),
                         ),
                       ],
@@ -174,7 +183,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                           Padding(
                             padding: EdgeInsetsDirectional.only(
                                 top: 10),
-                            child:Container(
+                            child: Container(
                               width: 257.w,
                               height: 32.h,
                               padding: EdgeInsetsDirectional.only(start: 10.w),
@@ -184,25 +193,29 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                                 border: Border.all(color: Colors.black),
                               ),
                               child: GetBuilder<DateController>(
-                                builder: (controller) {
+                                builder: (logic) {
                                   // Safely handle null controller or date
-                                  final safeDate = controller.selectedDate;
-                                  final formattedDate = DateFormat('yyyy/MM/dd – HH:mm').format(safeDate);
+                                  final safeDate = controller.dateController
+                                      .selectedDate;
+                                  final formattedDate = DateFormat(
+                                      'yyyy/MM/dd – HH:mm').format(safeDate);
                                   return Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .spaceBetween,
                                     children: [
                                       Text(
                                         formattedDate,
-                                        style: appThemeData.textTheme.bodySmall ??
+                                        style: appThemeData.textTheme
+                                            .bodySmall ??
                                             const TextStyle(
                                               color: Colors.grey,
                                               fontSize: 14,
                                             ),
                                       ),
                                       IconButton(
-                                        onPressed: () async {
-                                            controller.pickDateTime(context);
-                                            },
+                                        onPressed: () =>
+                                            controller.dateController
+                                                .pickDateTime(context),
                                         icon: const Icon(
                                           Icons.calendar_today,
                                           size: 15,
@@ -260,10 +273,10 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                         child: Padding(
                           padding: const EdgeInsets.all(12),
                           child: TextField(
-                            controller: controller.typeController,
+                            controller: controller.textController,
                             maxLines: 8, //or null
                             decoration: InputDecoration.collapsed(
-                              hintText: "type...",
+                              hintText: "text...",
                             ),
                           ),
                         ),

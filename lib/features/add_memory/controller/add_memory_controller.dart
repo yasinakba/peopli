@@ -11,25 +11,22 @@ import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 
 class AddMemoryController extends GetxController {
   TextEditingController subjectController = TextEditingController();
-  TextEditingController typeController = TextEditingController();
+  TextEditingController textController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   double latitude = 0.0;
   double longitude = 0.0;
   int selectedRadio = 0;
+
   String selectedRadioValue = 'Negative';
   XFile? pickedFile;
- // GetLocationController locationController =  Get.put(GetLocationController());
+ GetLocationController getLocationController =  Get.put(GetLocationController());
   DateController dateController = Get.put( DateController());
-  @override
-  void onInit() {
-    super.onInit();
-
-  }
+  UploadController uploadController = Get.put( UploadController());
   final dio = Dio();
   void addMemory(faceId) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
    String? token =  preferences.getString('token');
-    if (subjectController.text.trim().isEmpty||typeController.text.isEmpty||selectedRadioValue == '') {
+    if (subjectController.text.isEmpty||textController.text.isEmpty||selectedRadioValue == '') {
       Get.snackbar('Error', 'Subject cannot be empty');
       return;
     }
@@ -37,24 +34,25 @@ class AddMemoryController extends GetxController {
       final response = await dio.post(
         '$baseURL/Api/Memories/add',
         data: {
-          'token':  token.toString(),
+          'token': '$token',
           'faceId': faceId,
-          'title': selectedRadio,
-          'text': subjectController.text.trim(),
-          'type': typeController.text.trim(),
-          'lat': '', // fill if you have location data
-          'lng': '',
-          'media': Get.find<UploadController>().selectedImage.value, // make sure it's correctly encoded or uploaded
-          'date': "${date.month}/${date.day}/${date.year}",
+          'title': subjectController.text,
+          'text': textController.text,
+          'type': selectedRadioValue,
+          'lat': latitude, // fill if you have location data
+          'lng': longitude,
+          'media': uploadController.selectedImage.value, // make sure it's correctly encoded or uploaded
+          'date': "${dateController.selectedDate.month}/${dateController.selectedDate.day}/${dateController.selectedDate.year}",
         },
         options: Options(
           contentType: Headers.formUrlEncodedContentType,
         ),
       );
-
+      print(response.data);
+      print(response.statusCode);
       if (response.statusCode == 200) {
         subjectController.clear();
-        typeController.clear();
+        textController.clear();
         Get.toNamed(NamedRoute.routeHomeScreen);
         Get.snackbar('Success', 'Memory added successfully');
       } else {
@@ -67,19 +65,18 @@ class AddMemoryController extends GetxController {
 
 
 
- var date = Get.find<DateController>().selectedDate;
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Pick Birth Date")),
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            Get.find<DateController>().pickDateTime(context);
+           dateController.pickDateTime(context);
           },
           child: Text(
-            Get.find<DateController>().selectedDate == ''
+            dateController.selectedDate == ''
                 ? "Select Birth Date"
-                : "Birth Date: ${date.day}/${date.month}/${date.year}",
+                : "Birth Date: ${dateController.selectedDate.day}/${dateController.selectedDate.month}/${dateController.selectedDate.year}",
           ),
         ),
       ),
@@ -88,7 +85,7 @@ class AddMemoryController extends GetxController {
 
   setSelectedRadio(int val) {
     if(val == 1){
-      selectedRadioValue ='Neutral  ';
+      selectedRadioValue ='Neutral';
     }else if(val == 2){
      selectedRadioValue = 'Positive';
     }else if(val == 0){

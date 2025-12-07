@@ -2,6 +2,7 @@
 
 
 import 'package:get/get.dart';
+import '../../../config/app_string/constant.dart';
 
 import '../../../config/app_route/route_names.dart';
 
@@ -11,7 +12,7 @@ class SplashController extends GetxController{
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-
+    checkInternet();
     splashRoute();
 
   }

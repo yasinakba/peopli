@@ -15,6 +15,7 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    checkInternet();
     readMyComment(1);
   }
 

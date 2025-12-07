@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../app_string/constant.dart';
 
 class DateController extends GetxController{
   DateTime selectedDate = DateTime.now();
+  
+  @override
+  void onInit() {
+    super.onInit();
+    checkInternet();
+  }
+  
   void pickDateTime(context) async {
     DateTime now = DateTime.now(); // default: 18 years ago
     DateTime firstDate = DateTime(1900); // earliest selectable year

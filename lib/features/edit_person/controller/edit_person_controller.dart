@@ -30,6 +30,7 @@ class EditPersonController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    checkInternet();
     Get.lazyPut(() => CreateAccountController());
     Get.lazyPut(() => UploadController());
     Get.lazyPut(() => DateController());

@@ -114,7 +114,7 @@ class FirstWidget extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: Text(
-                        "${face.birthdate ?? 'null'} - now",
+                        "${face.birthdate?.substring(0,4) ?? 'null'} - now",
                         style: appThemeData.textTheme.bodyLarge,
                         textAlign: TextAlign.start,
                       ),

@@ -15,8 +15,9 @@ class TextFiildMemory extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 254.w,
-      height: 32.h,
+      height: 40.h,
       child: TextFormField(
+        style: TextStyle(color: Colors.indigo,fontSize: 10,fontWeight: FontWeight.w900),
         controller: controller,
         decoration: InputDecoration(
             suffixIcon: IconButton(onPressed: onPressed,icon: iconT,color: AppLightColor.elipsStroke,iconSize: 14,),

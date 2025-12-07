@@ -35,6 +35,7 @@ class FirstController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    checkInternet();
     Get.lazyPut<LocationController>(() => LocationController());
     Get.lazyPut<JobDropDownController>(() => JobDropDownController());
     Get.lazyPut<EducationController>(() => EducationController());

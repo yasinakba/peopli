@@ -33,6 +33,12 @@ class SearchBottomController extends GetxController {
   int selected = 0;
 
   int selectedItem = 0;
+  
+  @override
+  void onInit() {
+    super.onInit();
+    checkInternet();
+  }
 
   final dio = Dio();
   int facePage = 1;

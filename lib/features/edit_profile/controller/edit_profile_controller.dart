@@ -20,6 +20,7 @@ class EditProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    checkInternet();
     Get.lazyPut(() => DateController(),);
     fillProperties();
   }

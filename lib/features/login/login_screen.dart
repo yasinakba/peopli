@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frino_icons/frino_icons.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/login/controller/login_controller.dart';
 import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_icons/app_assets_png.dart';
@@ -122,7 +123,7 @@ class LoginScreen extends StatelessWidget {
                       onPressed: () {
                         controller.signIn();
                       },
-                      child: Text("Login",style: theme.textTheme.labelMedium!.copyWith(color: Colors.white),)),
+                      child: controller.loading?LoadingWidget(): Text("Login",style: theme.textTheme.labelMedium!.copyWith(color: Colors.white),)),
                 ),
               ),
               //Richtext
