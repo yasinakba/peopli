@@ -4,7 +4,6 @@ import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
 import 'package:test_test_test/features/feature_location/entity/city_entity.dart';
 import 'package:test_test_test/features/feature_location/entity/country_entity.dart';
-import '../../../config/app_string/constant.dart';
 
 class LocationController extends GetxController{
   final dio = Dio();

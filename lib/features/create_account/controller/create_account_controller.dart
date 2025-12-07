@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart' hide FormData;
 import 'package:flutter/material.dart';
 
-import 'package:image_picker/image_picker.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
@@ -20,7 +19,6 @@ import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 
 
 import '../../../config/app_colors/app_colors_light.dart';
-import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
 
 import '../../../config/widgets/customButton.dart';

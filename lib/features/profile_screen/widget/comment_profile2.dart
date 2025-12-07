@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
-import 'package:test_test_test/features/first_screen/entity/comment_entity.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 import 'package:test_test_test/features/profile_screen/entity/comment_entity.dart';
 
-import '../../../config/app_icons/app_assets_jpg.dart';
 
 class CommentProfile2 extends StatelessWidget {
   @override

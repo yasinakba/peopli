@@ -3,12 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/search_screen/controller/search_bottom_controller.dart';
-import 'package:test_test_test/features/search_screen/widget/search_list_tile.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
-import '../../../config/widgets/loading_widget.dart';
 import '../../create_person/entity/face_entity.dart';
 class BottomSearchScreen extends StatelessWidget {
 

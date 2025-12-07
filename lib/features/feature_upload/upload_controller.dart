@@ -39,7 +39,7 @@ class UploadController extends GetxController{
       Get.snackbar("Success","Success");
       update();
     } else {
-      Get.snackbar("Error","Upload failed: ${response.statusCode}");
+      Get.snackbar("Error","Upload failed: ${response}");
     }
   }
 }

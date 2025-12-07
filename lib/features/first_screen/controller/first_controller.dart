@@ -286,6 +286,9 @@ class FirstController extends GetxController {
         },
         options: Options(contentType: Headers.formUrlEncodedContentType),
       );
+      if(response.statusCode == 200){
+        ///
+      }
     } catch (e, stacktrace) {
       debugPrint("🔥 Exception while fetching memories: $e");
       debugPrint(stacktrace.toString());

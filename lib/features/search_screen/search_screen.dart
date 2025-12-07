@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
-import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/search_screen/widget/bottom_search_screen.dart';
 import 'package:test_test_test/features/search_screen/widget/search_information_location.dart';
-import 'package:test_test_test/features/search_screen/widget/search_list_tile.dart';
 import 'package:test_test_test/features/search_screen/widget/text_field_search.dart';
 
 import '../../config/app_colors/app_colors_light.dart';

@@ -13,7 +13,6 @@ import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../../../config/widgets/loading_widget.dart';
 import '../../create_account/controller/create_account_controller.dart';
-import '../../create_person/widget/create_cancel_person.dart';
 import '../../create_person/widget/listTile_create.dart';
 import '../../feature_upload/upload_controller.dart';
 
@@ -30,11 +29,9 @@ class EditPersonController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    checkInternet();
     Get.lazyPut(() => CreateAccountController());
     Get.lazyPut(() => UploadController());
     Get.lazyPut(() => DateController());
-
   }
 
   void fill()async{
@@ -66,6 +63,7 @@ class EditPersonController extends GetxController {
 
   Future<void> editFace(id) async {
     try {
+      checkInternet();
       final preferences = await SharedPreferences.getInstance();
       String? token = preferences.getString('token');
       if (nameController.text.isEmpty ||

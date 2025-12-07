@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:test_test_test/config/app_string/constant.dart';
@@ -9,7 +8,6 @@ import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/add_memory/widget/negativ_pasetiv.dart';
 import 'package:test_test_test/features/add_memory/widget/textFild_memory.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
-import 'package:test_test_test/features/feature_location/controller/location_controller.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 
 import '../../config/app_colors/app_colors_light.dart';
