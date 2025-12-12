@@ -29,8 +29,7 @@ class BottomSearchScreen extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(25)),
             border: Border.all(width: 1.w, color: AppLightColor.strokeStar),
           ),
-          child: notFound
-              ? Center(
+          child:controller.loadingSearch? LoadingWidget(): notFound ? Center(
                   child: Text(
                     textAlign: TextAlign.center,
                     'Does not exist😣',
@@ -78,21 +77,12 @@ class BottomSearchScreen extends StatelessWidget {
                           ),
                         ),
 
-                        title: Row(
-                          children: [
-                            Flexible(
-                              child: Text(
-                                face.name ?? '',
-                                style: appThemeData.textTheme.labelMedium,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              face.birthdate ?? '',
-                              style: appThemeData.textTheme.labelMedium,
-                            ),
-                          ],
+                        title: Flexible(
+                          child: Text(
+                            '${face.name ?? ''} ${face.birthdate.toString().substring(0,4) ?? ''}',
+                            style: appThemeData.textTheme.labelMedium,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
 
                         subtitle: Column(

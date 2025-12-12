@@ -34,14 +34,14 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                   LoadingWidget();
                 }
                 return Padding(
-                  padding: const EdgeInsets.only(top: 100),
+                  padding: const EdgeInsets.only(top: 10),
                   child: Column(
                     children: [
                       Align(
                         alignment: Alignment.center,
                         child: GetBuilder<UploadController>(builder: (controller) {
                           return Container(
-                            height: 115.h,
+                            height: 130.h,
                             width: 100.w,
                             decoration: BoxDecoration(
                               color: AppLightColor.elipsFill,
@@ -65,8 +65,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                               padding: const EdgeInsets.only(
                                   right: 20, left: 20),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -99,9 +98,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      Get
-                                          .find<UploadController>()
-                                          .uploadImage();
+                                      Get.find<UploadController>().uploadImage();
                                     },
                                     child: Text(
                                       "Add Photos",
@@ -113,7 +110,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                             ),
                             //textField
                             SizedBox(
-                              height: 220.h,
+                              height: 250.h,
                               child: Column(
                                 children: [
                                   Padding(
@@ -144,6 +141,15 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                       labelText: 'Password',
                                       controller: controller
                                           .passwordController,
+                                      obsecure: true,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 5),
+                                    child: TextFieldCreateAccount(
+                                      labelText: 'Confirm Password',
+                                      controller: controller
+                                          .confirmPasswordController,
                                       obsecure: true,
                                     ),
                                   ),
@@ -183,8 +189,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                               ),
                                               IconButton(
                                                 onPressed: () async {
-                                                  controller.pickDateTime(
-                                                      context);
+                                                  controller.pickDateTime(context);
                                                 },
                                                 icon: const Icon(
                                                   Icons.calendar_today,

@@ -29,6 +29,7 @@ class CreateAccountController extends GetxController {
   TextEditingController familyController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController dateTimeController = TextEditingController();
 
   int selectedRadio = 0;
@@ -50,7 +51,7 @@ class CreateAccountController extends GetxController {
         Get.find<UploadController>().selectedImage.value == '' ||
         Get.find<DateController>().selectedDate.timeZoneName == '' ||
         selectedCity.id == null ||
-        selectedEducation.id == null) {
+        selectedEducation.id == null ) {
       loading = false;
       Get.showSnackbar(
         const GetSnackBar(
@@ -61,7 +62,15 @@ class CreateAccountController extends GetxController {
       );
       return; // Stop execution if validation fails
     }
-
+    if(confirmPasswordController.text != passwordController.text){
+      Get.showSnackbar(
+        const GetSnackBar(
+          title: 'Validation Error',
+          message: 'Password is not equation!',
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
     try {
       FormData formData = FormData.fromMap({
         'displayName': '${nameController.text}${familyController.text}',

@@ -22,20 +22,15 @@ class CommentPost extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<FirstController>(
       builder: (controller) {
-
         return Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [Text("${memoryEntity.commentsCount} Comment")],
-              ),
+              child: Text("${controller.commentList.length} Comment"),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Container(
-                  height: 400.h,
+            Container(
+                  padding: const EdgeInsets.only(top: 20),
+                  height: 300.h,
                   width: 370.w,
                   decoration: BoxDecoration(),
                   child: ListView.builder(
@@ -154,8 +149,6 @@ class CommentPost extends StatelessWidget {
                     },
                   ),
                 ),
-              ),
-            ),
             Container(
               decoration: BoxDecoration(
                 color: AppLightColor.withColor,

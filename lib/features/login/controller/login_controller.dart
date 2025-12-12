@@ -62,17 +62,15 @@ class LoginController extends GetxController{
           "username": username,
           "password": password,
         },
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType, // crucial for .NET backend
-        ),
+        options: Options(contentType: Headers.formUrlEncodedContentType,),
       );
 
       if (response.statusCode == 200 && response.data['status'] == 'ok') {
         loading=false;
-        update();
         SharedPreferences preferences = await SharedPreferences.getInstance();
         preferences.setString('token', response.data['data']);
         Get.toNamed(NamedRoute.routeHomeScreen);
+        update();
       } else {
         loading=false;
         update();

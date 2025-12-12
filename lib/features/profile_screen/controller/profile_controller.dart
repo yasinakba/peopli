@@ -15,6 +15,7 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    readMyPerfectComment(1);
     readMyComment(1);
   }
 
@@ -56,13 +57,14 @@ class ProfileController extends GetxController {
     fetchPage: (pageKey) => readMoreMemories(pageKey),
   );
   late final pagingCommentController = PagingController<int, dynamic>(
-    getNextPageKey: (state) => state.lastPageIsEmpty ? null : state.nextIntPageKey,
-    fetchPage: (pageKey) => readMyComment(pageKey),
+    getNextPageKey: (state) =>
+        state.lastPageIsEmpty ? null : state.nextIntPageKey,
+    fetchPage: (pageKey) => readMyPerfectComment(pageKey),
   );
   late final pagingCommentPerfectController = PagingController<int, dynamic>(
     getNextPageKey: (state) =>
         state.lastPageIsEmpty ? null : state.nextIntPageKey,
-    fetchPage: (pageKey) => readMyComment(pageKey),
+    fetchPage: (pageKey) => readMyPerfectComment(pageKey),
   );
   bool isLoadingMemories = false;
   bool isLoadingFaces = false;
@@ -139,6 +141,41 @@ class ProfileController extends GetxController {
   int myCommentPage = 1;
 
   Future<List<CommentEntity>> readMyComment(pageKey) async {
+    if (myCommentPage >= pageKey) {
+      try {
+        final preferences = await SharedPreferences.getInstance();
+        final token = preferences.getString('token');
+
+        if (token == null) {
+          debugPrint("⚠️ No token found in SharedPreferences");
+          return [];
+        }
+
+        final response = await dio.get(
+          '$baseURL/Api/Memories/my-comments?token=$token&page=$pageKey&take=15&sortBy=latest',
+          options: Options(contentType: Headers.formUrlEncodedContentType),
+        );
+
+        if (response.statusCode == 200) {
+          myCommentPage = response.data['data']['pageCount'];
+          List<dynamic> data = response.data['data']['comments'];
+          myCommentList.addAll(data.map((e) => MyCommentEntity.fromJson(e)));
+          update();
+        } else {
+          Get.snackbar('Error', response.statusMessage ?? '');
+          return [];
+        }
+        return [];
+      } catch (e, stacktrace) {
+        debugPrint("🔥 Exception while fetching memories: $e");
+        debugPrint(stacktrace.toString());
+        return [];
+      }
+    }
+    return [];
+  }
+
+  Future<List<CommentEntity>> readMyPerfectComment(pageKey) async {
     if (myCommentPage >= pageKey) {
       try {
         final preferences = await SharedPreferences.getInstance();

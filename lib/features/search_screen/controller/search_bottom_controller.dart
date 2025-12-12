@@ -52,7 +52,7 @@ class SearchBottomController extends GetxController {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
 
-      final requestData = {'token': token, 'page': pageKey, 'take': 15, 'filter': displayNameController.text, 'hometownId':searchWithLocation? selectedCity.id:null, 'educationId':searchWithEducation? selectedEducation.id:null, 'jobId':searchWithJob?selectedJob.id:null, 'birthDate': dateTimeController.text,};
+      final requestData = {'token': token, 'page': pageKey, 'take': 15, 'filter': displayNameController.text, 'hometownId':searchWithLocation? selectedCity.id:null, 'educationId':searchWithEducation? selectedEducation.id:null, 'jobId':searchWithJob?selectedJob.id:null,};
       final response = await dio.get('$baseURL/Api/Faces', queryParameters: requestData,);
       if (response.statusCode == 200) {
         facePage = response.data['data']['pageCount'];

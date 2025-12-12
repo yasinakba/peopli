@@ -15,7 +15,7 @@ class CommentProfile2 extends StatelessWidget {
         return SizedBox(
           height: 300.h,
           child: PagingListener(
-            controller: controller.pagingCommentPerfectController,
+            controller: controller.pagingCommentController,
             builder: (context, state, fetchNextPage) => PagedGridView(
               state: state,
               shrinkWrap: true,

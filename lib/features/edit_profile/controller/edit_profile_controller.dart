@@ -73,7 +73,6 @@ class EditProfileController extends GetxController {
       // 1️⃣ Input validation
       if (userNameController.text.isEmpty ||
           displayController.text.isEmpty ||
-          emailController.text.isEmpty ||
           CreateAccountController.selectedCity.id == '' ||
           Get.find<DateController>().selectedDate == '' ||
           Get.find<UploadController>().selectedImage.value == '' ||

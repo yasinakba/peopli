@@ -121,52 +121,6 @@ class SearchScreen extends GetView<SearchBottomController> {
                           ],
                         ),
 
-                        //birth
-                        Container(
-                          width: 285.w,
-                          height: 32.h,
-                          margin: EdgeInsets.only(top: 10),
-                          padding: EdgeInsetsDirectional.only(
-                            start: 10.w,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(25),
-                            border: Border.all(color: Colors.black),
-                          ),
-                          child:  GetBuilder<DateController>(
-                            initState: (state) => Get.lazyPut(() => DateController(),),
-                            builder: (controller) {
-                              // Safely handle null controller or date
-                              final safeDate = controller.selectedDate;
-                              final formattedDate = DateFormat('yyyy/MM/dd – HH:mm').format(safeDate);
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    formattedDate,
-                                    style: appThemeData.textTheme.bodySmall ??
-                                        const TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 14,
-                                        ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () async {
-                                      controller.pickDateTime(context);
-                                    },
-                                    icon: const Icon(
-                                      Icons.calendar_today,
-                                      size: 15,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
-
                     SearchInformationLocation(),
                     //location
 

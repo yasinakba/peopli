@@ -129,8 +129,12 @@ class FirstController extends GetxController {
 
   List<CommentEntity> commentList = [];
   int commentPage = 1;
+  int totalCommentPage = 0;
 
   Future<void> readComment(memoryId) async {
+    if(commentPage > totalPage ){
+      return;
+    }
     if (await checkInternet() == false) {
       return;
     }
@@ -153,6 +157,7 @@ class FirstController extends GetxController {
         // ✅ Success
         List<dynamic> data = response.data['data']['comments'];
         commentList.addAll(data.map((e) => CommentEntity.fromJson(e)));
+        totalCommentPage = response.data['data']['pageCount'];
         debugPrint("Comments: ${response.data}");
         update();
       } else {

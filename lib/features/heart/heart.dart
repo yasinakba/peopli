@@ -31,7 +31,7 @@ class _HeartScreenState extends State<HeartScreen> {
                 builder: (controller) {
                   return  SizedBox(
                     height: 665.h,
-                    width: 360.w,
+                    width: 365.w,
                     child: PagingListener(
                       controller: controller.pagingMemoryController,
                       builder: (context, state, fetchNextPage) =>
