@@ -116,14 +116,14 @@ class LoginScreen extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   height: 50,
-                  child: ElevatedButton(
+                  child:controller.loading? LoadingWidget():ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           backgroundColor: AppLightColor.textBlueColor,
                           shape: StadiumBorder()),
                       onPressed: () {
                         controller.signIn();
                       },
-                      child: controller.loading?LoadingWidget(): Text("Login",style: theme.textTheme.labelMedium!.copyWith(color: Colors.white),)),
+                      child:  Text("Login",style: theme.textTheme.labelMedium!.copyWith(color: Colors.white),)),
                 ),
               ),
               //Richtext

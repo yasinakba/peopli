@@ -11,12 +11,7 @@ class LocationController extends GetxController{
   List<String> countryName = [];
   List<String> cityNames = [];
  static List<CityEntity> cityList = [];
-
-  @override
-  void onInit() {
-    super.onInit();
-    checkInternet();
-  }
+  bool loading = false;
 
   /// Simple GET request with error handling
   Future<void> getCountry() async {
@@ -37,8 +32,9 @@ class LocationController extends GetxController{
     }
   }
   Future<void> getCity(countryId) async {
-
+    loading = true;
     LocationController.cityList.clear();
+    update();
     try {
       final response = await dio.get(
         "$baseURL/Api/admin/Countries/cities?page=1&take=15&sortBy=latest&countryId=${countryId}",
@@ -48,7 +44,8 @@ class LocationController extends GetxController{
       LocationController.cityList.addAll(data.map((item) => CityEntity.fromJson(item)));
       cityNames.addAll(cityList.map((item) =>item.name??''));
       CreateAccountController.selectedCity = cityList[0];
-      update();
+      loading = false;
+      update(['city']);
       }
     } on DioException catch (e) {
       Get.snackbar("Error","GET error: ${e.response?.statusCode} - ${e.message}");

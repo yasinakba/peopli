@@ -12,7 +12,7 @@ class SplashController extends GetxController{
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    checkInternet();
+    
     splashRoute();
 
   }

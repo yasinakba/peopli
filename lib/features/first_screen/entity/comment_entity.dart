@@ -1,105 +1,108 @@
-/// id : 2
-/// text : "Hello yasin I wish succeed "
-/// user : {"id":434,"displayName":"YasinAK","avatar":"noavatar.png"}
-/// type : "neutral"
-/// createdAt : "2025-08-25T14:33:04"
-
 class CommentEntity {
-  CommentEntity({
-      num? id, 
-      String? text, 
-      User? user, 
-      String? type, 
-      String? createdAt,}){
-    _id = id;
-    _text = text;
-    _user = user;
-    _type = type;
-    _createdAt = createdAt;
-}
+  int? id;
+  int? memoryId;
+  int? faceId;
+  int? memoryPosterId;
+  String? memoryTitle;
+  String? memoryType;
+  String? memoryPoster;
+  String? memoryPosterAvatar;
+  String? faceName;
+  int? faceRating;
+  String? faceAvatar;
+  String? faceKnownFor;
+  Null? faceBirthdate;
+  Null? faceHometown;
+  String? text;
+  User? user;
+  String? type;
+  String? createdAt;
 
-  CommentEntity.fromJson(dynamic json) {
-    _id = json['id'];
-    _text = json['text'];
-    _user = json['user'] != null ? User.fromJson(json['user']) : null;
-    _type = json['type'];
-    _createdAt = json['createdAt'];
+  CommentEntity(
+      {this.id,
+        this.memoryId,
+        this.faceId,
+        this.memoryPosterId,
+        this.memoryTitle,
+        this.memoryType,
+        this.memoryPoster,
+        this.memoryPosterAvatar,
+        this.faceName,
+        this.faceRating,
+        this.faceAvatar,
+        this.faceKnownFor,
+        this.faceBirthdate,
+        this.faceHometown,
+        this.text,
+        this.user,
+        this.type,
+        this.createdAt});
+
+  CommentEntity.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    memoryId = json['memoryId'];
+    faceId = json['faceId'];
+    memoryPosterId = json['memoryPosterId'];
+    memoryTitle = json['memoryTitle'];
+    memoryType = json['memoryType'];
+    memoryPoster = json['memoryPoster'];
+    memoryPosterAvatar = json['memoryPosterAvatar'];
+    faceName = json['faceName'];
+    faceRating = json['faceRating'];
+    faceAvatar = json['faceAvatar'];
+    faceKnownFor = json['faceKnownFor'];
+    faceBirthdate = json['faceBirthdate'];
+    faceHometown = json['faceHometown'];
+    text = json['text'];
+    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    type = json['type'];
+    createdAt = json['createdAt'];
   }
-  num? _id;
-  String? _text;
-  User? _user;
-  String? _type;
-  String? _createdAt;
-CommentEntity copyWith({  num? id,
-  String? text,
-  User? user,
-  String? type,
-  String? createdAt,
-}) => CommentEntity(  id: id ?? _id,
-  text: text ?? _text,
-  user: user ?? _user,
-  type: type ?? _type,
-  createdAt: createdAt ?? _createdAt,
-);
-  num? get id => _id;
-  String? get text => _text;
-  User? get user => _user;
-  String? get type => _type;
-  String? get createdAt => _createdAt;
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = _id;
-    map['text'] = _text;
-    if (_user != null) {
-      map['user'] = _user?.toJson();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['memoryId'] = this.memoryId;
+    data['faceId'] = this.faceId;
+    data['memoryPosterId'] = this.memoryPosterId;
+    data['memoryTitle'] = this.memoryTitle;
+    data['memoryType'] = this.memoryType;
+    data['memoryPoster'] = this.memoryPoster;
+    data['memoryPosterAvatar'] = this.memoryPosterAvatar;
+    data['faceName'] = this.faceName;
+    data['faceRating'] = this.faceRating;
+    data['faceAvatar'] = this.faceAvatar;
+    data['faceKnownFor'] = this.faceKnownFor;
+    data['faceBirthdate'] = this.faceBirthdate;
+    data['faceHometown'] = this.faceHometown;
+    data['text'] = this.text;
+    if (this.user != null) {
+      data['user'] = this.user!.toJson();
     }
-    map['type'] = _type;
-    map['createdAt'] = _createdAt;
-    return map;
+    data['type'] = this.type;
+    data['createdAt'] = this.createdAt;
+    return data;
   }
-
 }
-
-/// id : 434
-/// displayName : "YasinAK"
-/// avatar : "noavatar.png"
 
 class User {
-  User({
-      num? id, 
-      String? displayName, 
-      String? avatar,}){
-    _id = id;
-    _displayName = displayName;
-    _avatar = avatar;
-}
+  int? id;
+  String? displayName;
+  String? avatar;
 
-  User.fromJson(dynamic json) {
-    _id = json['id'];
-    _displayName = json['displayName'];
-    _avatar = json['avatar'];
+  User({this.id, this.displayName, this.avatar});
+
+  User.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    displayName = json['displayName'];
+    avatar = json['avatar'];
   }
-  num? _id;
-  String? _displayName;
-  String? _avatar;
-User copyWith({  num? id,
-  String? displayName,
-  String? avatar,
-}) => User(  id: id ?? _id,
-  displayName: displayName ?? _displayName,
-  avatar: avatar ?? _avatar,
-);
-  num? get id => _id;
-  String? get displayName => _displayName;
-  String? get avatar => _avatar;
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = _id;
-    map['displayName'] = _displayName;
-    map['avatar'] = _avatar;
-    return map;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['displayName'] = this.displayName;
+    data['avatar'] = this.avatar;
+    return data;
   }
-
 }

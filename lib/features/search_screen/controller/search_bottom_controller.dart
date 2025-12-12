@@ -33,12 +33,7 @@ class SearchBottomController extends GetxController {
   int selected = 0;
 
   int selectedItem = 0;
-  
-  @override
-  void onInit() {
-    super.onInit();
-    checkInternet();
-  }
+
 
   final dio = Dio();
   int facePage = 1;
@@ -48,13 +43,16 @@ class SearchBottomController extends GetxController {
   bool loadingSearch = false;
   List<FaceEntity> faceList = [];
   Future<List<FaceEntity>> searchFace(pageKey) async {
+    if(await checkInternet() == false){
+      return [];
+    }
     loadingSearch = true;
     update();
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
 
-      final requestData = {'token': token, 'page': 1, 'take': 15, 'filter': displayNameController.text, 'hometownId':searchWithLocation? selectedCity.id:null, 'educationId':searchWithEducation? selectedEducation.id:null, 'jobId':searchWithJob?selectedJob.id:null, 'birthDate': dateTimeController.text,};
+      final requestData = {'token': token, 'page': pageKey, 'take': 15, 'filter': displayNameController.text, 'hometownId':searchWithLocation? selectedCity.id:null, 'educationId':searchWithEducation? selectedEducation.id:null, 'jobId':searchWithJob?selectedJob.id:null, 'birthDate': dateTimeController.text,};
       final response = await dio.get('$baseURL/Api/Faces', queryParameters: requestData,);
       if (response.statusCode == 200) {
         facePage = response.data['data']['pageCount'];

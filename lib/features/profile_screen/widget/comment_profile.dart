@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
-import 'package:test_test_test/features/first_screen/entity/comment_entity.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 import 'package:test_test_test/features/profile_screen/entity/comment_entity.dart';
 import 'package:test_test_test/features/profile_screen/entity/user_entity.dart';
@@ -21,7 +20,8 @@ class CommentProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ProfileController>(builder: (controller) {
-      return Expanded(
+      return SizedBox(
+        height: 432.h,
         child: PagingListener(
           controller: controller.pagingCommentPerfectController,
           builder: (context,comment, index) {
@@ -38,9 +38,7 @@ class CommentProfile extends StatelessWidget {
                   children: [
                     //famous
                     Padding(
-                      padding: const EdgeInsets.only(top: 10,
-                          right: 10,
-                          left: 10),
+                      padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
                       child: InkWell(
                         onTap: () {},
                         child: Row(
@@ -70,7 +68,7 @@ class CommentProfile extends StatelessWidget {
                                   SizedBox(
                                     width: double.infinity,
                                     child: Text(
-                                      "${c.createdAt} - now",
+                                      "${c.createdAt?.substring(0,4)} - now",
                                       style: appThemeData.textTheme.bodyLarge,
                                       textAlign: TextAlign.start,
                                     ),
@@ -168,8 +166,9 @@ class CommentProfile extends StatelessWidget {
                                     height: 33.h,
                                     child: CircleAvatar(
                                       radius: 80,
-                                      backgroundImage: AssetImage(
-                                          AppAssetsJpg.imagePerson),
+                                      backgroundImage: NetworkImage(
+                                        "$baseImageURL/${c.user?.avatar??''}",
+                                      ),
                                     ),
                                   ),
                                 ),

@@ -7,8 +7,8 @@ class LoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Center(
-      child: SpinKitFadingCube(
-        duration: Duration(seconds: 1),
+      child: SpinKitFadingCircle(
+        duration: Duration(seconds: 2),
         itemBuilder: (BuildContext context, int index) {
           return DecoratedBox(
             decoration: BoxDecoration(

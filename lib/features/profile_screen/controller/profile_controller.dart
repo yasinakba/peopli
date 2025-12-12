@@ -15,7 +15,6 @@ class ProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    checkInternet();
     readMyComment(1);
   }
 
@@ -75,14 +74,13 @@ class ProfileController extends GetxController {
       try {
         final preferences = await SharedPreferences.getInstance();
         final token = preferences.getString('token');
-
         final response = await dio.get(
           '$baseURL/Api/Memories',
           queryParameters: {
             'token': token,
             'page': pageKey,
             'take': 15,
-            'sortBy': 'closet',
+            'sortBy': 'newest',
             'userId': currentUser.first.id,
           },
           options: Options(contentType: Headers.formUrlEncodedContentType),
@@ -93,6 +91,7 @@ class ProfileController extends GetxController {
           isLoadingMemories = false;
           memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e)));
           update();
+          print(memoryList);
           return memoryList;
         }
       } catch (e, stacktrace) {

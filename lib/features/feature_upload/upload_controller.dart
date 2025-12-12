@@ -20,6 +20,9 @@ class UploadController extends GetxController{
       return;
     }
     pickedFile = file;
+    if( ((File(file.path)).lengthSync() /1024 / 1024) >= 5000){
+      Get.snackbar('Error', 'File is too long');
+    }
     File imageFile = File(file.path);
 
     // Create multipart request

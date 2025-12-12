@@ -8,11 +8,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_route/route_names.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
-import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../../../config/widgets/loading_widget.dart';
 import '../../create_account/controller/create_account_controller.dart';
+import '../../create_person/entity/face_entity.dart';
 import '../../create_person/widget/listTile_create.dart';
 import '../../feature_upload/upload_controller.dart';
 
@@ -63,7 +63,9 @@ class EditPersonController extends GetxController {
 
   Future<void> editFace(id) async {
     try {
-      checkInternet();
+      if(await checkInternet() == false){
+        return;
+      }
       final preferences = await SharedPreferences.getInstance();
       String? token = preferences.getString('token');
       if (nameController.text.isEmpty ||

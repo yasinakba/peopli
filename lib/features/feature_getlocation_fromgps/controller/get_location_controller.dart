@@ -8,14 +8,12 @@ import '../../../config/app_string/constant.dart';
 class GetLocationController extends GetxController {
   var locationText = "Unknown".obs;
   bool loading = false;
-  
-  @override
-  void onInit() {
-    super.onInit();
-    checkInternet();
-  }
+
 
   Future<void> getLocationFromGPS(AddMemoryController controller) async {
+    if(await checkInternet() == false){
+      return;
+    }
     loading = true;
     update();
     try{

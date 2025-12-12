@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
-import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
-import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
@@ -14,40 +12,23 @@ import '../../../config/app_theme/app_theme.dart';
 import '../../login/controller/login_controller.dart';
 import 'comment_post.dart';
 
-class PostFirstScreen extends StatefulWidget {
-  final MemoryEntity memory;
+class PostFirstScreen extends StatelessWidget {
+  final dynamic memory;
   final int index;
-  final FaceEntity face;
-  bool isLiked = false;
 
-  PostFirstScreen(this.memory, this.index, this.face);
-
-  @override
-  State<PostFirstScreen> createState() => _PostFirstScreenState();
-}
-
-class _PostFirstScreenState extends State<PostFirstScreen> {
-  @override
-  void initState() {
-    super.initState();
-    if (!Get.isRegistered<ProfileController>()) {
-      Get.put(ProfileController());
-    }
-    if (!Get.isRegistered<FirstController>()) {
-      Get.put(FirstController());
-    }
-  }
+  PostFirstScreen(this.memory, this.index);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    ProfileController profileController = Get.find<ProfileController>();
     return GetBuilder<FirstController>(
       initState: (state) {
         Get.lazyPut(() => ProfileController());
         Get.lazyPut(() => FirstController());
       },
       builder: (controller) {
+        controller.likeCount = memory.likesCount;
+        controller.isLiked = memory.isLiked;
         return Container(
           width: 345.w,
           decoration: BoxDecoration(
@@ -69,7 +50,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: Text(
-                              widget.memory.username ?? 'null',
+                              memory.username ?? 'null',
                               style: appThemeData.textTheme.headlineLarge,
                               textAlign: TextAlign.start,
                             ),
@@ -77,19 +58,21 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: Text(
-                              widget.memory.text ?? '',
+                              memory.text ?? '',
                               style: appThemeData.textTheme.bodyLarge,
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          // SizedBox(
-                          //   width: double.infinity,
-                          //   child: Text(
-                          //     "${widget.memory.use.birthdate.toString()} -now",
-                          //     style: appThemeData.textTheme.bodyLarge,
-                          //     textAlign: TextAlign.start,
-                          //   ),
-                          // ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              "${memory.faceBirthdate
+                                  .toString()
+                                  .substring(0, 4)} -now",
+                              style: appThemeData.textTheme.bodyLarge,
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
                           SizedBox(
                             width: double.infinity,
                             child: Text(
@@ -112,7 +95,8 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                             child: CircleAvatar(
                               radius: 80,
                               backgroundImage: NetworkImage(
-                                "$baseImageURL/${widget.memory.userAvatar??'noavatar.png'}",
+                                "$baseImageURL/${memory.userAvatar ??
+                                    'noavatar.png'}",
                               ),
                             ),
                           ),
@@ -145,8 +129,9 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                         height: 44.h,
                         child: CircleAvatar(
                           radius: 80,
-                          backgroundImage:NetworkImage(
-                            "$baseImageURL/${widget.memory.faceAvatar??'noavatar.png'}",
+                          backgroundImage: NetworkImage(
+                            "$baseImageURL/${memory.faceAvatar ??
+                                'noavatar.png'}",
                           ),
                         ),
                       ),
@@ -159,7 +144,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                         SizedBox(
                           width: 130.w,
                           child: Text(
-                            widget.memory.face ?? 'null',
+                            memory.face ?? 'null',
                             style: appThemeData.textTheme.labelMedium,
                             textAlign: TextAlign.start,
                           ),
@@ -186,7 +171,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                 padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
                 child: SizedBox(
                   child: AutoSizeText(
-                    widget.memory.title ?? 'null',
+                    memory.title ?? 'null',
                     maxLines: 3,
                     style: appThemeData.textTheme.headlineLarge,
                     textAlign: TextAlign.start,
@@ -196,17 +181,12 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20, bottom: 5),
                 child: SizedBox(
-                  width: 293.w,
-                  height: 141.h,
-                  child: widget.memory.media != null
-                      ? Image.network(
-                          '$baseImageURL/${widget.memory.media?.split('/').last}',
-                          fit: BoxFit.fitWidth,
-                        )
-                      : Image.network(
-                          '$baseImageURL/usericon.png',
-                          fit: BoxFit.fitWidth,
-                        ),
+                    width: 293.w,
+                    height: 141.h,
+                    child: Image.network(
+                      '$baseImageURL/${memory.media ?? 'usericon.png'}',
+                      fit: BoxFit.fitWidth,
+                    )
                 ),
               ),
               //comment Like && share
@@ -219,21 +199,24 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                       children: [
                         InkWell(
                           onTap: () {
-                            controller.readComment(widget.memory.id);
+                            controller.readComment(memory.id);
                             showModalBottomSheet(
                               isScrollControlled: true,
                               context: context,
                               builder: (context) {
                                 return Padding(
                                   padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(
+                                    bottom: MediaQuery
+                                        .of(
                                       context,
-                                    ).viewInsets.bottom,
+                                    )
+                                        .viewInsets
+                                        .bottom,
                                   ),
                                   child: Container(
                                     height: 450,
                                     child: CommentPost(
-                                      memoryEntity: widget.memory,
+                                      memoryEntity: memory,
                                       isFromProfile: false,
                                     ),
                                   ),
@@ -253,48 +236,63 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                         Padding(
                           padding: const EdgeInsets.only(left: 4),
                           child: Text(
-                            widget.memory.commentsCount.toString(),
+                            memory.commentsCount.toString(),
                             style: appThemeData.textTheme.bodyMedium,
                           ),
                         ),
                       ],
                     ),
                     //heart
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () {},
-                          child: SizedBox(
+                    // Update values from widget only once (not every rebuild)
+
+
+                    GetBuilder<FirstController>(
+                        id: 'like',
+                        builder: (logic) {
+                      return Row(
+                        children: [
+                          SizedBox(
                             width: 30.w,
                             height: 30.w,
                             child: IconButton(
                               onPressed: () {
-                                setState(() {
-                                  widget.isLiked = !widget.isLiked;
-                                  controller.addLike(widget.memory.id);
-                                });
+                                if (logic.isLiked == false) {
+                                  logic.addLike(
+                                      memoryId: memory.id);
+                                  logic.likeCount = memory.likesCount +1;
+                                  logic.isLiked == true;
+                                  logic.update(['like']);
+                                } else {
+                                  logic.removeLike(
+                                      memoryId: memory.id);
+                                  logic.likeCount = memory.likesCount -1;
+                                  logic.isLiked == false;
+                                  print(logic.isLiked);
+                                  logic.update(['like']);
+                                }
+                                // Send request
                               },
                               icon: Icon(
-                                widget.isLiked
-                                    ? Icons.favorite
+                                logic.isLiked ? Icons.favorite
                                     : Icons.favorite_border,
                                 size: 17.sp,
-                                color: widget.isLiked
+                                color: controller.isLiked
                                     ? Colors.green.shade400
                                     : Colors.grey.shade600,
                               ),
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4),
-                          child: Text(
-                            widget.memory.likesCount.toString(),
-                            style: appThemeData.textTheme.bodyMedium,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: Text(
+                              controller.likeCount.toString(),
+                              style: appThemeData.textTheme.bodyMedium,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      );
+                    }),
+
 
                     //share
                     Row(
@@ -321,7 +319,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                         Padding(
                           padding: const EdgeInsets.only(left: 4),
                           child: Text(
-                            widget.memory.createdAt.toString(),
+                            memory.createdAt.toString(),
                             style: appThemeData.textTheme.bodyMedium,
                           ),
                         ),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 
 import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
+import '../entity/face_entity.dart';
 
 class ListTileCreate extends StatelessWidget {
   final FaceEntity face;

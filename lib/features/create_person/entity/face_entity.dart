@@ -1,16 +1,18 @@
-/// id : 100
-/// homeTownId : 55
-/// homeTown : "vegas"
-/// jobId : 24
-/// job : "۲۲۲۲۲"
+/// id : 130
+/// homeTownId : 53
+/// homeTown : "hamedan"
+/// jobId : 23
+/// job : "ggggggggggg"
 /// education : "Worker3333"
-/// country : "united state "
-/// name : "Test"
-/// lastName : "t"
-/// knownFor : "faf"
-/// birthdate : "2025-11-12"
-/// avatar : "42_367f.jpg"
-/// createdAt : "2025-11-12T12:03:07"
+/// country : "iran"
+/// name : "YasinDeveloper"
+/// lastName : "YAsin"
+/// knownFor : "known"
+/// birthdate : "2025-11-26"
+/// avatar : "41_b525.jpg"
+/// rating : 0
+/// ratingCount : 0
+/// createdAt : "2025-11-30T17:04:55"
 
 class FaceEntity {
   FaceEntity({
@@ -26,6 +28,8 @@ class FaceEntity {
       String? knownFor, 
       String? birthdate, 
       String? avatar, 
+      num? rating, 
+      num? ratingCount, 
       String? createdAt,}){
     _id = id;
     _homeTownId = homeTownId;
@@ -39,6 +43,8 @@ class FaceEntity {
     _knownFor = knownFor;
     _birthdate = birthdate;
     _avatar = avatar;
+    _rating = rating;
+    _ratingCount = ratingCount;
     _createdAt = createdAt;
 }
 
@@ -55,6 +61,8 @@ class FaceEntity {
     _knownFor = json['knownFor'];
     _birthdate = json['birthdate'];
     _avatar = json['avatar'];
+    _rating = json['rating'];
+    _ratingCount = json['ratingCount'];
     _createdAt = json['createdAt'];
   }
   num? _id;
@@ -69,6 +77,8 @@ class FaceEntity {
   String? _knownFor;
   String? _birthdate;
   String? _avatar;
+  num? _rating;
+  num? _ratingCount;
   String? _createdAt;
 FaceEntity copyWith({  num? id,
   num? homeTownId,
@@ -82,6 +92,8 @@ FaceEntity copyWith({  num? id,
   String? knownFor,
   String? birthdate,
   String? avatar,
+  num? rating,
+  num? ratingCount,
   String? createdAt,
 }) => FaceEntity(  id: id ?? _id,
   homeTownId: homeTownId ?? _homeTownId,
@@ -95,6 +107,8 @@ FaceEntity copyWith({  num? id,
   knownFor: knownFor ?? _knownFor,
   birthdate: birthdate ?? _birthdate,
   avatar: avatar ?? _avatar,
+  rating: rating ?? _rating,
+  ratingCount: ratingCount ?? _ratingCount,
   createdAt: createdAt ?? _createdAt,
 );
   num? get id => _id;
@@ -109,6 +123,8 @@ FaceEntity copyWith({  num? id,
   String? get knownFor => _knownFor;
   String? get birthdate => _birthdate;
   String? get avatar => _avatar;
+  num? get rating => _rating;
+  num? get ratingCount => _ratingCount;
   String? get createdAt => _createdAt;
 
   Map<String, dynamic> toJson() {
@@ -125,6 +141,8 @@ FaceEntity copyWith({  num? id,
     map['knownFor'] = _knownFor;
     map['birthdate'] = _birthdate;
     map['avatar'] = _avatar;
+    map['rating'] = _rating;
+    map['ratingCount'] = _ratingCount;
     map['createdAt'] = _createdAt;
     return map;
   }

@@ -323,7 +323,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
 
                             Padding(
                               padding: const EdgeInsets.only(top: 30),
-                              child: CustomElevatedButton(
+                              child: controller.loading?LoadingWidget(): CustomElevatedButton(
                                 onPressed: () {
                                   controller.signUp();
                                 },

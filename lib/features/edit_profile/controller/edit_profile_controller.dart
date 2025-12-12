@@ -20,7 +20,7 @@ class EditProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    checkInternet();
+    
     Get.lazyPut(() => DateController(),);
     fillProperties();
   }
@@ -66,6 +66,9 @@ class EditProfileController extends GetxController {
       });
   }
   Future<void> editProfile() async {
+    if(await checkInternet() == false){
+      return;
+    }
 
       // 1️⃣ Input validation
       if (userNameController.text.isEmpty ||

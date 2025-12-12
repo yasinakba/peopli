@@ -15,6 +15,8 @@ import '../../feature_job_and_education/controller/job_controller.dart';
 import '../../feature_location/controller/location_controller.dart';
 
 class FirstController extends GetxController {
+  var isLiked = false;
+  var likeCount = 0;
   final dio = Dio();
   int memoryPage = 1;
   List<MemoryEntity> memoryList = [];
@@ -35,7 +37,7 @@ class FirstController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    checkInternet();
+
     Get.lazyPut<LocationController>(() => LocationController());
     Get.lazyPut<JobDropDownController>(() => JobDropDownController());
     Get.lazyPut<EducationController>(() => EducationController());
@@ -59,14 +61,13 @@ class FirstController extends GetxController {
         final preferences = await SharedPreferences.getInstance();
         final token = preferences.getString('token');
 
-
         final response = await dio.get(
           '$baseURL/Api/Memories',
           queryParameters: {
             'token': token,
             'page': pageKey,
             'take': 15,
-            'sortBy': 'closet',
+            'sortBy': 'newest',
           },
           options: Options(contentType: Headers.formUrlEncodedContentType),
         );
@@ -99,7 +100,7 @@ class FirstController extends GetxController {
         }
 
         final response = await dio.get(
-          '$baseURL/Api/Faces?token=$token&page=$pageKey&take=15&sortBy=closest',
+          '$baseURL/Api/Faces?token=$token&page=$pageKey&take=15&sortBy=closet',
           options: Options(contentType: Headers.formUrlEncodedContentType),
         );
 
@@ -130,6 +131,9 @@ class FirstController extends GetxController {
   int commentPage = 1;
 
   Future<void> readComment(memoryId) async {
+    if (await checkInternet() == false) {
+      return;
+    }
     commentList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -141,7 +145,7 @@ class FirstController extends GetxController {
       }
 
       final response = await dio.get(
-        '$baseURL/Api/Memories/comments?token=$token&memoryId=$memoryId&page=$commentPage&take=15&sortBy=latest',
+        '$baseURL/Api/Memories/comments?token=$token&memoryId=$memoryId&page=$commentPage&take=15&sortBy=newest',
         options: Options(contentType: Headers.formUrlEncodedContentType),
       );
 
@@ -165,6 +169,9 @@ class FirstController extends GetxController {
   TextEditingController commentTextFieldController = TextEditingController();
 
   Future<void> addComment(memoryId) async {
+    if (await checkInternet() == false) {
+      return;
+    }
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
@@ -202,6 +209,9 @@ class FirstController extends GetxController {
   }
 
   Future<void> deleteComment(commentId) async {
+    if (await checkInternet() == false) {
+      return;
+    }
     commentList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -236,6 +246,9 @@ class FirstController extends GetxController {
   }
 
   Future<void> editComment(commentId) async {
+    if (await checkInternet() == false) {
+      return;
+    }
     commentList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -272,7 +285,10 @@ class FirstController extends GetxController {
   List<FaceEntity> faceList = [];
   int facePage = 1;
 
-  Future<void> addLike(memoryId) async {
+  Future<void> addLike({required memoryId}) async {
+    if (await checkInternet() == false) {
+      return;
+    }
     commentList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -280,14 +296,34 @@ class FirstController extends GetxController {
 
       final response = await dio.post(
         '$baseURL/Api/Memories/like-memory',
-        data: {
-          'token': token.toString(),
-          'memoryId': memoryId
-        },
+        data: {'token': token.toString(), 'memoryId': memoryId},
         options: Options(contentType: Headers.formUrlEncodedContentType),
       );
-      if(response.statusCode == 200){
-        ///
+      if (response.statusCode == 200) {
+        update(['like']);
+      }
+    } catch (e, stacktrace) {
+      debugPrint("🔥 Exception while fetching memories: $e");
+      debugPrint(stacktrace.toString());
+    }
+  }
+
+  void removeLike({required memoryId}) async {
+    if (await checkInternet() == false) {
+      return;
+    }
+    commentList.clear();
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      String? token = preferences.getString('token');
+
+      final response = await dio.post(
+        '$baseURL/Api/Memories/remove-like',
+        data: {'token': token.toString(), 'memoryId': memoryId},
+        options: Options(contentType: Headers.formUrlEncodedContentType),
+      );
+      if (response.statusCode == 200) {
+        update(['like']);
       }
     } catch (e, stacktrace) {
       debugPrint("🔥 Exception while fetching memories: $e");

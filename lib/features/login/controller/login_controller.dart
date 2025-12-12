@@ -22,7 +22,7 @@ class LoginController extends GetxController{
   @override
   void onInit() {
     super.onInit();
-    checkInternet();
+    
 
     // Register controllers only
     Get.lazyPut<LocationController>(() => LocationController());
@@ -39,13 +39,18 @@ class LoginController extends GetxController{
   }
 
   Future<void> signIn() async {
+    if(await checkInternet() == false){
+      return;
+    }
     loading = true;
+    update();
     final username = userNameController.text.trim();
     final password = passwordController.text.trim();
 
     if (username.isEmpty || password.isEmpty) {
       loading = false;
       Get.snackbar("Error","Username or password is empty");
+      update();
       return;
     }
 
@@ -64,11 +69,13 @@ class LoginController extends GetxController{
 
       if (response.statusCode == 200 && response.data['status'] == 'ok') {
         loading=false;
+        update();
         SharedPreferences preferences = await SharedPreferences.getInstance();
         preferences.setString('token', response.data['data']);
         Get.toNamed(NamedRoute.routeHomeScreen);
       } else {
         loading=false;
+        update();
         Get.showSnackbar(GetSnackBar(title: 'Error',message: response.data['data'],duration: Duration(seconds: 2)));
       }
     } on DioException catch (e) {

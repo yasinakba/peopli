@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../app_string/constant.dart';
 
 class DateController extends GetxController{
   DateTime selectedDate = DateTime.now();
@@ -8,7 +7,7 @@ class DateController extends GetxController{
   @override
   void onInit() {
     super.onInit();
-    checkInternet();
+    
   }
   
   void pickDateTime(context) async {

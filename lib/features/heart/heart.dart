@@ -6,7 +6,6 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/heart/heart_controller.dart';
 
-import '../create_person/entity/face_entity.dart';
 import '../first_screen/controller/first_controller.dart';
 import '../first_screen/widget/post_first_screen.dart';
 import '../profile_screen/controller/profile_controller.dart';
@@ -45,16 +44,11 @@ class _HeartScreenState extends State<HeartScreen> {
                             ),
                             builderDelegate: PagedChildBuilderDelegate<dynamic>(
                               itemBuilder: (context, memory, index) {
-                                final face = Get.find<FirstController>().faceList.firstWhere(
-                                      (i) => i.id == memory.faceId,
-                                  orElse: () => FaceEntity(), // Return empty face if not found
-                                );
                                 return Padding(
                                   padding: EdgeInsets.only(bottom: 10.h),
                                   child: PostFirstScreen(
                                     memory,
                                     index,
-                                    face,
                                   ),
                                 );
                               },

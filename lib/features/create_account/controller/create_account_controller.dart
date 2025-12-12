@@ -4,19 +4,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart' hide FormData;
 import 'package:flutter/material.dart';
 
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
+import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/feature_job_and_education/entity/education_entity.dart';
 import 'package:test_test_test/features/feature_job_and_education/entity/job_entity.dart';
 import 'package:test_test_test/features/feature_location/entity/city_entity.dart';
 import 'package:test_test_test/features/feature_location/entity/country_entity.dart';
 
-
 import 'package:test_test_test/features/feature_job_and_education/controller/education_cotnroller.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
-
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_theme/app_theme.dart';
@@ -35,15 +33,10 @@ class CreateAccountController extends GetxController {
 
   int selectedRadio = 0;
   int selectedLanguage = 0;
-  
-  @override
-  void onInit() {
-    super.onInit();
-    checkInternet();
-  }
 
   final dio = Dio();
   bool loading = false;
+
   Future<void> signUp() async {
     loading = true;
     update();
@@ -71,7 +64,7 @@ class CreateAccountController extends GetxController {
 
     try {
       FormData formData = FormData.fromMap({
-        'displayName': '${nameController.text} ${familyController.text}',
+        'displayName': '${nameController.text}${familyController.text}',
         'username': userNameController.text,
         'password': passwordController.text,
         'birthDate': Get.find<DateController>().selectedDate.toString(),
@@ -79,34 +72,32 @@ class CreateAccountController extends GetxController {
         'educationId': selectedEducation.id,
         'avatar': Get.find<UploadController>().selectedImage.value,
       });
-    // ✅ Step 4: Make POST request with body, not queryParameters
-    final response = await dio.postUri(
-      Uri.parse(
-        '$baseURL/Api/register',
-      ),
-      data: formData,
-      options: Options(
-        contentType: Headers.formUrlEncodedContentType, // crucial for .NET backend
-      ),
-    );
-
-      if (response.statusCode == 200) {
-      await preferences.setString('token', response.data['data']);
-      loading = false;
-      update();
-      Get.back();
-    } else {
-        loading = false;
-        update();
-      Get.showSnackbar(
-        GetSnackBar(
-          title: 'Error',
-          message: response.data['data'] ?? 'Registration failed',
-          duration: const Duration(seconds: 3),
+      // ✅ Step 4: Make POST request with body, not queryParameters
+      final response = await dio.postUri(
+        Uri.parse('$baseURL/Api/register'),
+        data: formData,
+        options: Options(
+          contentType:
+              Headers.formUrlEncodedContentType, // crucial for .NET backend
         ),
       );
 
-    }
+      if (response.statusCode == 200) {
+        await preferences.setString('token', response.data['data']);
+        loading = false;
+        update();
+        Get.back();
+      } else {
+        loading = false;
+        update();
+        Get.showSnackbar(
+          GetSnackBar(
+            title: 'Error',
+            message: response.data['data'] ?? 'Registration failed',
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
     } on DioException catch (e) {
       loading = false;
       update();
@@ -136,8 +127,7 @@ class CreateAccountController extends GetxController {
         : appThemeData.textTheme.bodyLarge;
   }
 
-
-  static  EducationEntity selectedEducation = EducationEntity();
+  static EducationEntity selectedEducation = EducationEntity();
 
   static openDialogEducation(context) {
     showDialog(
@@ -181,7 +171,7 @@ class CreateAccountController extends GetxController {
                           onTap: () {
                             selectedEducation = controller.educationList[index];
                             controller.update(['education']);
-                            Get.lazyPut(() => CreateAccountController(),);
+                            Get.lazyPut(() => CreateAccountController());
                             Get.find<CreateAccountController>().update();
                             Get.back();
                           },
@@ -213,8 +203,8 @@ class CreateAccountController extends GetxController {
     );
   }
 
-  static  CountryEntity selectedCountry = CountryEntity();
-  static  CityEntity selectedCity = CityEntity();
+  static CountryEntity selectedCountry = CountryEntity();
+  static CityEntity selectedCity = CityEntity();
 
   //location
   static openDialogLocation(context) {
@@ -291,54 +281,57 @@ class CreateAccountController extends GetxController {
           GetBuilder<LocationController>(
             id: 'city',
             builder: (controller) {
-              return Container(
-                height: 100.h,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: DropdownSearch<CityEntity>(
-                      popupProps: PopupProps.menu(
-                        showSelectedItems: true,
-                        showSearchBox: true,
-                        searchFieldProps: TextFieldProps(
-                          decoration: InputDecoration(
-                            hintText: "search country",
-                            helperStyle: appThemeData.textTheme.bodySmall,
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(20),
+              return controller.loading
+                  ? LoadingWidget()
+                  : Container(
+                      height: 100.h,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: DropdownSearch<CityEntity>(
+                            popupProps: PopupProps.menu(
+                              showSelectedItems: true,
+                              showSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                decoration: InputDecoration(
+                                  hintText: "search country",
+                                  helperStyle: appThemeData.textTheme.bodySmall,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            items: LocationController.cityList,
+                            onChanged: (value) {
+                              print;
+                              selectedCity = value!;
+                              controller.update();
+                              Get.lazyPut(() => CreateAccountController());
+                              Get.find<CreateAccountController>().update();
+                            },
+                            selectedItem: selectedCity,
+                            itemAsString: (CityEntity? city) =>
+                                city!.name ?? '',
+                            compareFn: (CityEntity? a, CityEntity? b) =>
+                                a?.id == b?.id,
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                      items: LocationController.cityList,
-                      onChanged: (value) {
-                        print;
-                        selectedCity = value!;
-                        controller.update();
-                        Get.lazyPut(() => CreateAccountController());
-                        Get.find<CreateAccountController>().update();
-                      },
-                      selectedItem: selectedCity,
-                      itemAsString: (CityEntity? city) => city!.name ?? '',
-                      compareFn: (CityEntity? a, CityEntity? b) =>
-                          a?.id == b?.id,
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
+                    );
             },
           ),
           Align(
@@ -359,7 +352,7 @@ class CreateAccountController extends GetxController {
     );
   }
 
-  static  JobEntity selectedJob = JobEntity();
+  static JobEntity selectedJob = JobEntity();
 
   static openDialogJob(context) {
     showDialog(
@@ -473,10 +466,7 @@ class CreateAccountController extends GetxController {
                 shrinkWrap: true,
                 itemCount: 10,
                 itemBuilder: (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                    ],
-                  );
+                  return Column(children: []);
                 },
               ),
             ),

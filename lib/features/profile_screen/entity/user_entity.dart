@@ -1,5 +1,6 @@
-import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
+
+import '../../create_person/entity/face_entity.dart';
 
 class  UserEntity {
   final int id;

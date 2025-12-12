@@ -9,12 +9,13 @@ import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
-import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
+import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../../feature_location/controller/location_controller.dart';
+import '../entity/face_entity.dart';
 import '../widget/create_cancel_person.dart';
 import '../widget/listTile_create.dart';
 import 'package:flutter/foundation.dart';
@@ -106,6 +107,8 @@ class CreatePersonController extends GetxController {
         knowAsController.clear();
         uploadController.pickedFile = null;
         selectedRadio = -1;
+        Get.lazyPut(() => FirstController(),);
+        Get.find<FirstController>().readMoreFace(1);
         Get.toNamed(NamedRoute.routePersonScreen,arguments: FaceEntity.fromJson(response.data['data']));
         update();
         Get.snackbar('Success', 'Face added successfully!');
