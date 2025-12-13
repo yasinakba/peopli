@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/config/app_string/constant.dart';
 
 import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
@@ -17,14 +18,14 @@ class ListTileCreate extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: ListTile(
         onTap: () {
-          Get.toNamed(NamedRoute.routePersonScreen);
+          Get.toNamed(NamedRoute.routePersonScreen,arguments: face);
         },
 
         leading: SizedBox(
           child: CircleAvatar(
             radius: 30,
             backgroundImage: NetworkImage(
-              "https://api.peopli.ir/uploads/${face.avatar ?? ''}",
+              "$baseImageURL/${face.avatar ?? ''}",
             ),
           ),
         ),

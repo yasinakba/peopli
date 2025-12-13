@@ -25,132 +25,134 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
       body: GetBuilder<CreatePersonController>(  initState: (state) {
         Get.lazyPut(() => UploadController(),);
         Get.lazyPut(() => DateController(),);
-      },builder: (controller) =>Column(
-        children: [
-           Padding(
-              padding: const EdgeInsets.only(top: 10,bottom: 5),
-              child: Align(
-                  alignment: Alignment.center,
-                  child: GetBuilder<UploadController>(builder: (logic) {
-                    return Container(
-                      height: 90.h,
-                      width: 100.w,
-                      decoration: BoxDecoration(
-                        color: AppLightColor.elipsFill,
-                        image:logic.pickedFile==null? DecorationImage(image: NetworkImage('$baseImageURL/noavatar.png'))
-                        : DecorationImage(image: FileImage(File(logic.pickedFile!.path)),fit: BoxFit.cover),
-                        shape: BoxShape.circle,
-                      ),
+      },builder: (controller) =>SingleChildScrollView(
+        child: Column(
+          children: [
+             Padding(
+                padding: const EdgeInsets.only(top: 10,bottom: 5),
+                child: Align(
+                    alignment: Alignment.center,
+                    child: GetBuilder<UploadController>(builder: (logic) {
+                      return Container(
+                        height: 90.h,
+                        width: 100.w,
+                        decoration: BoxDecoration(
+                          color: AppLightColor.elipsFill,
+                          image:logic.pickedFile==null? DecorationImage(image: NetworkImage('$baseImageURL/noavatar.png'))
+                          : DecorationImage(image: FileImage(File(logic.pickedFile!.path)),fit: BoxFit.cover),
+                          shape: BoxShape.circle,
+                        ),
 
-                    );
-                  },)
+                      );
+                    },)
+                ),
               ),
-            ),
-           SizedBox(
-              width: 292.w,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 20,left: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            InkWell(
-                              onTap: (){controller.updateLanguage(0);},
-                              child: Text("EN",style: controller.textStyleEn(0),),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 5,right: 5),
-                              child: Text("|"),
-                            ),
-                            InkWell(
-                              onTap: (){controller.updateLanguage(1);},
-                              child: Text("FA",style: controller.textStyleEn(1),),
-                            ),
-                          ],
-                        ),
-                        InkWell(
-                          onTap: (){
-                            Get.find<UploadController>().uploadImage();
-                          },
-                          child: Text("Add Photos",style: appThemeData.textTheme.bodyLarge,),
-                        ),
-                      ],
+             SizedBox(
+                width: 292.w,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20,left: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              InkWell(
+                                onTap: (){controller.updateLanguage(0);},
+                                child: Text("EN",style: controller.textStyleEn(0),),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5,right: 5),
+                                child: Text("|"),
+                              ),
+                              InkWell(
+                                onTap: (){controller.updateLanguage(1);},
+                                child: Text("FA",style: controller.textStyleEn(1),),
+                              ),
+                            ],
+                          ),
+                          InkWell(
+                            onTap: (){
+                              Get.find<UploadController>().uploadImage();
+                            },
+                            child: Text("Add Photos",style: appThemeData.textTheme.bodyLarge,),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  //textField
-                  SizedBox(
-                    height: 180.h,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: TextFieldCreate(labelText: 'userName', controller: controller.nameController,),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5),
-                          child: TextFieldCreate(labelText: 'family name', controller: controller.familyNameController,),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 5),
-                          child: TextFieldCreate(labelText: 'Known as', controller: controller.knowAsController,),
-                        ),
-                        Padding(
-                          padding: EdgeInsetsDirectional.only(top: 10,),
-                          child: Container(
-                            width: 290.w,
-                            height: 32.h,
-                            padding: EdgeInsetsDirectional.only(
-                              start: 10.w,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(25),
-                              border: Border.all(color: Colors.black),
-                            ),
-                            child:GetBuilder<DateController>(
-                              builder: (controller) {
-                                final safeDate = controller.selectedDate;
-                                final formattedDate = DateFormat('yyyy/MM/dd – HH:mm').format(safeDate);
-                                return Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      formattedDate,
-                                      style: appThemeData.textTheme.bodySmall ??
-                                          const TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 14,
-                                          ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {
-                                          controller.pickDateTime(context);
-                                      },
-                                      icon: const Icon(
-                                        Icons.calendar_today,
-                                        size: 15,
-                                        color: Colors.grey,
+                    //textField
+                    SizedBox(
+                      height: 180.h,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: TextFieldCreate(labelText: 'userName', controller: controller.nameController,),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: TextFieldCreate(labelText: 'family name', controller: controller.familyNameController,),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: TextFieldCreate(labelText: 'Known as', controller: controller.knowAsController,),
+                          ),
+                          Padding(
+                            padding: EdgeInsetsDirectional.only(top: 10,),
+                            child: Container(
+                              width: 290.w,
+                              height: 32.h,
+                              padding: EdgeInsetsDirectional.only(
+                                start: 10.w,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(color: Colors.black),
+                              ),
+                              child:GetBuilder<DateController>(
+                                builder: (controller) {
+                                  final safeDate = controller.selectedDate;
+                                  final formattedDate = DateFormat('yyyy/MM/dd').format(safeDate);
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        formattedDate,
+                                        style: appThemeData.textTheme.bodySmall ??
+                                            const TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 14,
+                                            ),
                                       ),
-                                    ),
-                                  ],
-                                );
-                              },
+                                      IconButton(
+                                        onPressed: () {
+                                            controller.pickDateTime(context);
+                                        },
+                                        icon: const Icon(
+                                          Icons.calendar_today,
+                                          size: 15,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                   GenderPerson(),
-                   InformationPerson(),
-                   SavePerson(),
-                ],
+                     GenderPerson(),
+                     InformationPerson(),
+                     SavePerson(),
+                  ],
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ) )
     );
   }

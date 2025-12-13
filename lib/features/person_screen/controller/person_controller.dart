@@ -89,7 +89,6 @@ class PersonController extends GetxController{
           totalPage = response.data['data']['pageCount'];
           loading = false;
           memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e)));
-          print(memoryList);
           update();
           return memoryList;
         }

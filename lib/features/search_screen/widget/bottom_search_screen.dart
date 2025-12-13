@@ -73,16 +73,14 @@ class BottomSearchScreen extends StatelessWidget {
                         leading: CircleAvatar(
                           radius: 30,
                           backgroundImage: NetworkImage(
-                            "$baseImageURL/${face.avatar}",
+                            "$baseImageURL/${face.avatar??'noavatar.png'}",
                           ),
                         ),
 
-                        title: Flexible(
-                          child: Text(
-                            '${face.name ?? ''} ${face.birthdate.toString().substring(0,4) ?? ''}',
-                            style: appThemeData.textTheme.labelMedium,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        title: Text(
+                          '${face.name ?? ''} ${face.birthdate.toString().substring(0,4) ?? ''}',
+                          style: appThemeData.textTheme.labelMedium,
+                          overflow: TextOverflow.ellipsis,
                         ),
 
                         subtitle: Column(

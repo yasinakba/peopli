@@ -196,7 +196,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                                   final safeDate = controller.dateController
                                       .selectedDate;
                                   final formattedDate = DateFormat(
-                                      'yyyy/MM/dd – HH:mm').format(safeDate);
+                                      'yyyy/MM/dd ').format(safeDate);
                                   return Row(
                                     mainAxisAlignment: MainAxisAlignment
                                         .spaceBetween,
