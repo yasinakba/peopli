@@ -46,6 +46,7 @@ class SearchBottomController extends GetxController {
     if(await checkInternet() == false){
       return [];
     }
+    faceList.clear();
     loadingSearch = true;
     update();
     try {

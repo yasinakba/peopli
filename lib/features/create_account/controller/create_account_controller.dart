@@ -92,7 +92,6 @@ class CreateAccountController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        await preferences.setString('token', response.data['data']);
         loading = false;
         update();
         Get.back();

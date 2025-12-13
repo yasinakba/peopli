@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,10 +13,8 @@ import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/customButton.dart';
 import '../../config/widgets/date_picker_widget.dart';
 
-
 import '../create_person/widget/information-Person.dart';
 import 'controller/edit_person_controller.dart';
-
 
 // class EditPersonScreen extends GetView<EditPersonController> {
 //   const EditPersonScreen({Key? key}) : super(key: key);
@@ -132,28 +132,41 @@ class EditPersonScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
-        body: GetBuilder<EditPersonController>(  initState: (state) {
-          Get.lazyPut(() => UploadController(),);
-          Get.lazyPut(() => DateController(),);
-        },builder: (controller) =>Column(
+    return Scaffold(
+      body: GetBuilder<EditPersonController>(
+        initState: (state) {
+          Get.lazyPut(() => UploadController());
+          Get.lazyPut(() => DateController());
+        },
+        builder: (controller) => Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 10,bottom: 5),
+              padding: const EdgeInsets.only(top: 10, bottom: 5),
               child: Align(
-                  alignment: Alignment.center,
-                  child: GetBuilder<UploadController>(builder: (logic) {
+                alignment: Alignment.center,
+                child: GetBuilder<UploadController>(
+                  builder: (logic) {
                     return Container(
                       height: 90.h,
                       width: 100.w,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: AppLightColor.elipsFill,
-                        image: DecorationImage(image: NetworkImage('$baseImageURL/${controller.face.avatar}',),fit: BoxFit.cover),
+                        image: logic.pickedFile == null
+                            ? DecorationImage(
+                                image: NetworkImage(
+                                  "$baseImageURL/${controller.face.avatar}",
+                                ),
+                                fit: BoxFit.cover,
+                              )
+                            : DecorationImage(
+                                image: FileImage(File(logic.pickedFile!.path)),
+                                fit: BoxFit.cover,
+                              ),
                       ),
-
                     );
-                  },)
+                  },
+                ),
               ),
             ),
             SizedBox(
@@ -161,31 +174,44 @@ class EditPersonScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(right: 20,left: 20),
+                    padding: const EdgeInsets.only(right: 20, left: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
                             InkWell(
-                              onTap: (){controller.updateLanguage(0);},
-                              child: Text("EN",style: controller.textStyleEn(0),),
+                              onTap: () {
+                                controller.updateLanguage(0);
+                              },
+                              child: Text(
+                                "EN",
+                                style: controller.textStyleEn(0),
+                              ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 5,right: 5),
+                              padding: const EdgeInsets.only(left: 5, right: 5),
                               child: Text("|"),
                             ),
                             InkWell(
-                              onTap: (){controller.updateLanguage(1);},
-                              child: Text("FA",style: controller.textStyleEn(1),),
+                              onTap: () {
+                                controller.updateLanguage(1);
+                              },
+                              child: Text(
+                                "FA",
+                                style: controller.textStyleEn(1),
+                              ),
                             ),
                           ],
                         ),
                         InkWell(
-                          onTap: (){
+                          onTap: () {
                             Get.find<UploadController>().uploadImage();
                           },
-                          child: Text("Add Photos",style: appThemeData.textTheme.bodyLarge,),
+                          child: Text(
+                            "Add Photos",
+                            style: appThemeData.textTheme.bodyLarge,
+                          ),
                         ),
                       ],
                     ),
@@ -197,39 +223,50 @@ class EditPersonScreen extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(top: 10),
-                          child: TextFieldCreate(labelText: 'userName', controller: controller.nameController,),
+                          child: TextFieldCreate(
+                            labelText: 'userName',
+                            controller: controller.nameController,
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 5),
-                          child: TextFieldCreate(labelText: 'family name', controller: controller.familyNameController,),
+                          child: TextFieldCreate(
+                            labelText: 'family name',
+                            controller: controller.familyNameController,
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 5),
-                          child: TextFieldCreate(labelText: 'Known as', controller: controller.knowAsController,),
+                          child: TextFieldCreate(
+                            labelText: 'Known as',
+                            controller: controller.knowAsController,
+                          ),
                         ),
                         Padding(
-                          padding: EdgeInsetsDirectional.only(top: 10,),
+                          padding: EdgeInsetsDirectional.only(top: 10),
                           child: Container(
                             width: 290.w,
                             height: 32.h,
-                            padding: EdgeInsetsDirectional.only(
-                              start: 10.w,
-                            ),
+                            padding: EdgeInsetsDirectional.only(start: 10.w),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(25),
                               border: Border.all(color: Colors.black),
                             ),
-                            child:GetBuilder<DateController>(
+                            child: GetBuilder<DateController>(
                               builder: (controller) {
                                 final safeDate = controller.selectedDate;
-                                final formattedDate = DateFormat('yyyy/MM/dd – HH:mm').format(safeDate);
+                                final formattedDate = DateFormat(
+                                  'yyyy/MM/dd – HH:mm',
+                                ).format(safeDate);
                                 return Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       formattedDate,
-                                      style: appThemeData.textTheme.bodySmall ??
+                                      style:
+                                          appThemeData.textTheme.bodySmall ??
                                           const TextStyle(
                                             color: Colors.grey,
                                             fontSize: 14,
@@ -256,21 +293,45 @@ class EditPersonScreen extends StatelessWidget {
                   ),
                   EditGenderPerson(),
                   InformationPerson(),
-     Padding(
-         padding: const EdgeInsets.only(right: 50,left: 50,top: 20,bottom: 10),
-         child: Row(
-           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-           children: [
-             CustomElevatedButton(onPressed: (){Get.back();}, textColor: AppLightColor.textBoldColor, color: AppLightColor.cancelButtonFill, title: "Cancel", height: 29.h, width: 90.w),
-             CustomElevatedButton(onPressed: (){controller.openDialogPerson(context);}, textColor: AppLightColor.withColor, color: AppLightColor.saveButton, title: "Save", height: 29.h, width: 90.w),
-           ],
-         ),)
-
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      right: 50,
+                      left: 50,
+                      top: 20,
+                      bottom: 10,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomElevatedButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          textColor: AppLightColor.textBoldColor,
+                          color: AppLightColor.cancelButtonFill,
+                          title: "Cancel",
+                          height: 29.h,
+                          width: 90.w,
+                        ),
+                        CustomElevatedButton(
+                          onPressed: () {
+                            controller.openDialogPerson(context);
+                          },
+                          textColor: AppLightColor.withColor,
+                          color: AppLightColor.saveButton,
+                          title: "Save",
+                          height: 29.h,
+                          width: 90.w,
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
           ],
-        ) )
+        ),
+      ),
     );
   }
 }

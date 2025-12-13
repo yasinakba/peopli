@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:frino_icons/frino_icons.dart';
 import 'package:get/get.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/login/controller/login_controller.dart';
+import 'package:test_test_test/features/login/widget/forget-password.dart';
+import 'package:test_test_test/features/login/widget/verify_login.dart';
 import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_icons/app_assets_png.dart';
 import '../../config/app_route/route_names.dart';
 import '../../config/app_theme/app_theme.dart';
 
-class LoginScreen extends StatelessWidget {
- final LoginController loginController = Get.put(LoginController());
+class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
         body: GetBuilder<LoginController>(builder: (controller) {
-          return ListView(
+          return Column(
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 40),
@@ -26,6 +28,7 @@ class LoginScreen extends StatelessWidget {
                     height: 300.h,
                     child: Image.asset(AppAssetsPng.logo)),
               ),
+
 
               // Padding(
               //   padding: const EdgeInsets.only(top: 50,bottom: 10),
@@ -79,7 +82,7 @@ class LoginScreen extends StatelessWidget {
                           width: 1, color: AppLightColor.fillButton)),
                   child: TextFormField(
                     obscureText: controller.obSecureText,
-                    controller:controller.passwordController,
+                    controller: controller.passwordController,
                     style: TextStyle(
                         height: 1,
                         fontWeight: FontWeight.bold,
@@ -88,7 +91,10 @@ class LoginScreen extends StatelessWidget {
                       suffixIcon: IconButton(onPressed: () {
                         controller.obSecureText = !controller.obSecureText;
                         controller.update();
-                      }, icon: Icon(controller.obSecureText?FrinoIcons.f_eye:FrinoIcons.f_eye_slash)),
+                      },
+                          icon: Icon(controller.obSecureText
+                              ? FrinoIcons.f_eye
+                              : FrinoIcons.f_eye_slash)),
                       filled: true,
                       labelText: 'Password',
                       labelStyle: appThemeData.textTheme.bodyLarge,
@@ -116,14 +122,16 @@ class LoginScreen extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   height: 50,
-                  child:controller.loading? LoadingWidget():ElevatedButton(
+                  child: controller.loading ? LoadingWidget() : ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           backgroundColor: AppLightColor.textBlueColor,
                           shape: StadiumBorder()),
                       onPressed: () {
                         controller.signIn();
                       },
-                      child:  Text("Login",style: theme.textTheme.labelMedium!.copyWith(color: Colors.white),)),
+                      child: Text("Login",
+                        style: theme.textTheme.labelMedium!.copyWith(
+                            color: Colors.white),)),
                 ),
               ),
               //Richtext
@@ -136,7 +144,7 @@ class LoginScreen extends StatelessWidget {
                     },
                     child: RichText(
                       text: TextSpan(
-                          text: "Dont Have Account? ",
+                          text: "Don't have an Account? ",
                           style: appThemeData.textTheme.headlineLarge,
                           children: [
 
@@ -161,14 +169,64 @@ class LoginScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: InkWell(
                         onTap: () {
-                          Get.toNamed(NamedRoute.routeForgetPassword,);
+                          controller.pageController.jumpToPage(1);
                         },
                         child: Text(" Forgot your password? ",
                           style: appThemeData.textTheme.headlineLarge!.copyWith(
                               color: AppLightColor.textBlueColor),)),
-                  )),
+                  ))
             ],
           );
         }));
   }
 }
+
+class LoginScreen extends StatelessWidget {
+  final LoginController loginController = Get.put(LoginController());
+  
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        Get.defaultDialog(
+          title: 'Pay attention',
+          titleStyle: TextStyle(fontSize: 18,color: Colors.red.shade400),
+          middleText: 'Are you sure you want to exit the app?',
+          middleTextStyle: TextStyle(fontSize: 16,color: Colors.grey.shade900),
+          backgroundColor: Colors.blueGrey[100],
+          radius: 15,
+          textCancel: 'Cancel',
+          cancelTextColor: Colors.red,
+          onCancel: () {},
+          textConfirm: 'Confirm',
+          confirmTextColor: Colors.white,
+          onConfirm: () {
+            SystemNavigator.pop();
+          },
+          buttonColor: Colors.green,
+          barrierDismissible: true, // for blur with click on everywhere
+          actions: [
+            // Icon(Icons.tab)
+          ],
+        );
+      },
+      child: GetBuilder<LoginController>(builder: (logic) {
+        return PageView.builder(
+          controller: logic.pageController,
+          itemCount: loginWidget.length,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            return loginWidget[index];
+          },
+        );
+      }),
+    );
+  }
+}
+
+List<Widget> loginWidget = [
+  LoginView(),
+  VerifyLoginScreen(),
+  ForgetPassword(),
+];

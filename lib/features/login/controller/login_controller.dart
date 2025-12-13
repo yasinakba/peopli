@@ -11,6 +11,7 @@ import 'package:test_test_test/features/feature_location/controller/location_con
 import '../../../config/app_route/route_names.dart';
 
 class LoginController extends GetxController{
+  PageController pageController = PageController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool obSecureText = true;
@@ -39,9 +40,9 @@ class LoginController extends GetxController{
   }
 
   Future<void> signIn() async {
-    if(await checkInternet() == false){
-      return;
-    }
+     if(await checkInternet() == false){
+       return;
+     }
     loading = true;
     update();
     final username = userNameController.text.trim();
@@ -62,7 +63,9 @@ class LoginController extends GetxController{
           "username": username,
           "password": password,
         },
-        options: Options(contentType: Headers.formUrlEncodedContentType,),
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType, // crucial for .NET backend
+        ),
       );
 
       if (response.statusCode == 200 && response.data['status'] == 'ok') {
@@ -78,6 +81,7 @@ class LoginController extends GetxController{
       }
     } on DioException catch (e) {
       loading=false;
+      update();
       Get.snackbar("Error","POST error: ${e.response?.statusCode} - ${e.message}");
     }
   }

@@ -166,7 +166,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                             final safeDate = controller
                                                 .selectedDate;
                                             final formattedDate = DateFormat(
-                                                'yyyy/MM/dd – HH:mm').format(
+                                                'yyyy/MM/dd').format(
                                                 safeDate);
                                             return Row(
                                               mainAxisAlignment: MainAxisAlignment

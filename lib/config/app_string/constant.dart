@@ -6,17 +6,17 @@ import 'package:get/get.dart';
 const  String baseImageURL = 'https://api.peopli.ir/uploads';
 const String baseURL = 'https://api.peopli.ir';
 var isUploading = false.obs;
-void showDefaultDialog({required String message,required String status,required bool isSucceed}){
+void showDefaultDialog(){
   Get.defaultDialog(content: Column(
     mainAxisSize: MainAxisSize.min,
     children: [
-      Container(
+      SizedBox(
         width: 200.w,
         height: 100.h,
-        child: Icon(Icons.error,color: isSucceed?Colors.green:Colors.red,size: 100),
+        child: Icon(Icons.error,color: Colors.red.shade300,size: 100),
       ),
-      Text('Connection failed',style: TextStyle(color: isSucceed?Colors.grey:Colors.red,fontSize: 25),),
-      Text(message,style: TextStyle(color: isSucceed?Colors.green:Colors.amber,fontSize: 25),)
+      Text('Connection failed',style: TextStyle(color: Colors.black12,fontSize: 25),),
+      Text('Please check the internet',style: TextStyle(color: Colors.red.shade300,fontSize: 25),)
     ],
   ),);
 }
@@ -28,6 +28,7 @@ Future<bool> checkInternet()async{
     print(status);
     if(status == ConnectivityResult.wifi|| status == ConnectivityResult.mobile){
       isConnected = false;
+      showDefaultDialog();
     }else {
       isConnected = true;
     }
