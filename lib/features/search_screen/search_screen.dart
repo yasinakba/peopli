@@ -71,6 +71,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                           ),
                         ],
                       ),
+                      SizedBox(height: 10,),
                       //row2
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -105,6 +106,7 @@ class SearchScreen extends GetView<SearchBottomController> {
             
                         ],
                       ),
+                          SizedBox(height: 10,),
                           Row(
                             mainAxisAlignment:
                             MainAxisAlignment.spaceAround,

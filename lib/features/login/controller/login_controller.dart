@@ -14,6 +14,7 @@ class LoginController extends GetxController{
   PageController pageController = PageController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   bool obSecureText = true;
   bool loading = false;
   share() async {
@@ -23,8 +24,6 @@ class LoginController extends GetxController{
   @override
   void onInit() {
     super.onInit();
-    
-
     // Register controllers only
     Get.lazyPut<LocationController>(() => LocationController());
     Get.lazyPut<JobDropDownController>(() => JobDropDownController());
@@ -85,5 +84,7 @@ class LoginController extends GetxController{
       Get.snackbar("Error","POST error: ${e.response?.statusCode} - ${e.message}");
     }
   }
+
+
 
 }

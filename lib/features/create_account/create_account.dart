@@ -325,19 +325,16 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                 ),
                               ],
                             ),
-
-                            Padding(
-                              padding: const EdgeInsets.only(top: 30),
-                              child: controller.loading?LoadingWidget(): CustomElevatedButton(
-                                onPressed: () {
-                                  controller.signUp();
-                                },
-                                textColor: AppLightColor.withColor,
-                                color: AppLightColor.textBlueColor,
-                                title: "Create",
-                                height: 40.h,
-                                width: 300.w,
-                              ),
+                            SizedBox(height: 10,),
+                            controller.loading? LoadingWidget(): CustomElevatedButton(
+                              onPressed: () {
+                                controller.signUp();
+                              },
+                              textColor: AppLightColor.withColor,
+                              color: Colors.indigo,
+                              title: "Create",
+                              height: 40.h,
+                              width: 300.w,
                             ),
                           ],
                         ),
