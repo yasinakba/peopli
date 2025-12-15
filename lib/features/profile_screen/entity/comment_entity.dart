@@ -17,8 +17,8 @@
 /// type : "test"
 /// createdAt : "2025-11-07T10:33:57"
 
-class MyCommentEntity {
-  MyCommentEntity({
+class CommentEntity {
+  CommentEntity({
       num? id, 
       num? memoryId, 
       num? faceId, 
@@ -57,7 +57,7 @@ class MyCommentEntity {
     _createdAt = createdAt;
 }
 
-  MyCommentEntity.fromJson(dynamic json) {
+  CommentEntity.fromJson(dynamic json) {
     _id = json['id'];
     _memoryId = json['memoryId'];
     _faceId = json['faceId'];
@@ -95,7 +95,7 @@ class MyCommentEntity {
   User? _user;
   String? _type;
   String? _createdAt;
-MyCommentEntity copyWith({  num? id,
+CommentEntity copyWith({  num? id,
   num? memoryId,
   num? faceId,
   num? memoryPosterId,
@@ -113,7 +113,7 @@ MyCommentEntity copyWith({  num? id,
   User? user,
   String? type,
   String? createdAt,
-}) => MyCommentEntity(  id: id ?? _id,
+}) => CommentEntity(  id: id ?? _id,
   memoryId: memoryId ?? _memoryId,
   faceId: faceId ?? _faceId,
   memoryPosterId: memoryPosterId ?? _memoryPosterId,

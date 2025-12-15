@@ -5,12 +5,12 @@ import 'package:frino_icons/frino_icons.dart';
 import 'package:get/get.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
-import 'package:test_test_test/features/first_screen/entity/comment_entity.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_theme/app_theme.dart';
+import '../../profile_screen/entity/comment_entity.dart';
 
 class CommentPost extends StatelessWidget {
   final MemoryEntity memoryEntity;

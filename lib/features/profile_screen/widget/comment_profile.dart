@@ -9,7 +9,6 @@ import 'package:test_test_test/features/profile_screen/entity/comment_entity.dar
 import 'package:test_test_test/features/profile_screen/entity/user_entity.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
-import '../../../config/app_icons/app_assets_jpg.dart';
 import '../../../config/app_theme/app_theme.dart';
 
 class CommentProfile extends StatelessWidget {
@@ -25,7 +24,7 @@ class CommentProfile extends StatelessWidget {
         child: PagingListener(
           controller: controller.pagingCommentPerfectController,
           builder: (context,comment, index) {
-            MyCommentEntity c = controller.myCommentList.first;
+            CommentEntity c = controller.myCommentList.first;
             return Padding(
               padding: const EdgeInsets.only(top: 20),
               child: Container(

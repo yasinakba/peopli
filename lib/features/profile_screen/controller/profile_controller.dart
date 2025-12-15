@@ -8,7 +8,6 @@ import 'package:test_test_test/features/profile_screen/entity/comment_entity.dar
 import 'package:test_test_test/features/profile_screen/entity/user_entity.dart';
 
 import '../../create_person/entity/face_entity.dart';
-import '../../first_screen/entity/comment_entity.dart';
 import '../../first_screen/entity/memory_entity.dart';
 
 class ProfileController extends GetxController {
@@ -56,10 +55,10 @@ class ProfileController extends GetxController {
         state.lastPageIsEmpty ? null : state.nextIntPageKey,
     fetchPage: (pageKey) => readMoreMemories(pageKey),
   );
-  late final pagingCommentController = PagingController<int, dynamic>(
+  late final pagingCommentController = PagingController<int, CommentEntity>(
     getNextPageKey: (state) =>
         state.lastPageIsEmpty ? null : state.nextIntPageKey,
-    fetchPage: (pageKey) => readMyPerfectComment(pageKey),
+    fetchPage: (pageKey) => readMyComment(pageKey),
   );
   late final pagingCommentPerfectController = PagingController<int, dynamic>(
     getNextPageKey: (state) =>
@@ -136,12 +135,12 @@ class ProfileController extends GetxController {
   }
 
   List<CommentEntity> commentList = [];
-  List<MyCommentEntity> myCommentList = [];
+  List<CommentEntity> myCommentList = [];
   int commentPage = 1;
   int myCommentPage = 1;
 
   Future<List<CommentEntity>> readMyComment(pageKey) async {
-    if (myCommentPage >= pageKey) {
+    if (myCommentPage <= pageKey) { // Assuming logic is correct here, though typically check against total pages
       try {
         final preferences = await SharedPreferences.getInstance();
         final token = preferences.getString('token');
@@ -155,17 +154,18 @@ class ProfileController extends GetxController {
           '$baseURL/Api/Memories/my-comments?token=$token&page=$pageKey&take=15&sortBy=latest',
           options: Options(contentType: Headers.formUrlEncodedContentType),
         );
-
+        print(response.data);
         if (response.statusCode == 200) {
           myCommentPage = response.data['data']['pageCount'];
           List<dynamic> data = response.data['data']['comments'];
-          myCommentList.addAll(data.map((e) => MyCommentEntity.fromJson(e)));
+          List<CommentEntity> newItems = data.map((e) => CommentEntity.fromJson(e)).toList();
+          myCommentList.addAll(newItems);
           update();
+          return newItems;
         } else {
           Get.snackbar('Error', response.statusMessage ?? '');
           return [];
         }
-        return [];
       } catch (e, stacktrace) {
         debugPrint("🔥 Exception while fetching memories: $e");
         debugPrint(stacktrace.toString());
@@ -194,13 +194,14 @@ class ProfileController extends GetxController {
         if (response.statusCode == 200) {
           myCommentPage = response.data['data']['pageCount'];
           List<dynamic> data = response.data['data']['comments'];
-          myCommentList.addAll(data.map((e) => MyCommentEntity.fromJson(e)));
+          List<CommentEntity> newItems = data.map((e) => CommentEntity.fromJson(e)).toList();
+          commentList.addAll(newItems);
           update();
+          return newItems;
         } else {
           Get.snackbar('Error', response.statusMessage ?? '');
           return [];
         }
-        return [];
       } catch (e, stacktrace) {
         debugPrint("🔥 Exception while fetching memories: $e");
         debugPrint(stacktrace.toString());

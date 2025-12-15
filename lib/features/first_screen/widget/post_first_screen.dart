@@ -130,8 +130,7 @@ class PostFirstScreen extends StatelessWidget {
                         child: CircleAvatar(
                           radius: 80,
                           backgroundImage: NetworkImage(
-                            "$baseImageURL/${memory.faceAvatar ??
-                                'noavatar.png'}",
+                            "$baseImageURL/${memory.faceAvatar ?? 'noavatar.png'}",
                           ),
                         ),
                       ),

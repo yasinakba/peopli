@@ -10,16 +10,13 @@ class SavePerson extends GetView<CreatePersonController> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 50,left: 50,top: 20,bottom: 10),
-      child: GetBuilder<CreatePersonController>(builder: (controller) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          CustomElevatedButton(onPressed: (){Get.back();}, textColor: AppLightColor.textBoldColor, color: AppLightColor.cancelButtonFill, title: "Cancel", height: 29.h, width: 90.w),
-          CustomElevatedButton(onPressed: (){controller.openDialogPerson(context);}, textColor: AppLightColor.withColor, color: AppLightColor.saveButton, title: "Save", height: 29.h, width: 90.w),
-        ],
-      ),)
-    );
+    return GetBuilder<CreatePersonController>(builder: (controller) => Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        CustomElevatedButton(onPressed: (){Get.back();}, textColor: AppLightColor.textBoldColor, color: AppLightColor.cancelButtonFill, title: "Cancel", height: 29.h, width: 90.w),
+        CustomElevatedButton(onPressed: (){controller.openDialogPerson(context);}, textColor: AppLightColor.withColor, color: AppLightColor.saveButton, title: "Save", height: 29.h, width: 90.w),
+      ],
+    ),);
   }
 }
 // controller.searchFace(1);

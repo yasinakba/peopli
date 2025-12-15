@@ -16,11 +16,12 @@ class HeaderProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ProfileController>(builder: (controller) {
-      return Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15),
-            child: Row(
+      return Container(
+        width: 375.w,
+        padding: EdgeInsets.symmetric(horizontal: 15),
+        child: Column(
+          children: [
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(
@@ -48,51 +49,44 @@ class HeaderProfile extends StatelessWidget {
                 IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
               ],
             ),
-          ),
-          Padding(
-            padding: EdgeInsetsDirectional.only(start: 15, end: 15, top: 2),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: 125.w,
-                  child: Column(
-                    children: [
-                      SizedBox(width: double.infinity,
-                          child: Text(controller.currentUser.isNotEmpty?controller.currentUser.first.displayName:'null', style: appThemeData
-                              .textTheme.headlineLarge, textAlign: TextAlign.start,)),
-                      // SizedBox(width: double.infinity,
-                      //     child: Text(
-                      //       controller.currentUser.first.??'Unknown', style: appThemeData
-                      //         .textTheme.bodyLarge, textAlign: TextAlign
-                      //         .start,)),
-                      SizedBox(width: double.infinity,
-                          child: Text(controller.currentUser.isNotEmpty?"${controller.currentUser.first.birthdate?.toString().substring(0,4)} - now":'null', style: appThemeData
-                              .textTheme.bodyLarge, textAlign: TextAlign
-                              .start,)),
-                      // SizedBox(width: double.infinity,
-                      //     child: Text(
-                      //       controller.currentUser.first.lastKnownLocation??'', style: appThemeData
-                      //         .textTheme.bodyLarge,
-                      //       textAlign: TextAlign.start,
-                      //       maxLines: 1,)),
-                    ],
-                  ),
+           Container(
+             alignment: Alignment.centerLeft,
+                width: 370.w,
+                padding: EdgeInsetsDirectional.only( top: 2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(controller.currentUser.isNotEmpty?controller.currentUser.first.displayName:'null', style: appThemeData
+                                .textTheme.headlineLarge, textAlign: TextAlign.start,),
+                        Text(
+                          controller.currentUser.first.role??'Unknown', style: appThemeData
+                            .textTheme.bodyLarge, textAlign: TextAlign
+                            .start,),
+                        Text(controller.currentUser.isNotEmpty?"${controller.currentUser.first.birthdate?.toString().substring(0,4)} - now":'null', style: appThemeData
+                            .textTheme.bodyLarge, textAlign: TextAlign
+                            .start,),
+                        Text(
+                          controller.currentUser.first.lastKnownLocation??'', style: appThemeData
+                            .textTheme.bodyLarge,
+                          textAlign: TextAlign.start,
+                          maxLines: 1,),
+                      ],
+                    ),
+                    CustomElevatedButton(onPressed: () {
+                        Get.toNamed(NamedRoute.routeEditProfiletScreen,arguments: controller.currentUser[0]);},
+                          textColor: AppLightColor.strokePositive,
+                          color: AppLightColor.withColor,
+                          title: "Edit Profile",
+                          height: 31.h,
+                          width: 130.w),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 23),
-                  child: CustomElevatedButton(onPressed: () {
-                    Get.toNamed(NamedRoute.routeEditProfiletScreen,arguments: controller.currentUser[0]);},
-                      textColor: AppLightColor.strokePositive,
-                      color: AppLightColor.withColor,
-                      title: "Edit Profile",
-                      height: 31.h,
-                      width: 130.w),
-                )
-              ],
-            ),
-          )
-        ],
+              ),
+          ],
+        ),
       );
     });
   }

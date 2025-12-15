@@ -6,10 +6,10 @@ import '../../../config/app_theme/app_theme.dart';
 
 
 class CustomTextFormFieldPassword extends StatefulWidget {
-   CustomTextFormFieldPassword({super.key, required this.controller,required this.title,required this.obSecureText});
+   CustomTextFormFieldPassword({super.key, required this.controller,required this.title});
   TextEditingController controller;
   String title;
-  bool obSecureText;
+  bool obSecureText = false;
 
   @override
   State<CustomTextFormFieldPassword> createState() => _CustomTextFormFieldState();
@@ -19,6 +19,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormFieldPassword> {
   @override
   Widget build(BuildContext context) {
     return  TextFormField(
+      obscureText: widget.obSecureText,
       controller: widget.controller,
       style: TextStyle(
         height: 1,

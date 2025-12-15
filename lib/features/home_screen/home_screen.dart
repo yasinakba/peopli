@@ -1,5 +1,6 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
@@ -19,11 +20,32 @@ class HomeScreen extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(),
         body: GetBuilder<HomeController>(builder: (controller) {
-          return WillPopScope(
-            onWillPop: () async {
-              return false;
+          return PopScope(
+            canPop: true,
+            onPopInvokedWithResult: (didPop, result) async {
+              Get.defaultDialog(
+              title: 'Pay attention',
+              titleStyle: TextStyle(fontSize: 18, color: Colors.black),
+              middleText: 'Are you sure you want to exit the app?',
+              middleTextStyle: TextStyle(fontSize: 16, color: Colors.grey.shade900),
+              backgroundColor: Colors.blueGrey[100],
+              radius: 15,
+              textCancel: 'Cancel',
+              cancelTextColor: Colors.black,
+              onCancel: () {},
+              textConfirm: 'Confirm',
+              confirmTextColor: Colors.white,
+              onConfirm: () {
+              SystemNavigator.pop();
+              },
+              buttonColor: Colors.green,
+              barrierDismissible: true,
+              // for blur with click on everywhere
+              actions: [
+              // Icon(Icons.tab)
+              ],
+              );
             },
             child: controller.body,
           );

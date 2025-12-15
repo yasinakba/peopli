@@ -53,7 +53,7 @@ class LoginView extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(25)),
                   border: Border.all(width: 1, color: AppLightColor.fillButton),
                 ),
-                child:CustomTextFormFieldPassword(controller: controller.passwordController, title: 'password', obSecureText: controller.obSecureText,),
+                child:CustomTextFormFieldPassword(controller: controller.passwordController, title: 'password',),
               ),
 
               controller.loading

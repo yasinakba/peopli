@@ -45,17 +45,12 @@ class PostComment extends StatelessWidget {
 
           Expanded(
             child: Container(
+              padding: const EdgeInsets.all(8.0),
               color: AppLightColor.withColor,
               child: TabBarView(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TabBarShowPost(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TabBarShowComment(),
-                  ),
+                  TabBarShowPost(),
+                  TabBarShowComment(),
                 ],
               ),
             ),

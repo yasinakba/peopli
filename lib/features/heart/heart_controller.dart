@@ -6,8 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 
 
-import '../first_screen/entity/comment_entity.dart';
 import '../first_screen/entity/memory_entity.dart';
+import '../profile_screen/entity/comment_entity.dart';
 
 
 class HeartController extends GetxController{

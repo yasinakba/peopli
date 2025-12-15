@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:test_test_test/config/widgets/custom_appbar.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
 import 'package:test_test_test/features/first_screen/widget/list_view_profile.dart';
@@ -22,6 +23,7 @@ class FirstScreen extends StatelessWidget {
 
         return Column(
           children: [
+            CustomAppBar(),
             Container(
               width: double.infinity,
               height: 1,
