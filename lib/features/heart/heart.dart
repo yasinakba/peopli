@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
@@ -32,8 +31,8 @@ class _HeartScreenState extends State<HeartScreen> {
           },
           builder: (controller) {
             return SizedBox(
-              height: 665.h,
-              width: 365.w,
+              height: Get.height *.91,
+              width: Get.width,
               child: PagingListener(
                 controller: controller.pagingMemoryController,
                 builder: (context, state, fetchNextPage) =>

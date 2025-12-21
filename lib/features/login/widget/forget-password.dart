@@ -16,15 +16,17 @@ class ForgetPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-        child: GetBuilder<LoginController>(builder: (controller) {
+      child: GetBuilder<LoginController>(
+        builder: (controller) {
           return ListView(
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 40),
                 child: SizedBox(
-                    width: 280.w,
-                    height: 300.h,
-                    child: Image.asset(AppAssetsPng.logo)),
+                  width: 280.w,
+                  height: 300.h,
+                  child: Image.asset(AppAssetsPng.logo),
+                ),
               ),
 
               // Padding(
@@ -35,28 +37,43 @@ class ForgetPassword extends StatelessWidget {
               //     child: Text("Please Enter PhoneNumber",style: appThemeData.textTheme.titleLarge,textAlign: TextAlign.center,),
               //   ),
               // ),
-               Container(
-                  margin: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(25)),
-                      border: Border.all(
-                          width: 1, color: AppLightColor.fillButton)),
-                  child:CustomTextFormField(title: 'Enter Your Email Address', controller: controller.emailController,),
+              Container(
+                margin: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(25)),
+                  border: Border.all(width: 1, color: AppLightColor.fillButton),
                 ),
+                child: CustomTextFormField(
+                  title: 'Enter old password',
+                  controller: controller.oldPasswordController,
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(25)),
+                  border: Border.all(width: 1, color: AppLightColor.fillButton),
+                ),
+                child: CustomTextFormField(
+                  title: 'Enter new password',
+                  controller: controller.newPasswordController,
+                ),
+              ),
 
-               CustomElevatedButton(
-                 textColor: Colors.white,
-                   color: Colors.indigo,
-                   height: 40.h,
-                   width: 300.w,
-                   onPressed: () {
-                     controller.pageController.jumpToPage(0);
-                   },
-                   title:  "Send"),
+              CustomElevatedButton(
+                textColor: Colors.white,
+                color: Colors.indigo,
+                height: 40.h,
+                width: 300.w,
+                onPressed: () => controller.changePassword(),
+                title: "Send",
+              ),
+
               //Richtext
-
             ],
           );
-        }));
+        },
+      ),
+    );
   }
 }

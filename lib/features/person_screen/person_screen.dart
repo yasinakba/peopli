@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -6,9 +8,10 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:rate/rate.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/cross_fade_widget_global.dart';
+import 'package:test_test_test/config/widgets/loading_widget.dart';
+import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/first_screen/widget/post_first_screen.dart';
 import '../../config/app_colors/app_colors_light.dart';
-import '../../config/app_icons/app_assets_png.dart';
 import '../../config/app_route/route_names.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/customButton.dart';
@@ -17,10 +20,10 @@ import '../edit_person/controller/edit_person_controller.dart';
 import 'controller/person_controller.dart';
 
 class PersonScreen extends GetView<PersonController> {
-  final FaceEntity face = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
+    controller.face = Get.arguments;
     return Scaffold(
       backgroundColor: AppLightColor.withColor,
       appBar: AppBar(
@@ -28,7 +31,7 @@ class PersonScreen extends GetView<PersonController> {
         elevation: 0,
         backgroundColor: AppLightColor.withColor,
         title: Text(
-          face.name ?? 'Name does not exist',
+          controller.face.name ?? 'Name does not exist',
           style: appThemeData.textTheme.displayMedium,
         ),
         leading: IconButton(
@@ -53,27 +56,39 @@ class PersonScreen extends GetView<PersonController> {
         ],
       ),
       body: GetBuilder<PersonController>(
+        initState: (state) {
+          Get.find<PersonController>().readMoreMemories(1);
+        },
         builder: (controller) {
           return Column(
             children: [
               CrossFadeWidgetGlobal(
-                firstWidget: FirstWidget(face: face, controller: controller),
-                secondWidget: SecondWidget(face: face),
+                firstWidget: FirstWidget(
+                    face: controller.face, controller: controller),
+                secondWidget: SecondWidget(face: controller.face),
                 isToggled: controller.isToggled,
               ),
               SizedBox(height: 10.h),
               Expanded(
-                child: PagingListener(
+                child: PagingListener<int, MemoryEntity>(
                   controller: controller.pagingMemoryController,
-                  builder: (context, state, fetchNextPage) => PagedListView(
-                    state: state,
-                    fetchNextPage: fetchNextPage,
-                    builderDelegate: PagedChildBuilderDelegate(
-                      itemBuilder: (context, item, index) {
-                        return PostFirstScreen(item, index);
-                      },
-                    ),
-                  ),
+                  builder: (context, state, fetchNextPage) {
+                    return PagedListView<int, MemoryEntity>(
+                      state: state,
+                      fetchNextPage: fetchNextPage,
+                      builderDelegate: PagedChildBuilderDelegate<MemoryEntity>(
+                        firstPageProgressIndicatorBuilder: (context) =>
+                            LoadingWidget(),
+                        newPageProgressIndicatorBuilder: (context) =>
+                            LoadingWidget(),
+                        noItemsFoundIndicatorBuilder: (context) =>
+                        const Center(child: Text("No memories found.")),
+                        itemBuilder: (context, item, index) {
+                          return PostFirstScreen(item, index);
+                        },
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
@@ -92,7 +107,6 @@ class FirstWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    controller.faceId = face.id?.toInt() ?? 1;
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -120,38 +134,26 @@ class FirstWidget extends StatelessWidget {
                   width: 125.w,
                   child: Column(
                     children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                          "${face.name ?? ''} ${face.lastName}",
-                          style: appThemeData.textTheme.headlineLarge,
-                          textAlign: TextAlign.start,
-                        ),
+                      Text(
+                        "${face.name ?? ''} ${face.lastName}",
+                        style: appThemeData.textTheme.headlineLarge,
+                        textAlign: TextAlign.start,
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                          face.country ?? 'your country null',
-                          style: appThemeData.textTheme.bodyLarge,
-                          textAlign: TextAlign.start,
-                        ),
+                      Text(
+                        face.country ?? 'Country Unknown',
+                        style: appThemeData.textTheme.bodyLarge,
+                        textAlign: TextAlign.start,
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                          "${face.birthdate?.substring(0, 4) ?? 'null'} - now",
-                          style: appThemeData.textTheme.bodyLarge,
-                          textAlign: TextAlign.start,
-                        ),
+                      Text(
+                        "${face.birthdate?.substring(0, 4) ?? 'null'} - now",
+                        style: appThemeData.textTheme.bodyLarge,
+                        textAlign: TextAlign.start,
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                          face.homeTown ?? 'your homeTown does not exist',
-                          style: appThemeData.textTheme.bodyLarge,
-                          textAlign: TextAlign.start,
-                          maxLines: 1,
-                        ),
+                      Text(
+                        face.homeTown ?? 'Home Town',
+                        style: appThemeData.textTheme.bodyLarge,
+                        textAlign: TextAlign.start,
+                        maxLines: 1,
                       ),
                     ],
                   ),
@@ -164,40 +166,35 @@ class FirstWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        width: 35.w,
-                        height: 35.h,
+                        width: 37.w,
+                        height: 37.w,
+                        padding: EdgeInsetsDirectional.all(1),
+                        alignment: Alignment.center,
                         decoration: BoxDecoration(
+                          shape: BoxShape.circle,
                           color: AppLightColor.fillRectangleType,
                           border: Border.all(
                             color: AppLightColor.strokePositive,
                           ),
-                          shape: BoxShape.circle,
                         ),
-                        child: InkWell(
-                          onTap: () {
-                            Get.toNamed(
-                              NamedRoute.routeAddMemoryScreen,
-                              arguments: face,
-                            );
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: SizedBox(
-                              width: 30.w,
-                              height: 30.w,
-                              child: Image.asset(AppAssetsPng.iconPlus),
-                            ),
+                        child: Center(
+                          child: IconButton(
+                            alignment: Alignment.center,
+                            onPressed: () =>
+                                Get.toNamed(
+                                  NamedRoute.routeAddMemoryScreen,
+                                  arguments: face,
+                                ),
+                            icon: Icon(IconsaxPlusBold.add_circle, size: 22,),
                           ),
                         ),
                       ),
-                      Padding(
+                      Container(
                         padding: const EdgeInsets.only(top: 5),
-                        child: SizedBox(
-                          width: 70.w,
-                          child: Text(
-                            "Add a memory",
-                            style: appThemeData.textTheme.bodyLarge,
-                          ),
+                        width: 70.w,
+                        child: Text(
+                          "Add a memory",
+                          style: appThemeData.textTheme.bodyLarge,
                         ),
                       ),
                     ],
@@ -269,9 +266,14 @@ class SecondWidget extends StatelessWidget {
                         },
                       ),
                       SizedBox(width: 10.w),
-                      Text(
-                        "${face.rating?.toString() ?? '0.0 '} (${controller.ratingCount.toString() ?? '0'})",
-                      ),
+                      GetBuilder<PersonController>(
+                          id: 'rating',
+                          builder: (logic) {
+                        return Text(
+                          "${face.rating?.toString() ?? '0.0 '} (${logic
+                              .ratingCount.toString() ?? '0'})",
+                        );
+                      }),
                       Spacer(),
                       GestureDetector(
                         onTap: () => controller.voteFace(face.id),

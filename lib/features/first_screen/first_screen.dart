@@ -5,6 +5,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:test_test_test/config/widgets/custom_appbar.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
+import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/first_screen/widget/list_view_profile.dart';
 import 'package:test_test_test/features/first_screen/widget/post_first_screen.dart';
 
@@ -17,9 +18,9 @@ class FirstScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<FirstController>(
       builder: (controller) {
-        if (controller.isLoadingMemories) {
-          return LoadingWidget();
-        }
+        // if (controller.isLoadingMemories) {
+        //   return LoadingWidget();
+        // }
 
         return Column(
           children: [
@@ -30,14 +31,12 @@ class FirstScreen extends StatelessWidget {
               color: AppLightColor.cancelButtonFill,
             ),
 
-            Padding(
+            Container(
               padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
                 width: double.infinity,
-                height: 100.h,
+                height: 120.h,
                 child: ListViewProfile(),
               ),
-            ),
 
             Container(
               width: double.infinity,
@@ -53,12 +52,11 @@ class FirstScreen extends StatelessWidget {
                   return PagedListView<int, dynamic>(
                     state: state,
                     fetchNextPage: fetchNextPage,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 10.w,
-                      vertical: 10.h,
+                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h,
                     ),
                     builderDelegate: PagedChildBuilderDelegate<dynamic>(
                       itemBuilder: (context, memory, index) {
+                        Get.find<FirstController>().likeCount.add(memory.likesCount?.toInt()??0);
                         return Padding(
                           padding: EdgeInsets.only(bottom: 10.h),
                           child: PostFirstScreen(memory, index),

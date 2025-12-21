@@ -14,6 +14,8 @@ class LoginController extends GetxController{
   PageController pageController = PageController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController oldPasswordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   bool obSecureText = true;
   bool loading = false;
@@ -72,6 +74,53 @@ class LoginController extends GetxController{
         SharedPreferences preferences = await SharedPreferences.getInstance();
         preferences.setString('token', response.data['data']);
         Get.toNamed(NamedRoute.routeHomeScreen);
+        update();
+      } else {
+        loading=false;
+        update();
+        Get.showSnackbar(GetSnackBar(title: 'Error',message: response.data['data'],duration: Duration(seconds: 2)));
+      }
+    } on DioException catch (e) {
+      loading=false;
+      update();
+      Get.snackbar("Error","POST error: ${e.response?.statusCode} - ${e.message}");
+    }
+  }
+  Future<void> changePassword() async {
+    final pref = await SharedPreferences.getInstance();
+    var token = pref.getString('token');
+     if(await checkInternet() == false){
+       return;
+     }
+    loading = true;
+    update();
+
+    if(token == null){
+      Get.snackbar('Error', 'Please register first');
+    }
+    if (oldPasswordController.text.isEmpty || newPasswordController.text.isEmpty ) {
+      loading = false;
+      Get.snackbar("Error","Username or password is empty");
+      update();
+      return;
+    }
+
+    try {
+
+      final response = await dio.post(
+        "$baseURL/Api/change-password",
+        queryParameters: {
+          "token": token,
+          "oldPassword": oldPasswordController.text,
+          "newPassword": newPasswordController.text,
+        },
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType, // crucial for .NET backend
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data['status'] == 'ok') {
+        pageController.jumpToPage(0);
         update();
       } else {
         loading=false;

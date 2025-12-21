@@ -16,9 +16,7 @@ class BottomSearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<SearchBottomController>(
       builder: (controller) {
-        bool notFound =
-            controller.faceList.isEmpty &&
-            controller.displayNameController.text.isNotEmpty;
+        bool notFound = controller.displayNameController.text.isNotEmpty;
 
         return Container(
           margin: EdgeInsets.only(top: 6.h),
@@ -29,7 +27,8 @@ class BottomSearchScreen extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(25)),
             border: Border.all(width: 1.w, color: AppLightColor.strokeStar),
           ),
-          child:controller.loadingSearch? LoadingWidget(): notFound ? Center(
+          child:  notFound
+              ? Center(
                   child: Text(
                     textAlign: TextAlign.center,
                     'Does not exist😣',
@@ -40,74 +39,74 @@ class BottomSearchScreen extends StatelessWidget {
                     ),
                   ),
                 )
-              :PagingListener<int, dynamic>(
-            controller: controller.pagingFaceController,
-            builder: (context, state, fetchNextPage) {
-              return PagedListView<int, dynamic>(
-                state: state,
-                fetchNextPage: fetchNextPage,
-                builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                  itemBuilder: (context, item, index) {
+              : PagingListener<int, dynamic>(
+                  controller: controller.pagingFaceController,
+                  builder: (context, state, fetchNextPage) {
+                    return PagedListView<int, dynamic>(
+                      state: state,
+                      fetchNextPage: fetchNextPage,
+                      builderDelegate: PagedChildBuilderDelegate<dynamic>(
+                        itemBuilder: (context, item, index) {
+                          // SAFE CAST
+                          if (item == null || item is! FaceEntity) {
+                            return SizedBox(); // or "Does not exist"
+                          }
 
-                    if (controller.loadingSearch) {
-                      return const Center(child: LoadingWidget());
-                    }
+                          FaceEntity face = item ;
 
-                    // SAFE CAST
-                    if (item == null || item is! FaceEntity) {
-                      return SizedBox(); // or "Does not exist"
-                    }
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListTile(
+                              onTap: () {
+                                Get.toNamed(
+                                  NamedRoute.routePersonScreen,
+                                  arguments: face,
+                                );
+                              },
 
-                    final face = item as FaceEntity;
+                              leading: CircleAvatar(
+                                radius: 30,
+                                backgroundImage: NetworkImage(
+                                  "$baseImageURL/${face.avatar??'noavatar.png'}",
+                                ),
+                              ),
 
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                        onTap: () {
-                          Get.toNamed(
-                            NamedRoute.routePersonScreen,
-                            arguments: face,
+                              title: Text(
+                                '${face.name ?? ''} ${face.birthdate.toString().substring(0, 4) ?? ''}',
+                                style: appThemeData.textTheme.labelMedium,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    face.homeTown ?? '',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: appThemeData.textTheme.labelMedium,
+                                  ),
+                                  Text(
+                                    face.job ?? '',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: appThemeData.textTheme.labelMedium,
+                                  ),
+                                ],
+                              ),
+                            ),
                           );
                         },
-
-                        leading: CircleAvatar(
-                          radius: 30,
-                          backgroundImage: NetworkImage(
-                            "$baseImageURL/${face.avatar??'noavatar.png'}",
-                          ),
-                        ),
-
-                        title: Text(
-                          '${face.name ?? ''} ${face.birthdate.toString().substring(0,4) ?? ''}',
-                          style: appThemeData.textTheme.labelMedium,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              face.homeTown ?? '',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: appThemeData.textTheme.labelMedium,
-                            ),
-                            Text(
-                              face.job ?? '',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: appThemeData.textTheme.labelMedium,
-                            ),
-                          ],
-                        ),
+                        firstPageProgressIndicatorBuilder: (context) =>
+                            LoadingWidget(),
+                        newPageProgressIndicatorBuilder: (context) =>
+                            LoadingWidget(),
+                        noItemsFoundIndicatorBuilder: (context) =>
+                            const Center(child: Text("No memories found.")),
                       ),
                     );
                   },
                 ),
-              );
-            },
-          )
-
         );
       },
     );

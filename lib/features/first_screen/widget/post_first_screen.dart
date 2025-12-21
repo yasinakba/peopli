@@ -2,8 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
+import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
@@ -13,7 +15,7 @@ import '../../login/controller/login_controller.dart';
 import 'comment_post.dart';
 
 class PostFirstScreen extends StatelessWidget {
-  final dynamic memory;
+  final MemoryEntity memory;
   final int index;
 
   PostFirstScreen(this.memory, this.index);
@@ -27,8 +29,6 @@ class PostFirstScreen extends StatelessWidget {
         Get.lazyPut(() => FirstController());
       },
       builder: (controller) {
-        controller.likeCount = memory.likesCount;
-        controller.isLiked = memory.isLiked;
         return Container(
           width: 345.w,
           decoration: BoxDecoration(
@@ -66,9 +66,7 @@ class PostFirstScreen extends StatelessWidget {
                           SizedBox(
                             width: double.infinity,
                             child: Text(
-                              "${memory.faceBirthdate
-                                  .toString()
-                                  .substring(0, 4)} -now",
+                              "${memory.faceBirthdate.toString().substring(0, 4)} -now",
                               style: appThemeData.textTheme.bodyLarge,
                               textAlign: TextAlign.start,
                             ),
@@ -95,8 +93,7 @@ class PostFirstScreen extends StatelessWidget {
                             child: CircleAvatar(
                               radius: 80,
                               backgroundImage: NetworkImage(
-                                "$baseImageURL/${memory.userAvatar ??
-                                    'noavatar.png'}",
+                                "$baseImageURL/${memory.userAvatar ?? 'noavatar.png'}",
                               ),
                             ),
                           ),
@@ -180,12 +177,12 @@ class PostFirstScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20, bottom: 5),
                 child: SizedBox(
-                    width: 293.w,
-                    height: 141.h,
-                    child: Image.network(
-                      '$baseImageURL/${memory.media ?? 'usericon.png'}',
-                      fit: BoxFit.fitWidth,
-                    )
+                  width: 293.w,
+                  height: 141.h,
+                  child: Image.network(
+                    '$baseImageURL/${memory.media ?? 'usericon.png'}',
+                    fit: BoxFit.fitWidth,
+                  ),
                 ),
               ),
               //comment Like && share
@@ -205,12 +202,9 @@ class PostFirstScreen extends StatelessWidget {
                               builder: (context) {
                                 return Padding(
                                   padding: EdgeInsets.only(
-                                    bottom: MediaQuery
-                                        .of(
+                                    bottom: MediaQuery.of(
                                       context,
-                                    )
-                                        .viewInsets
-                                        .bottom,
+                                    ).viewInsets.bottom,
                                   ),
                                   child: Container(
                                     height: 450,
@@ -241,57 +235,57 @@ class PostFirstScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+
                     //heart
                     // Update values from widget only once (not every rebuild)
-
-
                     GetBuilder<FirstController>(
-                        id: 'like',
-                        builder: (logic) {
-                      return Row(
-                        children: [
-                          SizedBox(
-                            width: 30.w,
-                            height: 30.w,
-                            child: IconButton(
-                              onPressed: () {
-                                if (logic.isLiked == false) {
-                                  logic.addLike(
-                                      memoryId: memory.id);
-                                  logic.likeCount = memory.likesCount +1;
-                                  logic.isLiked == true;
-                                  logic.update(['like']);
-                                } else {
-                                  logic.removeLike(
-                                      memoryId: memory.id);
-                                  logic.likeCount = memory.likesCount -1;
-                                  logic.isLiked == false;
-                                  print(logic.isLiked);
-                                  logic.update(['like']);
-                                }
-                                // Send request
-                              },
-                              icon: Icon(
-                                logic.isLiked ? Icons.favorite
-                                    : Icons.favorite_border,
-                                size: 17.sp,
-                                color: controller.isLiked
-                                    ? Colors.green.shade400
-                                    : Colors.grey.shade600,
+                      tag: 'like_${memory.id}',
+                      id: 'like_${memory.id}',
+                      init: controller,
+                      assignId: true,
+                      builder: (logic) {
+                        return Row(
+                          children: [
+                            SizedBox(
+                              width: 30.w,
+                              height: 30.w,
+                              child: IconButton(
+                                onPressed: () {
+                                  if (logic.isLiked?? false) {
+                                    logic.removeLike(memoryId: memory.id);
+                                    logic.isLiked = false;
+                                    logic.likeCount[index]--;
+                                    print(controller.likeCount[index]);
+                                    logic.iconLike = IconsaxPlusLinear.heart;
+                                    logic.iconColor = Colors.grey.shade600;
+                                    logic.update(['like_${memory.id}']); // Only update this item
+                                  } else {
+                                    logic.addLike(memoryId: memory.id);
+                                    logic.likeCount[index]++;
+                                    logic.isLiked = true;
+                                    logic.iconColor = Colors.green.shade400;
+                                    logic.iconLike = IconsaxPlusBold.heart;
+                                    logic.update(['like_${memory.id}']); // Only update this item
+                                  }
+                                },
+                                icon: Icon(
+                                  logic.iconLike,
+                                  size: 17.sp,
+                                  color: logic.iconColor,
+                                ),
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 4),
-                            child: Text(
-                              controller.likeCount.toString(),
-                              style: appThemeData.textTheme.bodyMedium,
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4),
+                              child: Text(
+                                logic.likeCount[index].toString(),
+                                style: appThemeData.textTheme.bodyMedium,
+                              ),
                             ),
-                          ),
-                        ],
-                      );
-                    }),
-
+                          ],
+                        );
+                      },
+                    ),
 
                     //share
                     Row(

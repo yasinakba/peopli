@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -30,8 +31,8 @@ class ListViewProfile extends StatelessWidget {
             if(index < controller.faceList.length){
             FaceEntity face = controller.faceList[index];
               return SizedBox(
-                width: 80,
-                height: 87,
+                width: 80.w,
+                height: 87.h,
                 child: Column(
                   children: [
                     InkWell(

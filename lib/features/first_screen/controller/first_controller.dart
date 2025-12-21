@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
@@ -15,8 +16,7 @@ import '../../feature_location/controller/location_controller.dart';
 import '../../profile_screen/entity/comment_entity.dart';
 
 class FirstController extends GetxController {
-  var isLiked = false;
-  var likeCount = 0;
+
   final dio = Dio();
   int memoryPage = 1;
   List<MemoryEntity> memoryList = [];
@@ -33,7 +33,8 @@ class FirstController extends GetxController {
   bool isLoadingMemories = false;
   bool isLoadingFaces = false;
   int lastLoadedPage = 0;
-
+  bool? isLiked;
+  List<int> likeCount = [];
   @override
   void onInit() {
     super.onInit();
@@ -51,6 +52,16 @@ class FirstController extends GetxController {
       Get.find<EducationController>().getEducation();
       Get.find<ProfileController>().getCurrentAccount();
     });
+  }
+
+  @override
+  void onClose() {
+    // TODO: implement dispose
+    super.onClose();
+    likeCount = [];
+    isLiked = null;
+    iconLike = IconsaxPlusLinear.heart;
+    iconColor = Colors.grey.shade400;
   }
 
   int totalPage = 1;
@@ -289,12 +300,12 @@ class FirstController extends GetxController {
 
   List<FaceEntity> faceList = [];
   int facePage = 1;
-
+  IconData iconLike = IconsaxPlusLinear.heart;
+  Color iconColor = Colors.grey.shade600;
   Future<void> addLike({required memoryId}) async {
     if (await checkInternet() == false) {
       return;
     }
-    commentList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
       String? token = preferences.getString('token');
@@ -304,9 +315,9 @@ class FirstController extends GetxController {
         data: {'token': token.toString(), 'memoryId': memoryId},
         options: Options(contentType: Headers.formUrlEncodedContentType),
       );
-      if (response.statusCode == 200) {
-        update(['like']);
-      }
+      isLiked = true;
+      if (response.statusCode == 200) ()=> update();
+
     } catch (e, stacktrace) {
       debugPrint("🔥 Exception while fetching memories: $e");
       debugPrint(stacktrace.toString());
@@ -317,7 +328,6 @@ class FirstController extends GetxController {
     if (await checkInternet() == false) {
       return;
     }
-    commentList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
       String? token = preferences.getString('token');
@@ -327,45 +337,11 @@ class FirstController extends GetxController {
         data: {'token': token.toString(), 'memoryId': memoryId},
         options: Options(contentType: Headers.formUrlEncodedContentType),
       );
-      if (response.statusCode == 200) {
-        update(['like']);
-      }
+      isLiked = false;
+      if (response.statusCode == 200) ()=> update();
     } catch (e, stacktrace) {
       debugPrint("🔥 Exception while fetching memories: $e");
       debugPrint(stacktrace.toString());
     }
   }
-
-  // Future<void> removeLike(memoryId) async {
-  //   commentList.clear();
-  //   try {
-  //     final preferences = await SharedPreferences.getInstance();
-  //     final token = preferences.getString('token');
-  //
-  //     if (token == null) {
-  //       debugPrint("⚠️ No token found in SharedPreferences");
-  //       return;
-  //     }
-  //
-  //     final response = await dio.post(
-  //       '$baseURL/Api/Memories/remove-like',
-  //       data: {'token': token, 'memoryId': memoryId},
-  //       options: Options(contentType: Headers.formUrlEncodedContentType),
-  //     );
-  //
-  //     if (response.statusCode == 200) {
-  //       // ✅ Success
-  //
-  //       debugPrint("Faces: ${response.data}");
-  //       update();
-  //     } else {
-  //       debugPrint(
-  //         "❌ Error: ${response.statusCode} -> ${response.statusMessage}",
-  //       );
-  //     }
-  //   } catch (e, stacktrace) {
-  //     debugPrint("🔥 Exception while fetching memories: $e");
-  //     debugPrint(stacktrace.toString());
-  //   }
-  // }
 }
