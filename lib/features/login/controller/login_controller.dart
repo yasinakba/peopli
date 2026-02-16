@@ -4,9 +4,7 @@ import 'package:get/get.dart' hide FormData;
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
-import 'package:test_test_test/features/feature_job_and_education/controller/education_cotnroller.dart';
-import 'package:test_test_test/features/feature_job_and_education/controller/job_controller.dart';
-import 'package:test_test_test/features/feature_location/controller/location_controller.dart';
+
 
 import '../../../config/app_route/route_names.dart';
 
@@ -19,31 +17,13 @@ class LoginController extends GetxController{
   TextEditingController emailController = TextEditingController();
   bool obSecureText = true;
   bool loading = false;
+
   share() async {
     await Share.share("com.example.peopli");
   }
   final dio = Dio();
-  @override
-  void onInit() {
-    super.onInit();
-    // Register controllers only
-    Get.lazyPut<LocationController>(() => LocationController());
-    Get.lazyPut<JobDropDownController>(() => JobDropDownController());
-    Get.lazyPut<EducationController>(() => EducationController());
-
-    // Defer API calls until the next frame
-    Future.delayed(Duration.zero, () {
-      Get.find<LocationController>().getCity(null);
-      Get.find<LocationController>().getCountry();
-      Get.find<JobDropDownController>().getJob();
-      Get.find<EducationController>().getEducation();
-    });
-  }
 
   Future<void> signIn() async {
-     if(await checkInternet() == false){
-       return;
-     }
     loading = true;
     update();
     final username = userNameController.text.trim();
@@ -73,8 +53,8 @@ class LoginController extends GetxController{
         loading=false;
         SharedPreferences preferences = await SharedPreferences.getInstance();
         preferences.setString('token', response.data['data']);
-        Get.toNamed(NamedRoute.routeHomeScreen);
         update();
+        Get.toNamed(NamedRoute.routeHomeScreen);
       } else {
         loading=false;
         update();
@@ -89,9 +69,6 @@ class LoginController extends GetxController{
   Future<void> changePassword() async {
     final pref = await SharedPreferences.getInstance();
     var token = pref.getString('token');
-     if(await checkInternet() == false){
-       return;
-     }
     loading = true;
     update();
 

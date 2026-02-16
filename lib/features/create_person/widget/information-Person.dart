@@ -11,10 +11,14 @@ import '../../../config/app_theme/app_theme.dart';
 import '../controller/create_person_controller.dart';
 
 class InformationPerson extends GetView<CreatePersonController> {
-  const InformationPerson({Key? key}) : super(key: key);
+  const InformationPerson({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // It's good practice to handle potential null values from your theme.
+    final labelLargeStyle = appThemeData.textTheme.labelLarge;
+    final buttonColor = AppLightColor.fillButton;
+
     return GetBuilder<LocationController>(
       builder: (controller) =>
           Container(
@@ -41,22 +45,15 @@ class InformationPerson extends GetView<CreatePersonController> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(
+                    Container(
                       width: 220.w,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15, top: 5),
-                        child: Text(
-                          CreateAccountController.selectedCountry.name !=
-                              null &&
-                              CreateAccountController.selectedCity.name !=
-                                  null
-                              ? "${CreateAccountController.selectedCountry
-                              .name ?? ''} ${CreateAccountController
-                              .selectedCity.name ?? ''}"
-                              : "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France",
-                          maxLines: 2,
-                          style: appThemeData.textTheme.bodySmall,
-                        ),
+                      padding: const EdgeInsets.only(left: 15, top: 5),
+                      child: Text(
+                        // Using null-aware operators to provide default empty strings
+                        "${CreateAccountController.selectedCountry?.name ??  "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France"} ${CreateAccountController
+                            .selectedCity?.name ?? ''}",
+                        maxLines: 2,
+                        style: appThemeData.textTheme.bodySmall,
                       ),
                     ),
                     Padding(
@@ -67,34 +64,30 @@ class InformationPerson extends GetView<CreatePersonController> {
                         },
                         child: Text(
                           'Add',
-                          style: appThemeData.textTheme.labelLarge!.copyWith(
-                            color: AppLightColor.fillButton,
-                          ),
+                          // Safely apply color to the text style
+                          style: labelLargeStyle?.copyWith(
+                            color: buttonColor,
+                          ) ?? TextStyle(color: buttonColor),
                         ),
                       ),
                     ),
                   ],
                 ),
-                Padding(
+                Container(
+                  width: double.infinity,
                   padding: const EdgeInsets.only(top: 20),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 10, left: 10),
-                      child: InkWell(
-                        onTap: () {
-                          CreateAccountController.openDialogEducation(
-                            context,
-                          );
-                        },
-                        child: Text(
-                          "Education :",
-                          style: appThemeData.textTheme.bodyLarge,
-                        ),
-                      ),
+                  child: InkWell(
+                    onTap: () {
+                      CreateAccountController.openDialogEducation(
+                        context,
+                      );
+                    },
+                    child: Text(
+                      "Education :",
+                      style: appThemeData.textTheme.bodyLarge,
                     ),
                   ),
-                //Education
+                  //Education
                 ),
                 GetBuilder<CreateAccountController>(initState: (state) {
                   Get.lazyPut(() => CreateAccountController(),);
@@ -107,7 +100,8 @@ class InformationPerson extends GetView<CreatePersonController> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 15, top: 5),
                           child: Text(
-                            CreateAccountController.selectedEducation.name ??
+                            // Using null-aware access and the null-coalescing operator
+                            CreateAccountController.selectedEducation?.name ??
                                 'No selected Education',
                             maxLines: 2,
                             style: appThemeData.textTheme.bodySmall,
@@ -124,9 +118,10 @@ class InformationPerson extends GetView<CreatePersonController> {
                           },
                           child: Text(
                             'Add',
-                            style: appThemeData.textTheme.labelLarge!.copyWith(
-                              color: AppLightColor.fillButton,
-                            ),
+                            // Safely apply color to the text style
+                            style: labelLargeStyle?.copyWith(
+                              color: buttonColor,
+                            ) ?? TextStyle(color: buttonColor),
                           ),
                         ),
                       ),
@@ -135,16 +130,14 @@ class InformationPerson extends GetView<CreatePersonController> {
                 }),
 
                 //Jobs
-                Padding(
+                Container(
                   padding: const EdgeInsets.only(top: 20),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 10, left: 10),
-                      child: Text(
-                        "Job :",
-                        style: appThemeData.textTheme.bodyLarge,
-                      ),
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10, left: 10),
+                    child: Text(
+                      "Job :",
+                      style: appThemeData.textTheme.bodyLarge,
                     ),
                   ),
                 ),
@@ -153,15 +146,14 @@ class InformationPerson extends GetView<CreatePersonController> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GetBuilder<JobDropDownController>(builder: (logic) {
-                      return SizedBox(
+                      return Container(
                         width: 220.w,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 15, top: 5),
-                          child: Text(
-                            CreateAccountController.selectedJob.name ??'',
-                            maxLines: 2,
-                            style: appThemeData.textTheme.bodySmall,
-                          ),
+                        padding: const EdgeInsets.only(left: 15, top: 5),
+                        child: Text(
+                          // Using null-aware access and providing a default empty string
+                          CreateAccountController.selectedJob?.name ??'',
+                          maxLines: 2,
+                          style: appThemeData.textTheme.bodySmall,
                         ),
                       );
                     }),
@@ -173,9 +165,10 @@ class InformationPerson extends GetView<CreatePersonController> {
                         },
                         child: Text(
                           'Add',
-                          style: appThemeData.textTheme.labelLarge!.copyWith(
-                            color: AppLightColor.fillButton,
-                          ),
+                          // Safely apply color to the text style
+                          style: labelLargeStyle?.copyWith(
+                            color: buttonColor,
+                          ) ?? TextStyle(color: buttonColor),
                         ),
                       ),
                     ),

@@ -11,6 +11,7 @@ import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
+import 'package:test_test_test/features/person_screen/person_screen.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_theme/app_theme.dart';
@@ -109,7 +110,7 @@ class CreatePersonController extends GetxController {
         selectedRadio = -1;
         Get.lazyPut(() => FirstController(),);
         Get.find<FirstController>().readMoreFace(1);
-        Get.toNamed(NamedRoute.routePersonScreen,arguments: FaceEntity.fromJson(response.data['data']));
+        Get.to(()=>PersonScreen(),arguments: FaceEntity.fromJson(response.data['data']));
         update();
         Get.snackbar('Success', 'Face added successfully!');
       }

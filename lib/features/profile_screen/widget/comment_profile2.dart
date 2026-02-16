@@ -5,8 +5,9 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 
+import '../../../config/widgets/loading_widget.dart';
+import '../../../config/widgets/not_found_widget.dart';
 import '../entity/comment_entity.dart';
-
 
 class CommentProfile2 extends StatelessWidget {
   @override
@@ -14,7 +15,7 @@ class CommentProfile2 extends StatelessWidget {
     return GetBuilder<ProfileController>(
       builder: (controller) {
         return SizedBox(
-          height: 500.h,
+          height: 700.h,
           child: PagingListener<int, CommentEntity>(
             controller: controller.pagingCommentController,
             builder: (context, state, fetchNextPage) {
@@ -27,8 +28,12 @@ class CommentProfile2 extends StatelessWidget {
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                 ),
-                builderDelegate:
-                PagedChildBuilderDelegate<CommentEntity>(
+                builderDelegate: PagedChildBuilderDelegate<CommentEntity>(
+                  firstPageProgressIndicatorBuilder: (context) =>
+                      LoadingWidget(),
+                  newPageProgressIndicatorBuilder: (context) => LoadingWidget(),
+                  noItemsFoundIndicatorBuilder: (context) => NotFoundWidget(),
+
                   itemBuilder: (context, c, index) {
                     return SizedBox(
                       height: 130.w,
@@ -37,7 +42,7 @@ class CommentProfile2 extends StatelessWidget {
                         clipBehavior: Clip.none,
                         children: [
                           Align(
-                            alignment: Alignment.topCenter,
+                            alignment: Alignment.center,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(50),
                               child: Image.network(
@@ -51,8 +56,8 @@ class CommentProfile2 extends StatelessWidget {
                             ),
                           ),
                           Positioned(
-                            top: 40,
-                            left: 45,
+                            bottom: 10,
+                            right: 10,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(50),
                               child: Image.network(
@@ -78,4 +83,3 @@ class CommentProfile2 extends StatelessWidget {
     );
   }
 }
-

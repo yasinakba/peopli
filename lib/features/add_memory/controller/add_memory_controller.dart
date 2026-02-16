@@ -1,12 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_route/route_names.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
-import 'package:test_test_test/features/feature_getlocation_fromgps/controller/get_location_controller.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 
 class AddMemoryController extends GetxController {
@@ -19,10 +21,95 @@ class AddMemoryController extends GetxController {
 
   String selectedRadioValue = 'Negative';
   XFile? pickedFile;
- GetLocationController getLocationController =  Get.put(GetLocationController());
+  var locationText = "Unknown".obs;
+  bool loading = false;
+
+  /// For memory
+  Future<void> getLocationFromGPS(AddMemoryController controller) async {
+    loading = true;
+    update();
+    try {
+      Position currentPosition = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      );
+      controller.latitude = currentPosition.latitude;
+      controller.longitude = currentPosition.longitude;
+
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        currentPosition.latitude,
+        currentPosition.longitude,
+        localeIdentifier: "en",
+      );
+
+      if (placemarks.isNotEmpty) {
+        loading = false;
+        final place = placemarks.first;
+        controller.locationController.text =
+        "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+        controller.update();
+      }
+
+      // Request permission
+      var status = await Permission.location.request();
+
+      if (status.isPermanentlyDenied) {
+        loading = false;
+        update();
+        Get.snackbar(
+          'Error',
+          "❌ Permission permanently denied, opening settings...",
+        );
+        await openAppSettings();
+        return;
+      }
+    } catch (e) {
+      loading = false;
+      update();
+      Get.snackbar('Error', 'Unexpected Error $e');
+    }
+  }
+
+  /// For set user location
+  Future<void> lastKnownLocationFromGPS() async {
+    loading = true;
+    update();
+    // 1. Request permission first
+    var status = await Permission.location.request();
+    if (!status.isGranted) {
+      if (status.isPermanentlyDenied) {
+        Get.snackbar('Error', "❌ Permission permanently denied, opening settings...");
+        await openAppSettings();
+      }
+      return;
+    }
+
+    // 2. Get current location safely
+    Position currentPosition;
+    try {
+      currentPosition = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.medium),
+      );
+      setLocation(longitude: currentPosition.longitude, latitude: currentPosition.latitude);
+    } catch (e) {
+      Get.snackbar('Error',"Error getting GPS position: $e");
+      return;
+    } finally {
+      loading = false;
+      update();
+    }
+  }
+  final dio = Dio();
+  Future<void> setLocation({required longitude,required latitude,})async{
+    final preferences = await SharedPreferences.getInstance();
+    final token = preferences.getString('token');
+
+    final response = await dio.post('$baseURL/Api/set-location?token=$token&lng=$longitude&lat=$latitude',);
+    print(response.data);
+  }
   DateController dateController = Get.put( DateController());
   UploadController uploadController = Get.put( UploadController());
-  final dio = Dio();
   void addMemory(faceId) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
    String? token =  preferences.getString('token');

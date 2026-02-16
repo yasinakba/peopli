@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
+import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/create_person/widget/gender-person.dart';
 import 'package:test_test_test/features/create_person/widget/information-Person.dart';
 import 'package:test_test_test/features/create_person/widget/save_person.dart';
@@ -40,7 +41,7 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                   alignment: Alignment.center,
                   child: GetBuilder<UploadController>(
                     builder: (logic) {
-                      return Container(
+                      return logic.loading? LoadingWidget():Container(
                         height: 90.h,
                         width: 100.w,
                         decoration: BoxDecoration(

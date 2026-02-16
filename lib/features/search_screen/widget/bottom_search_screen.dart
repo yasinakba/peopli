@@ -4,20 +4,21 @@ import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
+import 'package:test_test_test/config/widgets/not_found_widget.dart';
+import 'package:test_test_test/features/person_screen/person_screen.dart';
 import 'package:test_test_test/features/search_screen/controller/search_bottom_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../../create_person/entity/face_entity.dart';
+import '../../person_screen/controller/person_controller.dart';
 
 class BottomSearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<SearchBottomController>(
       builder: (controller) {
-        bool notFound = controller.displayNameController.text.isNotEmpty;
-
         return Container(
           margin: EdgeInsets.only(top: 6.h),
           width: 295.w,
@@ -27,52 +28,35 @@ class BottomSearchScreen extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(25)),
             border: Border.all(width: 1.w, color: AppLightColor.strokeStar),
           ),
-          child:  notFound
-              ? Center(
-                  child: Text(
-                    textAlign: TextAlign.center,
-                    'Does not exist😣',
-                    style: TextStyle(
-                      color: Colors.purpleAccent,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 18.sp,
-                    ),
-                  ),
-                )
-              : PagingListener<int, dynamic>(
+          child:   PagingListener<int, FaceEntity>(
                   controller: controller.pagingFaceController,
                   builder: (context, state, fetchNextPage) {
-                    return PagedListView<int, dynamic>(
+                    return PagedListView<int, FaceEntity>(
                       state: state,
                       fetchNextPage: fetchNextPage,
-                      builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                        itemBuilder: (context, item, index) {
+                      builderDelegate: PagedChildBuilderDelegate<FaceEntity>(
+                        itemBuilder: (context,FaceEntity item, index) {
                           // SAFE CAST
-                          if (item == null || item is! FaceEntity) {
-                            return SizedBox(); // or "Does not exist"
-                          }
-
-                          FaceEntity face = item ;
 
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ListTile(
                               onTap: () {
-                                Get.toNamed(
-                                  NamedRoute.routePersonScreen,
-                                  arguments: face,
+                                Get.to(()=>
+                                  PersonScreen(),
+                                  arguments: item,
                                 );
                               },
 
                               leading: CircleAvatar(
                                 radius: 30,
                                 backgroundImage: NetworkImage(
-                                  "$baseImageURL/${face.avatar??'noavatar.png'}",
+                                  "$baseImageURL/${item.avatar??'noavatar.png'}",
                                 ),
                               ),
 
                               title: Text(
-                                '${face.name ?? ''} ${face.birthdate.toString().substring(0, 4) ?? ''}',
+                                '${item.name ?? ''} ${item.birthdate.toString().substring(0, 4) ?? ''}',
                                 style: appThemeData.textTheme.labelMedium,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -81,13 +65,13 @@ class BottomSearchScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    face.homeTown ?? '',
+                                    item.homeTown ?? '',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: appThemeData.textTheme.labelMedium,
                                   ),
                                   Text(
-                                    face.job ?? '',
+                                    item.job ?? '',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: appThemeData.textTheme.labelMedium,
@@ -97,12 +81,9 @@ class BottomSearchScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        firstPageProgressIndicatorBuilder: (context) =>
-                            LoadingWidget(),
-                        newPageProgressIndicatorBuilder: (context) =>
-                            LoadingWidget(),
-                        noItemsFoundIndicatorBuilder: (context) =>
-                            const Center(child: Text("No memories found.")),
+                        firstPageProgressIndicatorBuilder: (context) => LoadingWidget(),
+                        newPageProgressIndicatorBuilder: (context) => LoadingWidget(),
+                        noItemsFoundIndicatorBuilder: (context) =>NotFoundWidget(),
                       ),
                     );
                   },

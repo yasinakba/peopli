@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -9,6 +7,7 @@ import 'package:rate/rate.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/cross_fade_widget_global.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
+import 'package:test_test_test/config/widgets/not_found_widget.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/first_screen/widget/post_first_screen.dart';
 import '../../config/app_colors/app_colors_light.dart';
@@ -20,10 +19,10 @@ import '../edit_person/controller/edit_person_controller.dart';
 import 'controller/person_controller.dart';
 
 class PersonScreen extends GetView<PersonController> {
+  List likeCount = [];
 
   @override
   Widget build(BuildContext context) {
-    controller.face = Get.arguments;
     return Scaffold(
       backgroundColor: AppLightColor.withColor,
       appBar: AppBar(
@@ -56,10 +55,12 @@ class PersonScreen extends GetView<PersonController> {
         ],
       ),
       body: GetBuilder<PersonController>(
+        init: PersonController(),
         initState: (state) {
-          Get.find<PersonController>().readMoreMemories(1);
+          controller.readMoreMemories(-1);
         },
         builder: (controller) {
+          controller.face = Get.arguments;
           return Column(
             children: [
               CrossFadeWidgetGlobal(
@@ -77,14 +78,12 @@ class PersonScreen extends GetView<PersonController> {
                       state: state,
                       fetchNextPage: fetchNextPage,
                       builderDelegate: PagedChildBuilderDelegate<MemoryEntity>(
-                        firstPageProgressIndicatorBuilder: (context) =>
-                            LoadingWidget(),
-                        newPageProgressIndicatorBuilder: (context) =>
-                            LoadingWidget(),
-                        noItemsFoundIndicatorBuilder: (context) =>
-                        const Center(child: Text("No memories found.")),
+                        firstPageProgressIndicatorBuilder: (context) => LoadingWidget(),
+                        newPageProgressIndicatorBuilder: (context) => LoadingWidget(),
+                        noItemsFoundIndicatorBuilder: (context) =>NotFoundWidget(),
                         itemBuilder: (context, item, index) {
-                          return PostFirstScreen(item, index);
+                          likeCount.add(item.likesCount?.toInt()??0);
+                          return PostFirstScreen(item, index,likeCount);
                         },
                       ),
                     );
@@ -165,18 +164,9 @@ class FirstWidget extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
+                      SizedBox(
                         width: 37.w,
                         height: 37.w,
-                        padding: EdgeInsetsDirectional.all(1),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppLightColor.fillRectangleType,
-                          border: Border.all(
-                            color: AppLightColor.strokePositive,
-                          ),
-                        ),
                         child: Center(
                           child: IconButton(
                             alignment: Alignment.center,
@@ -185,12 +175,11 @@ class FirstWidget extends StatelessWidget {
                                   NamedRoute.routeAddMemoryScreen,
                                   arguments: face,
                                 ),
-                            icon: Icon(IconsaxPlusBold.add_circle, size: 22,),
+                            icon: Icon(IconsaxPlusBold.add_square,),
                           ),
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.only(top: 5),
+                      SizedBox(
                         width: 70.w,
                         child: Text(
                           "Add a memory",
@@ -271,7 +260,7 @@ class SecondWidget extends StatelessWidget {
                           builder: (logic) {
                         return Text(
                           "${face.rating?.toString() ?? '0.0 '} (${logic
-                              .ratingCount.toString() ?? '0'})",
+                              .ratingCount?.toString() ?? '0'})",
                         );
                       }),
                       Spacer(),

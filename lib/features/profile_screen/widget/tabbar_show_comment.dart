@@ -8,7 +8,6 @@ import 'comment_profile.dart';
 import 'comment_profile2.dart';
 
 class TabBarShowComment extends StatelessWidget {
-  final ProfileController controller = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,7 @@ class TabBarShowComment extends StatelessWidget {
             backgroundColor: AppLightColor.withColor,
             body: Column(
               children: [
-                Container(
+                Ink(
                   height: 30.h,
                   width: 375.w,
                   child: TabBar(
@@ -27,12 +26,12 @@ class TabBarShowComment extends StatelessWidget {
                     labelColor: AppLightColor.textBoldColor,
                     indicatorColor: AppLightColor.withColor,
                     tabs: [
-                      Container(
+                      Ink(
                           width: 112.w,
                           height: 16.h,
                           child: Icon(Icons.list)
                       ),
-                      Container(
+                      Ink(
                           width: 112.w,
                           height: 16.h,
                           child: Icon(Icons.border_all)
@@ -41,12 +40,12 @@ class TabBarShowComment extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Container(
+                  child: Ink(
                     color: AppLightColor.withColor,
                     child: TabBarView(
                       children: [
                         CommentProfile(controller.currentUser),
-                        Center(child: CommentProfile2()),
+                        CommentProfile2(),
                       ],
                     ),
                   ),

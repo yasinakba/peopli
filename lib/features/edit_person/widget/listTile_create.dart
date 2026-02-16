@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/features/create_person/entity/face_entity.dart';
+import 'package:test_test_test/features/person_screen/controller/person_controller.dart';
 
 import '../../../config/app_icons/app_assets_jpg.dart';
 import '../../../config/app_route/route_names.dart';
@@ -8,7 +10,8 @@ import '../../../config/app_theme/app_theme.dart';
 
 
 class ListTileCreate extends StatelessWidget {
-  const ListTileCreate({Key? key}) : super(key: key);
+  FaceEntity face;
+  ListTileCreate({required this.face});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +19,7 @@ class ListTileCreate extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: ListTile(
         onTap: (){
-          Get.toNamed(NamedRoute.routePersonScreen);
+          Get.to(()=>PersonController(),arguments: face);
         },
 
         leading: SizedBox(

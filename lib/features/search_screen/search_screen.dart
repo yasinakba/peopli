@@ -115,9 +115,12 @@ class SearchScreen extends GetView<SearchBottomController> {
                                 MainAxisAlignment.spaceAround,
                                 children: [
                                   IconButton(onPressed: () {
-                                    controller.searchFace(1);
+                                    controller.searchFace(-1);
                                   }, icon: Icon(IconsaxPlusBold.search_normal_1)),
                                   TextFieldSearch(
+                                    onChange: (value) {
+                                      controller.searchFace(-1);
+                                    },
                                     controller: controller.displayNameController,
                                     labelText: 'Name & Family',
                                   ),

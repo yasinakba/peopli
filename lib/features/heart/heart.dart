@@ -18,13 +18,13 @@ class HeartScreen extends StatefulWidget {
 }
 
 class _HeartScreenState extends State<HeartScreen> {
+  List likeCount = [];
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         GetBuilder<HeartController>(
           initState: (state) {
-            Get.lazyPut(() => ProfileController());
             Get.lazyPut(() => DateController());
             Get.lazyPut(() => HeartController());
             Get.lazyPut(() => FirstController());
@@ -45,9 +45,10 @@ class _HeartScreenState extends State<HeartScreen> {
                       ),
                       builderDelegate: PagedChildBuilderDelegate<dynamic>(
                         itemBuilder: (context, memory, index) {
+                          likeCount.add(memory.likesCount?.toInt()??0);
                           return Padding(
                             padding: EdgeInsets.only(bottom: 10.h),
-                            child: PostFirstScreen(memory, index),
+                            child: PostFirstScreen(memory, index,likeCount),
                           );
                         },
                         // Optional placeholders for better UX

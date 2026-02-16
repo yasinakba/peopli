@@ -9,7 +9,7 @@ class CustomTextFormFieldPassword extends StatefulWidget {
    CustomTextFormFieldPassword({super.key, required this.controller,required this.title});
   TextEditingController controller;
   String title;
-  bool obSecureText = false;
+  bool obSecureText = true;
 
   @override
   State<CustomTextFormFieldPassword> createState() => _CustomTextFormFieldState();

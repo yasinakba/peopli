@@ -29,12 +29,12 @@ class PostComment extends StatelessWidget {
                 borderRadius: BorderRadius.circular(25),
               ),
               tabs: [
-                Container(
+                Ink(
                   width: 112.w,
                   height: 16.h,
                   child: Text("Post",textAlign: TextAlign.center,),
                 ),
-                Container(
+                Ink(
                   width: 112.w,
                   height: 16.h,
                   child: Text("Comment",textAlign: TextAlign.center,),

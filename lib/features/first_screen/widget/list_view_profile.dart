@@ -6,9 +6,11 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
+import 'package:test_test_test/features/person_screen/person_screen.dart';
 
 import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
+import '../../../config/widgets/not_found_widget.dart';
 import '../../create_person/entity/face_entity.dart';
 
 
@@ -36,7 +38,9 @@ class ListViewProfile extends StatelessWidget {
                 child: Column(
                   children: [
                     InkWell(
-                      onTap: () {Get.toNamed(NamedRoute.routePersonScreen,arguments:face);},
+                      onTap: () {
+                        Get.to(()=>PersonScreen(),arguments:face);
+                        },
                       child: SizedBox(
                         width: 68,
                         height: 58,
@@ -66,7 +70,7 @@ class ListViewProfile extends StatelessWidget {
               );
             }
             return Container();
-          },),);
+          }, noItemsFoundIndicatorBuilder: (context) =>NotFoundWidget(),),);
         },
         controller: controller.pagingFaceController,
       );

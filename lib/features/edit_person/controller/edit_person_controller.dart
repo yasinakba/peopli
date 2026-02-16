@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_route/route_names.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
+import 'package:test_test_test/features/person_screen/person_screen.dart';
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../../../config/widgets/loading_widget.dart';
@@ -63,9 +64,6 @@ class EditPersonController extends GetxController {
 
   Future<void> editFace(id) async {
     try {
-      if(await checkInternet() == false){
-        return;
-      }
       final preferences = await SharedPreferences.getInstance();
       String? token = preferences.getString('token');
       if (nameController.text.isEmpty ||
@@ -114,8 +112,8 @@ class EditPersonController extends GetxController {
         knowAsController.clear();
         uploadController.pickedFile = null;
         selectedRadio = -1;
-        Get.toNamed(
-          NamedRoute.routePersonScreen,
+        Get.to(
+          PersonScreen(),
           arguments: FaceEntity.fromJson(response.data['data']),
         );
         update();
@@ -132,6 +130,7 @@ class EditPersonController extends GetxController {
   List<FaceEntity> faceList = [];
 
   Future<List<FaceEntity>> searchFace(pageKey) async {
+
     if (pageKey < facePage) {
       try {
         final preferences = await SharedPreferences.getInstance();

@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 import '../../../config/app_string/constant.dart';
+import '../../../config/widgets/loading_widget.dart';
+import '../../../config/widgets/not_found_widget.dart';
 
 class PostProfile2 extends StatelessWidget {
   const PostProfile2({Key? key}) : super(key: key);
@@ -12,9 +14,6 @@ class PostProfile2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ProfileController>(
-      initState: (state) {
-        Get.lazyPut(() => ProfileController());
-      },
       builder: (logic) {
         return PagingListener(
           controller: logic.pagingMemoryController,
@@ -29,13 +28,14 @@ class PostProfile2 extends StatelessWidget {
             ),
             // your custom grid delegate
             builderDelegate: PagedChildBuilderDelegate(
+              firstPageProgressIndicatorBuilder: (context) => LoadingWidget(),
+              newPageProgressIndicatorBuilder: (context) => LoadingWidget(),
+              noItemsFoundIndicatorBuilder: (context) =>NotFoundWidget(),
               itemBuilder: (context, item, index) {
                 if (item is! MemoryEntity) return SizedBox();
                 final memory = item;
 
-                final userAvatar = logic.currentUser.isNotEmpty
-                    ? logic.currentUser.first.avatar
-                    : '';
+                final userAvatar =  logic.currentUser?.avatar??'';
 
                 return Container(
                   padding: EdgeInsets.all(8),

@@ -7,13 +7,13 @@ import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/add_memory/widget/negativ_pasetiv.dart';
 import 'package:test_test_test/features/add_memory/widget/textFild_memory.dart';
+import 'package:test_test_test/features/feature_location/controller/location_controller.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 
 import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/customButton.dart';
 import '../create_person/entity/face_entity.dart';
-import '../feature_getlocation_fromgps/controller/get_location_controller.dart';
 import 'controller/add_memory_controller.dart';
 
 class AddMemoryScreen extends GetView<AddMemoryController> {
@@ -40,7 +40,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
         children: [
           GetBuilder<AddMemoryController>(
             initState: (state) {
-              Get.lazyPut(() => GetLocationController());
+              Get.lazyPut(() => LocationController());
               Get.lazyPut(() => DateController());
             },
             builder: (controller) =>
@@ -148,22 +148,19 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                         Padding(
                           padding: const EdgeInsets.only(left: 20, top: 5),
                           child: InkWell(
-                            child: GetBuilder<GetLocationController>(initState: (state) {
-                              Get.lazyPut(() => GetLocationController(),);
-                            },builder: (logic) {
-                              return logic.loading?Container(
-                                  width: 250.w,
-                                  child: LoadingWidget()):TextFiildMemory(
-                                labelText: 'Location',
-                                iconT: Icon(Icons.location_on,
-                                  color: Colors.green.shade400,),
-                                onPressed: () {
-                                  controller.getLocationController
-                                      .getLocationFromGPS(controller);
-                                },
-                                controller: controller.locationController,
-                              );
-                            }),
+                            child: Obx(() {
+    return Get.find<LocationController>().loadingForRegisterMemory.value?SizedBox(
+    width: 250.w,
+    child: LoadingWidget()):TextFiildMemory(
+    labelText: 'Location',
+    iconT: Icon(Icons.location_on,
+    color: Colors.green.shade400,),
+    onPressed: () {
+    controller.getLocationFromGPS(controller);
+    },
+    controller: controller.locationController,
+    );
+    },),
                           ),
                         ),
                       ],

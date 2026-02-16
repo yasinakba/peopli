@@ -9,7 +9,7 @@ import '../../create_person/entity/face_entity.dart';
 import '../../first_screen/entity/memory_entity.dart';
 
 class PersonController extends GetxController {
-  late FaceEntity face;
+  FaceEntity face = FaceEntity();
   int ratingCount = 0;
   bool isToggled = false;
   double ratingNumber = 0;
@@ -17,18 +17,15 @@ class PersonController extends GetxController {
   bool loading = false;
 
   late final PagingController<int, MemoryEntity> pagingMemoryController =
-  PagingController<int, MemoryEntity>(
-    getNextPageKey: (state) =>
-    state.lastPageIsEmpty ? null : state.nextIntPageKey,
-    fetchPage: (pageKey) => readMoreMemories(pageKey),
-  );
-
+      PagingController<int, MemoryEntity>(
+        getNextPageKey: (state) =>
+            state.lastPageIsEmpty ? null : state.nextIntPageKey,
+        fetchPage: (pageKey) => readMoreMemories(pageKey),
+      );
 
   final Dio dio = Dio();
+
   Future<void> voteFace(faceId) async {
-    if (await checkInternet() == false) {
-      return;
-    }
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
@@ -40,10 +37,7 @@ class PersonController extends GetxController {
 
       final response = await dio.get(
         '$baseURL/Api/Faces/vote/$faceId',
-        queryParameters: {
-          'value': ratingNumber,
-          'token': token,
-        },
+        queryParameters: {'value': ratingNumber, 'token': token},
         options: Options(contentType: Headers.formUrlEncodedContentType),
       );
       print(response.data);
@@ -61,32 +55,37 @@ class PersonController extends GetxController {
       debugPrint(stacktrace.toString());
     }
   }
+ List<MemoryEntity> memoryList = [];
+  Future<List<MemoryEntity>> readMoreMemories(pageKey) async {
 
+    if (pageKey <= totalPage) {
+      try {
+        final preferences = await SharedPreferences.getInstance();
+        final token = preferences.getString('token');
 
-
-  Future<List<MemoryEntity>> readMoreMemories(int pageKey) async {
-    final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token');
-
-    final response = await dio.get(
-      '$baseURL/Api/Memories',
-      queryParameters: {
-        'token': token,
-        'page': pageKey,
-        'take': 15,
-        'faceId': face.id,
-        'sortBy': 'newest',
-      },
-      options: Options(contentType: Headers.formUrlEncodedContentType),
-    );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = response.data['data']['memories'];
-
-      return data.map((e) => MemoryEntity.fromJson(e)).toList();
-    } else {
-      throw Exception('Failed to load memories');
+        final response = await dio.get(
+          '$baseURL/Api/Memories',
+          queryParameters: {
+            'token': token,
+            'page': pageKey,
+            'take': 15,
+            'sortBy': 'newest',
+          },
+          options: Options(contentType: Headers.formUrlEncodedContentType),
+        );
+        if (response.statusCode == 200) {
+          final List<dynamic> data = response.data['data']['memories'];
+          totalPage = response.data['data']['pageCount'];
+          loading = false;
+          memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e)));
+          update();
+          return memoryList;
+        }
+      } catch (e, stacktrace) {
+        debugPrint(stacktrace.toString());
+        return memoryList;
+      }
     }
+    return [];
   }
-
-  }
+}

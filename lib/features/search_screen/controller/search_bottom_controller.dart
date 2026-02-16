@@ -21,19 +21,18 @@ import '../../feature_location/entity/city_entity.dart';
 import '../../feature_location/entity/country_entity.dart';
 
 class SearchBottomController extends GetxController {
-
   TextEditingController displayNameController = TextEditingController();
   TextEditingController knowAsController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   TextEditingController dateTimeController = TextEditingController();
-  late final pagingFaceController = PagingController<int,dynamic>(
-    getNextPageKey: (state) => state.lastPageIsEmpty ? null : state.nextIntPageKey,
+  late final pagingFaceController = PagingController<int, FaceEntity>(
+    getNextPageKey: (state) =>
+        state.lastPageIsEmpty ? null : state.nextIntPageKey,
     fetchPage: (pageKey) => searchFace(pageKey),
   );
   int selected = 0;
 
   int selectedItem = 0;
-
 
   final dio = Dio();
   int facePage = 1;
@@ -41,10 +40,13 @@ class SearchBottomController extends GetxController {
   bool searchWithEducation = false;
   bool searchWithJob = false;
   bool loadingSearch = false;
+  bool doesNotExist = false;
   List<FaceEntity> faceList = [];
+
   Future<List<FaceEntity>> searchFace(pageKey) async {
-    if(await checkInternet() == false){
-      return [];
+    if (pageKey == -1) {
+      pageKey + 2;
+      pagingFaceController.refresh();
     }
     faceList.clear();
     loadingSearch = true;
@@ -53,34 +55,52 @@ class SearchBottomController extends GetxController {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
 
-      final requestData = {'token': token, 'page': pageKey, 'take': 15, 'filter': displayNameController.text, 'hometownId':searchWithLocation? selectedCity.id:null, 'educationId':searchWithEducation? selectedEducation.id:null, 'jobId':searchWithJob?selectedJob.id:null,};
-      final response = await dio.get('$baseURL/Api/Faces', queryParameters: requestData,);
+      final requestData = {
+        'sortBy': sortBy,
+        'token': token,
+        'page': pageKey,
+        'take': 15,
+        'filter': displayNameController.text,
+        'hometownId': searchWithLocation ? selectedCity.id : null,
+        'educationId': searchWithEducation ? selectedEducation.id : null,
+        'jobId': searchWithJob ? selectedJob.id : null,
+      };
+      final response = await dio.get(
+        '$baseURL/Api/Faces',
+        queryParameters: requestData,
+      );
+      print(response.data);
       if (response.statusCode == 200) {
         facePage = response.data['data']['pageCount'];
         faceList.clear();
         List<dynamic> data = response.data['data']['faces'];
-        faceList.addAll(data.map((i)=> FaceEntity.fromJson(i)));
+        faceList.addAll(data.map((i) => FaceEntity.fromJson(i)));
         loadingSearch = false;
-        update();
         return faceList;
       }
       loadingSearch = false;
       return faceList;
     } catch (e, stacktrace) {
       loadingSearch = false;
-      return faceList;
+      return [];
     }
   }
-
-
 
   updateIndexButton(index) {
     selected = index;
     update();
   }
 
-  //2
+  String sortBy = '';
+
   updateIndexButtonItem(index) {
+    index == 1
+        ? sortBy == 'Oldest'
+        : index == 2
+        ? sortBy == 'Popular'
+        : index == 0
+        ? sortBy == 'Newest'
+        : index;
     selectedItem = index;
     update();
   }

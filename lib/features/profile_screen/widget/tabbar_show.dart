@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
+import 'package:test_test_test/config/widgets/not_found_widget.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
-import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 import 'package:test_test_test/features/profile_screen/widget/post_profile2.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
-import '../../create_person/entity/face_entity.dart';
 import '../../first_screen/widget/post_first_screen.dart';
 
 class TabBarShowPost extends StatelessWidget {
-  const TabBarShowPost({Key? key}) : super(key: key);
-
+   TabBarShowPost({Key? key}) : super(key: key);
+  List likeCount = [];
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(length: 2,
@@ -46,7 +44,7 @@ class TabBarShowPost extends StatelessWidget {
                 ),
               ),
               Container(
-                height: 432.h,
+                height: 442.h,
                 color: AppLightColor.withColor,
                 child: TabBarView(
                   children: [
@@ -67,31 +65,22 @@ class TabBarShowPost extends StatelessWidget {
                               ),
                               builderDelegate: PagedChildBuilderDelegate<dynamic>(
                                 itemBuilder: (context, memory, index) {
-                                  try{
-                                    return Padding(
-                                      padding: EdgeInsets.only(bottom: 10.h),
-                                      child: PostFirstScreen(
-                                        memory,
-                                        index,
-                                      ),
-                                    );
-                                  }catch(e){
-                                    print(e);
-                                  }
-                                  return Container();
-
+                                  likeCount.add(memory.likesCount?.toInt()??0);
+                                return PostFirstScreen(
+                                  memory,
+                                  index,
+                                  likeCount,
+                                );
                                 },
-                                // Optional placeholders for better UX
-                                firstPageProgressIndicatorBuilder:
-                                    (context) => LoadingWidget(),
+                                firstPageProgressIndicatorBuilder: (context) => LoadingWidget(),
                                 newPageProgressIndicatorBuilder: (context) => LoadingWidget(),
-                                noItemsFoundIndicatorBuilder: (context) => const Center(child: Text("No memories found."),),
+                                noItemsFoundIndicatorBuilder: (context) => NotFoundWidget(),
                               ),
                             ),
                       );
                     }),
                     Center(
-                        child: PostProfile2()
+                        child: PostProfile2(),
                     ),
                   ],
                 ),

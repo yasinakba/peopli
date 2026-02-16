@@ -159,15 +159,12 @@ class CommentPost extends StatelessWidget {
                 SizedBox(
                 width: 45.w,
                 height: 45.h,
-                child: Get.find<ProfileController>().currentUser.isNotEmpty &&
-                    Get.find<ProfileController>().currentUser.first.avatar.isNotEmpty
+                child: Get.find<ProfileController>().currentUser.avatar.isNotEmpty
                     ? CircleAvatar(
                   radius: 50,
                   backgroundImage: NetworkImage(
                    "$baseImageURL/${Get.find<ProfileController>()
-                       .currentUser
-                       .first
-                       .avatar}" ,
+                       .currentUser.avatar}" ,
                   ),
                 )
                     : CircleAvatar(

@@ -8,6 +8,7 @@ import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
 import 'package:test_test_test/features/feature_job_and_education/controller/education_cotnroller.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
+import 'package:test_test_test/features/profile_screen/entity/comment_entity.dart';
 import 'package:test_test_test/features/profile_screen/entity/user_entity.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
@@ -66,10 +67,6 @@ class EditProfileController extends GetxController {
       });
   }
   Future<void> editProfile() async {
-    if(await checkInternet() == false){
-      return;
-    }
-
       // 1️⃣ Input validation
       if (userNameController.text.isEmpty ||
           displayController.text.isEmpty ||

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
-
 class CustomElevatedButton extends StatelessWidget {
    CustomElevatedButton({required this.onPressed,required this.textColor,required this.color,required this.title,required this.width,required this.height});
   void Function() onPressed;

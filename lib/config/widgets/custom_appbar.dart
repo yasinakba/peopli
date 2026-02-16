@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:iconsax_plus/iconsax_plus.dart';
+import 'package:test_test_test/features/feature_location/controller/location_controller.dart';
 
 import '../../features/home_screen/controller/home_controller.dart';
 import '../app_colors/app_colors_light.dart';
@@ -20,10 +22,9 @@ class CustomAppBar extends GetView<HomeController>
       titleSpacing: 0,
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.white,
-
-      leading: GetBuilder<HomeController>(
-        builder: (a) =>controller.index == 0
-            ? SizedBox.shrink():Container()),
+      leading:IconButton(onPressed: () {
+        Get.find<LocationController>().getLocation();
+      }, icon: Icon(IconsaxPlusBold.location)),
       title: Text("Peopli", style: appThemeData.textTheme.displayMedium),
       actions: [
         Row(

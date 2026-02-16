@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:frino_icons/frino_icons.dart';
 import 'package:get/get.dart';
 import 'package:test_test_test/config/widgets/customButton.dart';
 import 'package:test_test_test/config/widgets/custom_text_form_field.dart';
@@ -18,7 +17,6 @@ import '../create_account/widget/custom_text_form_field_password.dart';
 class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       body: GetBuilder<LoginController>(
         builder: (controller) {

@@ -2,30 +2,28 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
+import 'package:test_test_test/features/share_feature/shared_memory_controller.dart';
 
-import '../../feature_job_and_education/controller/education_cotnroller.dart';
-import '../../feature_job_and_education/controller/job_controller.dart';
 import '../../feature_location/controller/location_controller.dart';
 import '../../profile_screen/entity/comment_entity.dart';
 
 class FirstController extends GetxController {
-
+  String lastLocation = '';
   final dio = Dio();
   int memoryPage = 1;
   List<MemoryEntity> memoryList = [];
-  late final pagingMemoryController = PagingController<int, dynamic>(
+  late final pagingMemoryController = PagingController<int, MemoryEntity>(
     getNextPageKey: (state) =>
         state.lastPageIsEmpty ? null : state.nextIntPageKey,
     fetchPage: (pageKey) => readMoreMemories(pageKey),
   );
-  late final pagingFaceController = PagingController<int, dynamic>(
+  late final pagingFaceController = PagingController<int, FaceEntity>(
     getNextPageKey: (state) =>
         state.lastPageIsEmpty ? null : state.nextIntPageKey,
     fetchPage: (pageKey) => readMoreFace(pageKey),
@@ -33,40 +31,31 @@ class FirstController extends GetxController {
   bool isLoadingMemories = false;
   bool isLoadingFaces = false;
   int lastLoadedPage = 0;
+  int? idIsLiked;
   bool? isLiked;
-  List<int> likeCount = [];
   @override
   void onInit() {
     super.onInit();
 
-    Get.lazyPut<LocationController>(() => LocationController());
-    Get.lazyPut<JobDropDownController>(() => JobDropDownController());
-    Get.lazyPut<EducationController>(() => EducationController());
-    Get.lazyPut<ProfileController>(() => ProfileController());
-
+    Get.lazyPut<SharedMemoryController>(() => SharedMemoryController());
+    Get.lazyPut(() => LocationController(),);
     // Defer API calls until the next frame
     Future.delayed(Duration.zero, () {
-      Get.find<LocationController>().getCity(null);
-      Get.find<LocationController>().getCountry();
-      Get.find<JobDropDownController>().getJob();
-      Get.find<EducationController>().getEducation();
-      Get.find<ProfileController>().getCurrentAccount();
+      Get.find<LocationController>().getLocation();
     });
   }
-
   @override
   void onClose() {
     // TODO: implement dispose
     super.onClose();
-    likeCount = [];
-    isLiked = null;
-    iconLike = IconsaxPlusLinear.heart;
-    iconColor = Colors.grey.shade400;
+    idIsLiked = null;
   }
 
   int totalPage = 1;
 
+
   Future<List<MemoryEntity>> readMoreMemories(pageKey) async {
+
     if (pageKey <= totalPage) {
       try {
         final preferences = await SharedPreferences.getInstance();
@@ -109,12 +98,10 @@ class FirstController extends GetxController {
           debugPrint("⚠️ No token found in SharedPreferences");
           return faceList;
         }
-
         final response = await dio.get(
-          '$baseURL/Api/Faces?token=$token&page=$pageKey&take=15&sortBy=closet',
+          '$baseURL/Api/Faces?token=$token&page=$pageKey&take=15&sortBy=closest',
           options: Options(contentType: Headers.formUrlEncodedContentType),
         );
-
         if (response.statusCode == 200) {
           // ✅ Success
           facePage = response.data['data']['pageCount'];
@@ -144,9 +131,6 @@ class FirstController extends GetxController {
 
   Future<void> readComment(memoryId) async {
     if(commentPage > totalPage ){
-      return;
-    }
-    if (await checkInternet() == false) {
       return;
     }
     commentList.clear();
@@ -185,9 +169,6 @@ class FirstController extends GetxController {
   TextEditingController commentTextFieldController = TextEditingController();
 
   Future<void> addComment(memoryId) async {
-    if (await checkInternet() == false) {
-      return;
-    }
     try {
       final preferences = await SharedPreferences.getInstance();
       final token = preferences.getString('token');
@@ -225,9 +206,6 @@ class FirstController extends GetxController {
   }
 
   Future<void> deleteComment(commentId) async {
-    if (await checkInternet() == false) {
-      return;
-    }
     commentList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -262,9 +240,6 @@ class FirstController extends GetxController {
   }
 
   Future<void> editComment(commentId) async {
-    if (await checkInternet() == false) {
-      return;
-    }
     commentList.clear();
     try {
       final preferences = await SharedPreferences.getInstance();
@@ -300,12 +275,8 @@ class FirstController extends GetxController {
 
   List<FaceEntity> faceList = [];
   int facePage = 1;
-  IconData iconLike = IconsaxPlusLinear.heart;
-  Color iconColor = Colors.grey.shade600;
+
   Future<void> addLike({required memoryId}) async {
-    if (await checkInternet() == false) {
-      return;
-    }
     try {
       final preferences = await SharedPreferences.getInstance();
       String? token = preferences.getString('token');
@@ -315,7 +286,7 @@ class FirstController extends GetxController {
         data: {'token': token.toString(), 'memoryId': memoryId},
         options: Options(contentType: Headers.formUrlEncodedContentType),
       );
-      isLiked = true;
+      idIsLiked = null;
       if (response.statusCode == 200) ()=> update();
 
     } catch (e, stacktrace) {
@@ -325,9 +296,6 @@ class FirstController extends GetxController {
   }
 
   void removeLike({required memoryId}) async {
-    if (await checkInternet() == false) {
-      return;
-    }
     try {
       final preferences = await SharedPreferences.getInstance();
       String? token = preferences.getString('token');
@@ -337,7 +305,7 @@ class FirstController extends GetxController {
         data: {'token': token.toString(), 'memoryId': memoryId},
         options: Options(contentType: Headers.formUrlEncodedContentType),
       );
-      isLiked = false;
+      idIsLiked = null;
       if (response.statusCode == 200) ()=> update();
     } catch (e, stacktrace) {
       debugPrint("🔥 Exception while fetching memories: $e");

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:test_test_test/config/widgets/customButton.dart';
-import 'package:test_test_test/features/create_account/widget/custom_textField.dart';
-import 'package:test_test_test/features/create_account/widget/custom_text_form_field_password.dart';
 import 'package:test_test_test/features/login/controller/login_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';

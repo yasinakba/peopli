@@ -16,65 +16,102 @@ class ProfileController extends GetxController {
     super.onInit();
     readMyPerfectComment(1);
     readMyComment(1);
+
   }
 
   final dio = Dio();
-
-  Future<void> getCurrentAccount() async {
-    try {
-      final preferences = await SharedPreferences.getInstance();
-      final token = preferences.get('token');
-
-      final response = await dio.get(
-        '$baseURL/Api/Account',
-        queryParameters: {'token': token.toString()},
-      );
-
-      final data = response.data['data'];
-      if (data is Map<String, dynamic>) {
-        final user = UserEntity.fromJson(data);
-        currentUser.add(user);
-        debugPrint("✅ Single user added: ${user.username}");
-      } else {
-        debugPrint("❌ Unexpected data type: ${data.runtimeType}");
-      }
-
-      update();
-    } catch (e, stacktrace) {
-      debugPrint("🔥 Exception while fetching account: $e");
-      debugPrint(stacktrace.toString());
-    }
-  }
+  bool doesNotAuth = false;
+  UserEntity currentUser = UserEntity.UserEntity(
+    id: -1,
+    educationId: -1,
+    role: '',
+    token: '',
+    username: '',
+    displayName: '',
+    password: '',
+    avatar: '',
+    email: '',
+    cityId: -1,
+    lastKnownLocation: Location(x: 15, y: 18, srid: 45),
+    birthdate: '',
+    createdAt: '',
+  );
 
   List<MemoryEntity> memoryList = [];
   int memoryPage = 1;
   late TabController tabController;
-  List<UserEntity> currentUser = [];
-  late final pagingMemoryController = PagingController<int, dynamic>(
-    getNextPageKey: (state) =>
-        state.lastPageIsEmpty ? null : state.nextIntPageKey,
-    fetchPage: (pageKey) => readMoreMemories(pageKey),
-  );
   late final pagingCommentController = PagingController<int, CommentEntity>(
-    getNextPageKey: (state) =>
-        state.lastPageIsEmpty ? null : state.nextIntPageKey,
-    fetchPage: (pageKey) => readMyComment(pageKey),
-  );
-  late final pagingCommentPerfectController = PagingController<int, dynamic>(
     getNextPageKey: (state) =>
         state.lastPageIsEmpty ? null : state.nextIntPageKey,
     fetchPage: (pageKey) => readMyPerfectComment(pageKey),
   );
+  late final pagingCommentPerfectController =
+      PagingController<int, CommentEntity>(
+        getNextPageKey: (state) =>
+            state.lastPageIsEmpty ? null : state.nextIntPageKey,
+        fetchPage: (pageKey) => readMyPerfectComment(pageKey),
+      );
   bool isLoadingMemories = false;
   bool isLoadingFaces = false;
   int totalPage = 1;
   int totalFacePage = 1;
 
-  Future<List<MemoryEntity>> readMoreMemories(pageKey) async {
+  Future<void> getCurrentAccount() async {
+    try {
+      final preferences = await SharedPreferences.getInstance();
+      final token = preferences.getString('token');
+
+      if (token == null || token.isEmpty) {
+        doesNotAuth = true;
+        update();
+        return;
+      }
+
+      final response = await dio.get(
+        '$baseURL/Api/Account',
+        queryParameters: {'token': token},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data['data'];
+
+        if (data != null) {
+          currentUser = UserEntity.fromJson(data);
+          doesNotAuth = false;
+          readMoreMemories(1);
+
+
+        } else {
+          doesNotAuth = true;
+        }
+      } else {
+        doesNotAuth = true;
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) doesNotAuth = true;
+      debugPrint("🔥 Dio Error: ${e.message}");
+    } catch (e) {
+      debugPrint("🔥 Unexpected Exception: $e");
+    } finally {
+      update();
+    }
+  }
+
+  late final pagingMemoryController =  PagingController<int, MemoryEntity>(
+    getNextPageKey: (state) =>
+    state.lastPageIsEmpty ? null : state.nextIntPageKey,
+    fetchPage: (pageKey) => readMoreMemories(pageKey),
+  );
+
+  Future<List<MemoryEntity>> readMoreMemories(int pageKey) async {
     if (pageKey <= totalPage) {
       try {
-        final preferences = await SharedPreferences.getInstance();
-        final token = preferences.getString('token');
+        isLoadingMemories = true;
+        update();
+
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('token');
+
         final response = await dio.get(
           '$baseURL/Api/Memories',
           queryParameters: {
@@ -82,29 +119,35 @@ class ProfileController extends GetxController {
             'page': pageKey,
             'take': 15,
             'sortBy': 'newest',
-            'userId': currentUser.first.id,
+            'userId': currentUser.id,
           },
           options: Options(contentType: Headers.formUrlEncodedContentType),
         );
+
         if (response.statusCode == 200) {
           final List<dynamic> data = response.data['data']['memories'];
           totalPage = response.data['data']['pageCount'];
+
+          final items = data.map((e) => MemoryEntity.fromJson(e)).toList();
+          memoryList.addAll(items);
           isLoadingMemories = false;
-          memoryList.addAll(data.map((e) => MemoryEntity.fromJson(e)));
           update();
-          print(memoryList);
           return memoryList;
         }
-      } catch (e, stacktrace) {
-        debugPrint("🔥 Exception while fetching memories: $e");
-        debugPrint(stacktrace.toString());
-        return memoryList;
+        isLoadingMemories = false;
+        update();
+
+        return [];
+      } catch (e, stack) {
+        Get.snackbar("Error", "🔥 Exception while fetching memories: $e");
+        debugPrint(stack.toString());
+        return [];
       }
     }
     return [];
   }
-
   Future<List<FaceEntity>> readMoreFace(pageKey) async {
+
     if (pageKey <= totalFacePage) {
       isLoadingFaces = true;
       try {
@@ -140,7 +183,8 @@ class ProfileController extends GetxController {
   int myCommentPage = 1;
 
   Future<List<CommentEntity>> readMyComment(pageKey) async {
-    if (myCommentPage <= pageKey) { // Assuming logic is correct here, though typically check against total pages
+    if (myCommentPage <= pageKey) {
+      // Assuming logic is correct here, though typically check against total pages
       try {
         final preferences = await SharedPreferences.getInstance();
         final token = preferences.getString('token');
@@ -158,7 +202,9 @@ class ProfileController extends GetxController {
         if (response.statusCode == 200) {
           myCommentPage = response.data['data']['pageCount'];
           List<dynamic> data = response.data['data']['comments'];
-          List<CommentEntity> newItems = data.map((e) => CommentEntity.fromJson(e)).toList();
+          List<CommentEntity> newItems = data
+              .map((e) => CommentEntity.fromJson(e))
+              .toList();
           myCommentList.addAll(newItems);
           update();
           return newItems;
@@ -194,7 +240,9 @@ class ProfileController extends GetxController {
         if (response.statusCode == 200) {
           myCommentPage = response.data['data']['pageCount'];
           List<dynamic> data = response.data['data']['comments'];
-          List<CommentEntity> newItems = data.map((e) => CommentEntity.fromJson(e)).toList();
+          List<CommentEntity> newItems = data
+              .map((e) => CommentEntity.fromJson(e))
+              .toList();
           commentList.addAll(newItems);
           update();
           return newItems;

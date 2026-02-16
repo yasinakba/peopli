@@ -2,54 +2,39 @@ import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 
 import '../../create_person/entity/face_entity.dart';
 
-class  UserEntity {
+class UserEntity {
   final int id;
-  final int? educationId;
+  final int educationId;
   final String role;
   final String token;
   final String username;
   final String displayName;
   final String password;
   final String avatar;
-  final String? email;
-  final int? cityId;
-  final String? lastKnownLocation;
-  final String? birthdate;
-  final DateTime? createdAt;
-  final dynamic city;
-  final List<dynamic> comment;
-  final dynamic education;
-  final List<FaceEntity> face;
-  final List<dynamic> like;
-  final List<MemoryEntity> memory;
-  final List<dynamic> userOption;
-  final List<dynamic> vote;
+  final String email;
+  final int cityId;
+  final Location? lastKnownLocation;
+  final String birthdate;
+  final String createdAt;
 
-  UserEntity({
+  UserEntity.UserEntity({
     required this.id,
-    this.educationId,
+    required this.educationId,
     required this.role,
     required this.token,
     required this.username,
     required this.displayName,
     required this.password,
     required this.avatar,
-    this.email,
-    this.cityId,
-    this.lastKnownLocation,
-    this.birthdate,
-    this.createdAt,
-    this.city,
-    required this.comment,
-    this.education,
-    required this.face,
-    required this.like,
-    required this.memory,
-    required this.userOption,
-    required this.vote,
+    required this.email,
+    required this.cityId,
+    required this.lastKnownLocation,
+    required this.birthdate,
+    required this.createdAt,
   });
+
   factory UserEntity.fromJson(Map<String, dynamic> json) {
-    return UserEntity(
+    return UserEntity.UserEntity(
       id: json['id'],
       educationId: json['educationId'],
       role: json['role'],
@@ -60,20 +45,11 @@ class  UserEntity {
       avatar: json['avatar'],
       email: json['email'],
       cityId: json['cityId'],
-      lastKnownLocation: json['lastKnownLocation'],
-      birthdate: json['birthdate'] != null ? (json['birthdate']) : null,
-      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
-      city: json['city'],
-      comment: json['comment'] != null ? List<dynamic>.from(json['comment']) : [],
-      education: json['education'],
-      face: json['face'] != null ? List<FaceEntity>.from(json['face']) : [],
-      like: json['like'] != null ? List<dynamic>.from(json['like']) : [],
-      memory: json['memory'] != null
-          ? List<MemoryEntity>.from(
-          json['memory'].map((x) => MemoryEntity.fromJson(x)))
-          : [],
-      userOption: json['userOption'] != null ? List<dynamic>.from(json['userOption']) : [],
-      vote: json['vote'] != null ? List<dynamic>.from(json['vote']) : [],
+      lastKnownLocation: json['lastKnownLocation'] != null
+          ? Location.fromJson(json['lastKnownLocation'])
+          : null,
+      birthdate: json['birthdate'],
+      createdAt: json['createdAt'],
     );
   }
 
@@ -89,17 +65,37 @@ class  UserEntity {
       'avatar': avatar,
       'email': email,
       'cityId': cityId,
-      'lastKnownLocation': lastKnownLocation,
+      'lastKnownLocation': lastKnownLocation?.toJson(),
       'birthdate': birthdate,
-      'createdAt': createdAt?.toIso8601String(),
-      'city': city,
-      'comment': comment,
-      'education': education,
-      'face': face,
-      'like': like,
-      'memory': memory,
-      'userOption': userOption,
-      'vote': vote,
+      'createdAt': createdAt,
     };
   }
 }
+class Location {
+  final double x; // longitude
+  final double y; // latitude
+  final int srid;
+
+  Location({
+    required this.x,
+    required this.y,
+    required this.srid,
+  });
+
+  factory Location.fromJson(Map<String, dynamic> json) {
+    return Location(
+      x: (json['x'] as num).toDouble(),
+      y: (json['y'] as num).toDouble(),
+      srid: json['srid'] ?? 4326,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'x': x,
+      'y': y,
+      'srid': srid,
+    };
+  }
+}
+

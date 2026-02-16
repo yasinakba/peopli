@@ -211,8 +211,8 @@ class CreateAccountController extends GetxController {
     );
   }
 
-  static CountryEntity selectedCountry = CountryEntity();
-  static CityEntity selectedCity = CityEntity();
+  static CountryEntity selectedCountry = CountryEntity(id: 12,name: '',citiesCount: 0,createdAt: '');
+  static CityEntity selectedCity = CityEntity(id: 12,name: '',country: '',createdAt: '');
 
   //location
   static openDialogLocation(context) {
@@ -360,7 +360,7 @@ class CreateAccountController extends GetxController {
     );
   }
 
-  static JobEntity selectedJob = JobEntity();
+  static JobEntity selectedJob = JobEntity(createdAt: '',name: '',id: -1,icon: '');
 
   static openDialogJob(context) {
     showDialog(

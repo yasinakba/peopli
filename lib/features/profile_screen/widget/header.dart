@@ -4,90 +4,113 @@ import 'package:get/get.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 
-
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../../../config/widgets/customButton.dart';
 
 class HeaderProfile extends StatelessWidget {
-  final ProfileController profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ProfileController>(builder: (controller) {
-      return Container(
-        width: 375.w,
-        padding: EdgeInsets.symmetric(horizontal: 15),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: 80.w,
-                  height: 80.h,
-                  child:CircleAvatar(
-                    backgroundImage: controller.currentUser.isNotEmpty
-                        ? NetworkImage("$baseImageURL/${controller.currentUser.first.avatar}")
-                        :  NetworkImage('$baseImageURL/noavatar.png'),
+    return GetBuilder<ProfileController>(
+      builder: (controller) {
+        print(controller.currentUser);
+        return Container(
+          width: 375.w,
+          height: 180.h,
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: 80.w,
+                    height: 80.h,
+                    child: CircleAvatar(
+                      backgroundImage: controller.currentUser.avatar.isNotEmpty
+                          ? NetworkImage(
+                              "$baseImageURL/${controller.currentUser.avatar}",
+                            )
+                          : NetworkImage('$baseImageURL/noavatar.png'),
+                    ),
                   ),
-                ),
-                Column(
-                  children: [
-                    Text(controller.memoryList.length.toString(), style: appThemeData.textTheme.displaySmall,),
-                    Text("Posts", style: appThemeData.textTheme.titleMedium,),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Text("87", style: appThemeData.textTheme.displaySmall,),
-                    Text("Peopli", style: appThemeData.textTheme.titleMedium,),
-
-                  ],
-                ),
-                IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
-              ],
-            ),
-           Container(
-             alignment: Alignment.centerLeft,
+                  Column(
+                    children: [
+                    //   Text(
+                    //     controller.memoryList.length.toString(),
+                    //     style: appThemeData.textTheme.displaySmall,
+                    //   ),
+                    //   Text("Posts", style: appThemeData.textTheme.titleMedium),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text(controller.memoryList.length.toString(), style: appThemeData.textTheme.displaySmall),
+                      Text("Peopli", style: appThemeData.textTheme.titleMedium),
+                    ],
+                  ),
+                  IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+                ],
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
                 width: 370.w,
-                padding: EdgeInsetsDirectional.only( top: 2),
+                padding: EdgeInsetsDirectional.only(top: 2),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(controller.currentUser.isNotEmpty?controller.currentUser.first.displayName:'null', style: appThemeData
-                                .textTheme.headlineLarge, textAlign: TextAlign.start,),
-                        Text(
-                          controller.currentUser.first.role??'Unknown', style: appThemeData
-                            .textTheme.bodyLarge, textAlign: TextAlign
-                            .start,),
-                        Text(controller.currentUser.isNotEmpty?"${controller.currentUser.first.birthdate?.toString().substring(0,4)} - now":'null', style: appThemeData
-                            .textTheme.bodyLarge, textAlign: TextAlign
-                            .start,),
-                        Text(
-                          controller.currentUser.first.lastKnownLocation??'', style: appThemeData
-                            .textTheme.bodyLarge,
-                          textAlign: TextAlign.start,
-                          maxLines: 1,),
-                      ],
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.currentUser?.displayName??'',
+                    style: appThemeData.textTheme.headlineLarge,
+                  ),
+                  Text(
+                    controller.currentUser.role?.toString() ?? 'null',
+                    style: appThemeData.textTheme.bodyLarge,
+                  ),
+                  Text(
+                    "${controller.currentUser?.birthdate??''} - now",
+                    style: appThemeData.textTheme.bodyLarge,
+                  ),
+                  // SizedBox(
+                  //   width: 175.w,
+                  //   child: Text(
+                  //     controller.currentUser[0].c ?? '',
+                  //     style: appThemeData.textTheme.bodyLarge,
+                  //     maxLines: 3,
+                  //   ),
+                  // ),
+                ],
+              ),
+
+            CustomElevatedButton(
+                      onPressed: () {
+                        if(controller.doesNotAuth){
+                          Get.toNamed(NamedRoute.routeLoginScreen);
+                        }else{
+                        Get.toNamed(
+                          NamedRoute.routeEditProfileScreen,
+                          arguments: controller.currentUser,
+                        );
+                        }
+                      },
+                      textColor: AppLightColor.strokePositive,
+                      color: AppLightColor.withColor,
+                      title:controller.doesNotAuth? 'Login/SignUp' :"Edit Profile",
+                      height: 31.h,
+                      width: 130.w,
                     ),
-                    CustomElevatedButton(onPressed: () {
-                        Get.toNamed(NamedRoute.routeEditProfiletScreen,arguments: controller.currentUser[0]);},
-                          textColor: AppLightColor.strokePositive,
-                          color: AppLightColor.withColor,
-                          title: "Edit Profile",
-                          height: 31.h,
-                          width: 130.w),
                   ],
                 ),
               ),
-          ],
-        ),
-      );
-    });
+            ],
+          ),
+        );
+      },
+    );
   }
 }

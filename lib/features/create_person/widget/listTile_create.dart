@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
+import 'package:test_test_test/features/person_screen/controller/person_controller.dart';
+import 'package:test_test_test/features/person_screen/person_screen.dart';
 
 import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
@@ -18,7 +20,7 @@ class ListTileCreate extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: ListTile(
         onTap: () {
-          Get.toNamed(NamedRoute.routePersonScreen,arguments: face);
+          Get.to(()=>PersonScreen(),arguments: face);
         },
 
         leading: SizedBox(

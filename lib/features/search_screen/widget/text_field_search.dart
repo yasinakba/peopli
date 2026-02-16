@@ -3,8 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../config/app_theme/app_theme.dart';
 
 class TextFieldSearch extends StatelessWidget {
-  TextFieldSearch({super.key, required this.labelText,required this.controller});
+  TextFieldSearch({ required this.labelText,required this.controller,this.onChange});
     String labelText;
+    ValueChanged? onChange;
   TextEditingController controller;
 
   @override
@@ -13,6 +14,7 @@ class TextFieldSearch extends StatelessWidget {
       width: 290.w,
       height: 32.h,
       child: TextFormField(
+        onChanged: onChange,
           controller: controller,
            decoration: InputDecoration(border: OutlineInputBorder(
              borderRadius: BorderRadius.all(Radius.circular(25)),

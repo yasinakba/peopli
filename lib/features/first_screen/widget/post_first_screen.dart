@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
@@ -11,31 +12,38 @@ import 'package:test_test_test/features/profile_screen/controller/profile_contro
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_icons/app_assets_png.dart';
 import '../../../config/app_theme/app_theme.dart';
-import '../../login/controller/login_controller.dart';
 import 'comment_post.dart';
 
-class PostFirstScreen extends StatelessWidget {
+class PostFirstScreen extends StatefulWidget {
   final MemoryEntity memory;
   final int index;
+  final List likeCount;
+  IconData? iconLike;
+  Color? iconColor;
+  PostFirstScreen(this.memory, this.index, this.likeCount);
 
-  PostFirstScreen(this.memory, this.index);
+  @override
+  State<PostFirstScreen> createState() => _PostFirstScreenState();
+}
 
+class _PostFirstScreenState extends State<PostFirstScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return GetBuilder<FirstController>(
       initState: (state) {
-        Get.lazyPut(() => ProfileController());
         Get.lazyPut(() => FirstController());
       },
       builder: (controller) {
         return Container(
+          alignment: AlignmentDirectional.topStart,
           width: 345.w,
           decoration: BoxDecoration(
             color: theme.cardColor,
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //famous
               Padding(
@@ -50,7 +58,7 @@ class PostFirstScreen extends StatelessWidget {
                           SizedBox(
                             width: double.infinity,
                             child: Text(
-                              memory.username ?? 'null',
+                              widget.memory.username ?? 'null',
                               style: appThemeData.textTheme.headlineLarge,
                               textAlign: TextAlign.start,
                             ),
@@ -58,7 +66,7 @@ class PostFirstScreen extends StatelessWidget {
                           SizedBox(
                             width: double.infinity,
                             child: Text(
-                              memory.text ?? '',
+                              widget.memory.text ?? '',
                               style: appThemeData.textTheme.bodyLarge,
                               textAlign: TextAlign.start,
                             ),
@@ -66,7 +74,7 @@ class PostFirstScreen extends StatelessWidget {
                           SizedBox(
                             width: double.infinity,
                             child: Text(
-                              "${memory.faceBirthdate.toString().substring(0, 4)} -now",
+                              "${widget.memory.faceBirthdate.toString().substring(0, 4)} -now",
                               style: appThemeData.textTheme.bodyLarge,
                               textAlign: TextAlign.start,
                             ),
@@ -87,23 +95,17 @@ class PostFirstScreen extends StatelessWidget {
                       width: 115.w,
                       child: Column(
                         children: [
-                          SizedBox(
-                            width: 55.w,
-                            height: 55.h,
-                            child: CircleAvatar(
-                              radius: 80,
-                              backgroundImage: NetworkImage(
-                                "$baseImageURL/${memory.userAvatar ?? 'noavatar.png'}",
-                              ),
+                          CircleAvatar(
+                            radius: 42,
+                            backgroundImage: NetworkImage(
+                              "$baseImageURL/${widget.memory.faceAvatar ?? 'noavatar.png'}",
                             ),
                           ),
-                          Padding(
+                          Ink(
                             padding: const EdgeInsets.only(left: 50),
-                            child: SizedBox(
-                              width: 20.w,
-                              height: 20.w,
-                              child: Text("2.0"),
-                            ),
+                            width: 20.w,
+                            height: 20.w,
+                            child: Text("2.0"),
                           ),
                         ],
                       ),
@@ -114,33 +116,27 @@ class PostFirstScreen extends StatelessWidget {
               //post
               Row(
                 children: [
-                  Padding(
+                  Container(
                     padding: const EdgeInsets.only(
                       right: 10,
                       left: 10,
                       bottom: 5,
                     ),
-                    child: GestureDetector(
-                      child: SizedBox(
-                        width: 44.w,
-                        height: 44.h,
-                        child: CircleAvatar(
-                          radius: 80,
-                          backgroundImage: NetworkImage(
-                            "$baseImageURL/${memory.faceAvatar ?? 'noavatar.png'}",
-                          ),
-                        ),
+                    child: CircleAvatar(
+                      radius: 42,
+                      backgroundImage: NetworkImage(
+                        "$baseImageURL/${widget.memory.userAvatar ?? 'noavatar.png'}",
                       ),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 5),
+                    padding: EdgeInsetsDirectional.only(top: 5),
                     child: Column(
                       children: [
                         SizedBox(
                           width: 130.w,
                           child: Text(
-                            memory.face ?? 'null',
+                            widget.memory.face ?? 'null',
                             style: appThemeData.textTheme.labelMedium,
                             textAlign: TextAlign.start,
                           ),
@@ -162,29 +158,65 @@ class PostFirstScreen extends StatelessWidget {
                   ),
                 ],
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 3,
+                ),
+                child: AutoSizeText(
+                  widget.memory.title ?? 'null',
+                  maxLines: 3,
+                  style: appThemeData.textTheme.headlineLarge,
+                  textAlign: TextAlign.start,
+                ),
+              ),
               //Description
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(
+              //     horizontal: 20,
+              //     vertical: 3,
+              //   ),
+              //   child: GetBuilder<FirstController>(
+              //     id: 'location_${memory.id}',
+              //     builder: (logic) {
+              //       return Row(
+              //         children: [
+              //           Icon(IconsaxPlusBold.location),
+              //           controller.locationLoading
+              //               ? LoadingWidget()
+              //               : AutoSizeText(
+              //                   controller.getLocation(memory.lat, memory.lng, memory.id,).toString(),
+              //                   maxLines: 3,
+              //                   style: appThemeData.textTheme.headlineLarge,
+              //                   textAlign: TextAlign.start,
+              //                 ),
+              //         ],
+              //       );
+              //     },
+              //   ),
+              // ),
               Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 5),
-                child: SizedBox(
-                  child: AutoSizeText(
-                    memory.title ?? 'null',
-                    maxLines: 3,
-                    style: appThemeData.textTheme.headlineLarge,
-                    textAlign: TextAlign.start,
-                  ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 3,
+                ),
+                child: AutoSizeText(
+                  widget.memory.text ?? 'null',
+                  maxLines: 3,
+                  style: appThemeData.textTheme.headlineLarge,
+                  textAlign: TextAlign.start,
                 ),
               ),
-              Padding(
+              Container(
                 padding: const EdgeInsets.only(left: 20, right: 20, bottom: 5),
-                child: SizedBox(
-                  width: 293.w,
-                  height: 141.h,
-                  child: Image.network(
-                    '$baseImageURL/${memory.media ?? 'usericon.png'}',
-                    fit: BoxFit.fitWidth,
-                  ),
+                width: 370.w,
+                height: 141.h,
+                child: Image.network(
+                  '$baseImageURL/${widget.memory.media ?? 'usericon.png'}',
+                  fit: BoxFit.fitWidth,
                 ),
               ),
+
               //comment Like && share
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
@@ -195,23 +227,21 @@ class PostFirstScreen extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () {
-                            controller.readComment(memory.id);
+                            controller.readComment(widget.memory.id);
                             showModalBottomSheet(
                               isScrollControlled: true,
                               context: context,
                               builder: (context) {
-                                return Padding(
+                                return Container(
                                   padding: EdgeInsets.only(
                                     bottom: MediaQuery.of(
                                       context,
                                     ).viewInsets.bottom,
                                   ),
-                                  child: Container(
-                                    height: 450,
-                                    child: CommentPost(
-                                      memoryEntity: memory,
-                                      isFromProfile: false,
-                                    ),
+                                  height: 450,
+                                  child: CommentPost(
+                                    memoryEntity: widget.memory,
+                                    isFromProfile: false,
                                   ),
                                 );
                               },
@@ -229,7 +259,7 @@ class PostFirstScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 4),
                           child: Text(
-                            memory.commentsCount.toString(),
+                            widget.memory.commentsCount.toString(),
                             style: appThemeData.textTheme.bodyMedium,
                           ),
                         ),
@@ -237,62 +267,60 @@ class PostFirstScreen extends StatelessWidget {
                     ),
 
                     //heart
-                    // Update values from widget only once (not every rebuild)
-                    GetBuilder<FirstController>(
-                      tag: 'like_${memory.id}',
-                      id: 'like_${memory.id}',
-                      init: controller,
-                      assignId: true,
-                      builder: (logic) {
-                        return Row(
-                          children: [
-                            SizedBox(
-                              width: 30.w,
-                              height: 30.w,
-                              child: IconButton(
-                                onPressed: () {
-                                  if (logic.isLiked?? false) {
-                                    logic.removeLike(memoryId: memory.id);
-                                    logic.isLiked = false;
-                                    logic.likeCount[index]--;
-                                    print(controller.likeCount[index]);
-                                    logic.iconLike = IconsaxPlusLinear.heart;
-                                    logic.iconColor = Colors.grey.shade600;
-                                    logic.update(['like_${memory.id}']); // Only update this item
-                                  } else {
-                                    logic.addLike(memoryId: memory.id);
-                                    logic.likeCount[index]++;
-                                    logic.isLiked = true;
-                                    logic.iconColor = Colors.green.shade400;
-                                    logic.iconLike = IconsaxPlusBold.heart;
-                                    logic.update(['like_${memory.id}']); // Only update this item
-                                  }
-                                },
-                                icon: Icon(
-                                  logic.iconLike,
-                                  size: 17.sp,
-                                  color: logic.iconColor,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 4),
-                              child: Text(
-                                logic.likeCount[index].toString(),
-                                style: appThemeData.textTheme.bodyMedium,
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
 
+                    // Update values from widget only once (not every rebuild)
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 30.w,
+                          height: 30.w,
+                          child: IconButton(
+                            onPressed: () {
+                              // controller.idIsLiked =
+                              //     widget.memory.id?.toInt() ?? -1;
+                              if (widget.iconColor == Colors.grey.shade600|| widget.iconColor == null){
+                                controller.addLike(memoryId: widget.memory.id);
+                                setState(() {
+                                widget.likeCount[widget.index]++;
+                                widget.iconColor = Colors.green.shade400;
+                                widget.iconLike = IconsaxPlusBold.heart;
+                                });
+                              } else if (widget.iconColor == Colors.green.shade400) {
+                                controller.removeLike(
+                                  memoryId: widget.memory.id,);
+                                controller.isLiked = false;
+                                setState(() {
+                                widget.likeCount[widget.index]--;
+                                widget.iconLike = IconsaxPlusLinear.heart;
+                                widget.iconColor = Colors.grey.shade600;
+                                });
+                              }
+                            },
+                            icon: Icon(
+                              widget.iconLike ??IconsaxPlusLinear.heart,
+                              size: 17.sp,
+                              color: widget.iconColor??Colors.grey.shade400,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4),
+                          child: Text(
+                            widget.likeCount[widget.index].toString(),
+                            style: appThemeData.textTheme.bodyMedium,
+                          ),
+                        ),
+                      ],
+                    ),
                     //share
                     Row(
                       children: [
                         InkWell(
                           onTap: () {
-                            Get.find<LoginController>().share();
+                            // getMemoryShared(id: widget.memory.id);
+                            final link =
+                                'peopli:///memory/shared/${widget.memory.id}';
+                            Share.share('Check this memory: $link');
                           },
                           child: SizedBox(
                             width: 17.w,
@@ -312,7 +340,7 @@ class PostFirstScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 4),
                           child: Text(
-                            memory.createdAt.toString(),
+                            widget.memory.createdAt.toString(),
                             style: appThemeData.textTheme.bodyMedium,
                           ),
                         ),
@@ -321,7 +349,7 @@ class PostFirstScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 50.h),
+              SizedBox(height: 5.h),
             ],
           ),
         );
