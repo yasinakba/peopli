@@ -93,15 +93,12 @@ class CreatePersonController extends GetxController {
         'birthDate': formattedDate,
       };
 
-      // ✅ Send POST request with token in headers
       final response = await dio.post(
         '$baseURL/Api/Faces/add',
         data: data,
         options: Options(contentType: Headers.formUrlEncodedContentType,),
       );
-      print(response.data);
 
-      // ✅ Handle response safely
       if (response.statusCode == 200) {
         nameController.clear();
         familyNameController.clear();
@@ -109,7 +106,7 @@ class CreatePersonController extends GetxController {
         uploadController.pickedFile = null;
         selectedRadio = -1;
         Get.lazyPut(() => FirstController(),);
-        Get.find<FirstController>().readMoreFace(1);
+        Get.find<FirstController>().readMoreFace(-1);
         Get.to(()=>PersonScreen(),arguments: FaceEntity.fromJson(response.data['data']));
         update();
         Get.snackbar('Success', 'Face added successfully!');

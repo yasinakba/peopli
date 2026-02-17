@@ -38,6 +38,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
         return Container(
           alignment: AlignmentDirectional.topStart,
           width: 345.w,
+          height: 500.h,
           decoration: BoxDecoration(
             color: theme.cardColor,
             borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -265,10 +266,6 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                         ),
                       ],
                     ),
-
-                    //heart
-
-                    // Update values from widget only once (not every rebuild)
                     Row(
                       children: [
                         SizedBox(
@@ -278,28 +275,31 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                             onPressed: () {
                               // controller.idIsLiked =
                               //     widget.memory.id?.toInt() ?? -1;
-                              if (widget.iconColor == Colors.grey.shade600|| widget.iconColor == null){
+                              if (widget.iconColor == Colors.grey.shade600 ||
+                                  widget.iconColor == null) {
                                 controller.addLike(memoryId: widget.memory.id);
                                 setState(() {
-                                widget.likeCount[widget.index]++;
-                                widget.iconColor = Colors.green.shade400;
-                                widget.iconLike = IconsaxPlusBold.heart;
+                                  widget.likeCount[widget.index]++;
+                                  widget.iconColor = Colors.green.shade400;
+                                  widget.iconLike = IconsaxPlusBold.heart;
                                 });
-                              } else if (widget.iconColor == Colors.green.shade400) {
+                              } else if (widget.iconColor ==
+                                  Colors.green.shade400) {
                                 controller.removeLike(
-                                  memoryId: widget.memory.id,);
+                                  memoryId: widget.memory.id,
+                                );
                                 controller.isLiked = false;
                                 setState(() {
-                                widget.likeCount[widget.index]--;
-                                widget.iconLike = IconsaxPlusLinear.heart;
-                                widget.iconColor = Colors.grey.shade600;
+                                  widget.likeCount[widget.index]--;
+                                  widget.iconLike = IconsaxPlusLinear.heart;
+                                  widget.iconColor = Colors.grey.shade600;
                                 });
                               }
                             },
                             icon: Icon(
-                              widget.iconLike ??IconsaxPlusLinear.heart,
+                              widget.iconLike ?? IconsaxPlusLinear.heart,
                               size: 17.sp,
-                              color: widget.iconColor??Colors.grey.shade400,
+                              color: widget.iconColor ?? Colors.grey.shade400,
                             ),
                           ),
                         ),

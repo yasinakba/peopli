@@ -22,7 +22,8 @@ class PersonScreen extends GetView<PersonController> {
   List likeCount = [];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
+    controller.readMoreMemories(1);
     return Scaffold(
       backgroundColor: AppLightColor.withColor,
       appBar: AppBar(
@@ -56,9 +57,6 @@ class PersonScreen extends GetView<PersonController> {
       ),
       body: GetBuilder<PersonController>(
         init: PersonController(),
-        initState: (state) {
-          controller.readMoreMemories(-1);
-        },
         builder: (controller) {
           controller.face = Get.arguments;
           return Column(

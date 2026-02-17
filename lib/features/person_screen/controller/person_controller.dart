@@ -55,9 +55,11 @@ class PersonController extends GetxController {
       debugPrint(stacktrace.toString());
     }
   }
- List<MemoryEntity> memoryList = [];
-  Future<List<MemoryEntity>> readMoreMemories(pageKey) async {
+  List<MemoryEntity> memoryList = [];
 
+  var id = 0;
+
+  Future<List<MemoryEntity>> readMoreMemories(pageKey) async {
     if (pageKey <= totalPage) {
       try {
         final preferences = await SharedPreferences.getInstance();

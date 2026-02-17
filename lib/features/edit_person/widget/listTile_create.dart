@@ -5,7 +5,6 @@ import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import 'package:test_test_test/features/person_screen/controller/person_controller.dart';
 
 import '../../../config/app_icons/app_assets_jpg.dart';
-import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
 
 
@@ -19,6 +18,8 @@ class ListTileCreate extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: ListTile(
         onTap: (){
+          Get.find<PersonController>().id == face.id;
+          Get.find<PersonController>().readMoreMemories(1);
           Get.to(()=>PersonController(),arguments: face);
         },
 

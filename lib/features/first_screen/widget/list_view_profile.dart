@@ -6,6 +6,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/features/first_screen/controller/first_controller.dart';
+import 'package:test_test_test/features/person_screen/controller/person_controller.dart';
 import 'package:test_test_test/features/person_screen/person_screen.dart';
 
 import '../../../config/app_route/route_names.dart';
@@ -39,6 +40,8 @@ class ListViewProfile extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
+                        Get.find<PersonController>().id == face.id;
+                        Get.find<PersonController>().readMoreMemories(1);
                         Get.to(()=>PersonScreen(),arguments:face);
                         },
                       child: SizedBox(

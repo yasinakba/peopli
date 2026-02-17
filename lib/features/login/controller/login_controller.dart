@@ -7,6 +7,7 @@ import 'package:test_test_test/config/app_string/constant.dart';
 
 
 import '../../../config/app_route/route_names.dart';
+import '../../profile_screen/controller/profile_controller.dart';
 
 class LoginController extends GetxController{
   PageController pageController = PageController();
@@ -53,6 +54,7 @@ class LoginController extends GetxController{
         loading=false;
         SharedPreferences preferences = await SharedPreferences.getInstance();
         preferences.setString('token', response.data['data']);
+        Get.find<ProfileController>().getCurrentAccount();
         update();
         Get.toNamed(NamedRoute.routeHomeScreen);
       } else {

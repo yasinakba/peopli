@@ -44,7 +44,7 @@ class TabBarShowPost extends StatelessWidget {
                 ),
               ),
               Container(
-                height: 442.h,
+                height: 600.h,
                 color: AppLightColor.withColor,
                 child: TabBarView(
                   children: [

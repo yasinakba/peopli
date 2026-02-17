@@ -12,7 +12,7 @@ class ProfileScreen extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     return Container(
       width: 375.w,
-      height: 690.h,
+      height: 730.h,
       child: CustomScrollView(
         physics: BouncingScrollPhysics(),
         slivers: [

@@ -123,6 +123,7 @@ class AddMemoryController extends GetxController {
         data: {
           'token': '$token',
           'faceId': faceId,
+          'locationAddress':locationController.text,
           'title': subjectController.text,
           'text': textController.text,
           'type': selectedRadioValue,

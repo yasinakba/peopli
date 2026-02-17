@@ -20,6 +20,8 @@ class ListTileCreate extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: ListTile(
         onTap: () {
+          Get.find<PersonController>().id == face.id;
+          Get.find<PersonController>().readMoreMemories(1);
           Get.to(()=>PersonScreen(),arguments: face);
         },
 

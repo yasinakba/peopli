@@ -40,10 +40,8 @@ class SplashController extends GetxController {
     final token = preferences.getString('token') ?? '';
 
     if (token.isEmpty) {
-
       Get.offAllNamed(NamedRoute.routeLoginScreen);
     } else {
-
       Get.find<ProfileController>().getCurrentAccount();
       Get.offAllNamed(NamedRoute.routeHomeScreen);
     }

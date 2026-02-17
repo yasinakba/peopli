@@ -42,10 +42,9 @@ class BottomSearchScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: ListTile(
                               onTap: () {
-                                Get.to(()=>
-                                  PersonScreen(),
-                                  arguments: item,
-                                );
+                                Get.find<PersonController>().id == item.id;
+                                Get.find<PersonController>().readMoreMemories(1);
+                                Get.to(()=> PersonScreen(), arguments: item);
                               },
 
                               leading: CircleAvatar(
