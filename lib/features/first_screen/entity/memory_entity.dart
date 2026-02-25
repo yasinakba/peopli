@@ -1,37 +1,3 @@
-/// id : 35
-/// userId : 443
-/// user : "YasinAK"
-/// userAvatar : "42_ebb8.jpg"
-/// username : "YasinDeveloper"
-/// userCityId : null
-/// userCity : "vegas"
-/// userEducationId : 0
-/// userEducation : "Worker3333"
-/// faceId : 85
-/// face : "testD test"
-/// faceHomeTownId : 0
-/// faceHomeTown : "vegas"
-/// faceEducationId : 0
-/// faceEducation : "Worker3333"
-/// faceJobId : 0
-/// faceJob : "۲۲۲۲۲"
-/// faceBirthdate : "2025-11-06"
-/// faceGender : "male"
-/// faceAvatar : "42_0b4a.jpg"
-/// faceRating : 0
-/// faceKnownFor : "test"
-/// title : "0"
-/// text : "tel;k;ljk"
-/// type : "jkkkklkl"
-/// lat : 0
-/// lng : 0
-/// media : "42_a75e.jpg"
-/// likesCount : 0
-/// isLiked : false
-/// commentsCount : 0
-/// date : "2025-11-07T00:00:00"
-/// createdAt : "2025-11-07T10:34:52"
-
 class MemoryEntity {
   int? id;
   int? userId;
