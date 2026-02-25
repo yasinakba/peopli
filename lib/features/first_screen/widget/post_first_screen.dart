@@ -38,7 +38,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
         return Container(
           alignment: AlignmentDirectional.topStart,
           width: 345.w,
-          height: 500.h,
+          // height: 450.h,
           decoration: BoxDecoration(
             color: theme.cardColor,
             borderRadius: BorderRadius.all(Radius.circular(20)),
