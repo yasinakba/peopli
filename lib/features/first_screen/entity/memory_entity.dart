@@ -33,280 +33,150 @@
 /// createdAt : "2025-11-07T10:34:52"
 
 class MemoryEntity {
-  MemoryEntity({
-      num? id, 
-      num? userId, 
-      String? user, 
-      String? userAvatar, 
-      String? username, 
-      dynamic userCityId, 
-      String? userCity, 
-      num? userEducationId, 
-      String? userEducation, 
-      num? faceId, 
-      String? face, 
-      num? faceHomeTownId, 
-      String? faceHomeTown, 
-      num? faceEducationId, 
-      String? faceEducation, 
-      num? faceJobId, 
-      String? faceJob, 
-      String? faceBirthdate, 
-      String? faceGender, 
-      String? faceAvatar, 
-      num? faceRating, 
-      String? faceKnownFor, 
-      String? title, 
-      String? text, 
-      String? type, 
-      num? lat, 
-      num? lng, 
-      String? media, 
-      num? likesCount, 
-      bool? isLiked, 
-      num? commentsCount, 
-      String? date, 
-      String? createdAt,}){
-    _id = id;
-    _userId = userId;
-    _user = user;
-    _userAvatar = userAvatar;
-    _username = username;
-    _userCityId = userCityId;
-    _userCity = userCity;
-    _userEducationId = userEducationId;
-    _userEducation = userEducation;
-    _faceId = faceId;
-    _face = face;
-    _faceHomeTownId = faceHomeTownId;
-    _faceHomeTown = faceHomeTown;
-    _faceEducationId = faceEducationId;
-    _faceEducation = faceEducation;
-    _faceJobId = faceJobId;
-    _faceJob = faceJob;
-    _faceBirthdate = faceBirthdate;
-    _faceGender = faceGender;
-    _faceAvatar = faceAvatar;
-    _faceRating = faceRating;
-    _faceKnownFor = faceKnownFor;
-    _title = title;
-    _text = text;
-    _type = type;
-    _lat = lat;
-    _lng = lng;
-    _media = media;
-    _likesCount = likesCount;
-    _isLiked = isLiked;
-    _commentsCount = commentsCount;
-    _date = date;
-    _createdAt = createdAt;
-}
+  int? id;
+  int? userId;
+  String? user;
+  String? userAvatar;
+  String? username;
+  Null? userCityId;
+  Null? userCity;
+  int? userEducationId;
+  Null? userEducation;
+  int? faceId;
+  String? face;
+  int? faceHomeTownId;
+  Null? faceHomeTown;
+  int? faceEducationId;
+  Null? faceEducation;
+  int? faceJobId;
+  Null? faceJob;
+  Null? faceBirthdate;
+  String? faceGender;
+  String? faceAvatar;
+  int? faceRating;
+  String? faceKnownFor;
+  String? title;
+  String? text;
+  String? type;
+  int? lat;
+  int? lng;
+  Null? locationAddress;
+  String? media;
+  int? likesCount;
+  bool? isLiked;
+  int? commentsCount;
+  String? date;
+  String? createdAt;
 
-  MemoryEntity.fromJson(dynamic json) {
-    _id = json['id'];
-    _userId = json['userId'];
-    _user = json['user'];
-    _userAvatar = json['userAvatar'];
-    _username = json['username'];
-    _userCityId = json['userCityId'];
-    _userCity = json['userCity'];
-    _userEducationId = json['userEducationId'];
-    _userEducation = json['userEducation'];
-    _faceId = json['faceId'];
-    _face = json['face'];
-    _faceHomeTownId = json['faceHomeTownId'];
-    _faceHomeTown = json['faceHomeTown'];
-    _faceEducationId = json['faceEducationId'];
-    _faceEducation = json['faceEducation'];
-    _faceJobId = json['faceJobId'];
-    _faceJob = json['faceJob'];
-    _faceBirthdate = json['faceBirthdate'];
-    _faceGender = json['faceGender'];
-    _faceAvatar = json['faceAvatar'];
-    _faceRating = json['faceRating'];
-    _faceKnownFor = json['faceKnownFor'];
-    _title = json['title'];
-    _text = json['text'];
-    _type = json['type'];
-    _lat = json['lat'];
-    _lng = json['lng'];
-    _media = json['media'];
-    _likesCount = json['likesCount'];
-    _isLiked = json['isLiked'];
-    _commentsCount = json['commentsCount'];
-    _date = json['date'];
-    _createdAt = json['createdAt'];
+  MemoryEntity(
+      {this.id,
+        this.userId,
+        this.user,
+        this.userAvatar,
+        this.username,
+        this.userCityId,
+        this.userCity,
+        this.userEducationId,
+        this.userEducation,
+        this.faceId,
+        this.face,
+        this.faceHomeTownId,
+        this.faceHomeTown,
+        this.faceEducationId,
+        this.faceEducation,
+        this.faceJobId,
+        this.faceJob,
+        this.faceBirthdate,
+        this.faceGender,
+        this.faceAvatar,
+        this.faceRating,
+        this.faceKnownFor,
+        this.title,
+        this.text,
+        this.type,
+        this.lat,
+        this.lng,
+        this.locationAddress,
+        this.media,
+        this.likesCount,
+        this.isLiked,
+        this.commentsCount,
+        this.date,
+        this.createdAt});
+
+  MemoryEntity.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    userId = json['userId'];
+    user = json['user'];
+    userAvatar = json['userAvatar'];
+    username = json['username'];
+    userCityId = json['userCityId'];
+    userCity = json['userCity'];
+    userEducationId = json['userEducationId'];
+    userEducation = json['userEducation'];
+    faceId = json['faceId'];
+    face = json['face'];
+    faceHomeTownId = json['faceHomeTownId'];
+    faceHomeTown = json['faceHomeTown'];
+    faceEducationId = json['faceEducationId'];
+    faceEducation = json['faceEducation'];
+    faceJobId = json['faceJobId'];
+    faceJob = json['faceJob'];
+    faceBirthdate = json['faceBirthdate'];
+    faceGender = json['faceGender'];
+    faceAvatar = json['faceAvatar'];
+    faceRating = json['faceRating'];
+    faceKnownFor = json['faceKnownFor'];
+    title = json['title'];
+    text = json['text'];
+    type = json['type'];
+    lat = json['lat'];
+    lng = json['lng'];
+    locationAddress = json['locationAddress'];
+    media = json['media'];
+    likesCount = json['likesCount'];
+    isLiked = json['isLiked'];
+    commentsCount = json['commentsCount'];
+    date = json['date'];
+    createdAt = json['createdAt'];
   }
-  num? _id;
-  num? _userId;
-  String? _user;
-  String? _userAvatar;
-  String? _username;
-  dynamic _userCityId;
-  String? _userCity;
-  num? _userEducationId;
-  String? _userEducation;
-  num? _faceId;
-  String? _face;
-  num? _faceHomeTownId;
-  String? _faceHomeTown;
-  num? _faceEducationId;
-  String? _faceEducation;
-  num? _faceJobId;
-  String? _faceJob;
-  String? _faceBirthdate;
-  String? _faceGender;
-  String? _faceAvatar;
-  num? _faceRating;
-  String? _faceKnownFor;
-  String? _title;
-  String? _text;
-  String? _type;
-  num? _lat;
-  num? _lng;
-  String? _media;
-  num? _likesCount;
-  bool? _isLiked;
-  num? _commentsCount;
-  String? _date;
-  String? _createdAt;
-MemoryEntity copyWith({  num? id,
-  num? userId,
-  String? user,
-  String? userAvatar,
-  String? username,
-  dynamic userCityId,
-  String? userCity,
-  num? userEducationId,
-  String? userEducation,
-  num? faceId,
-  String? face,
-  num? faceHomeTownId,
-  String? faceHomeTown,
-  num? faceEducationId,
-  String? faceEducation,
-  num? faceJobId,
-  String? faceJob,
-  String? faceBirthdate,
-  String? faceGender,
-  String? faceAvatar,
-  num? faceRating,
-  String? faceKnownFor,
-  String? title,
-  String? text,
-  String? type,
-  num? lat,
-  num? lng,
-  String? media,
-  num? likesCount,
-  bool? isLiked,
-  num? commentsCount,
-  String? date,
-  String? createdAt,
-}) => MemoryEntity(  id: id ?? _id,
-  userId: userId ?? _userId,
-  user: user ?? _user,
-  userAvatar: userAvatar ?? _userAvatar,
-  username: username ?? _username,
-  userCityId: userCityId ?? _userCityId,
-  userCity: userCity ?? _userCity,
-  userEducationId: userEducationId ?? _userEducationId,
-  userEducation: userEducation ?? _userEducation,
-  faceId: faceId ?? _faceId,
-  face: face ?? _face,
-  faceHomeTownId: faceHomeTownId ?? _faceHomeTownId,
-  faceHomeTown: faceHomeTown ?? _faceHomeTown,
-  faceEducationId: faceEducationId ?? _faceEducationId,
-  faceEducation: faceEducation ?? _faceEducation,
-  faceJobId: faceJobId ?? _faceJobId,
-  faceJob: faceJob ?? _faceJob,
-  faceBirthdate: faceBirthdate ?? _faceBirthdate,
-  faceGender: faceGender ?? _faceGender,
-  faceAvatar: faceAvatar ?? _faceAvatar,
-  faceRating: faceRating ?? _faceRating,
-  faceKnownFor: faceKnownFor ?? _faceKnownFor,
-  title: title ?? _title,
-  text: text ?? _text,
-  type: type ?? _type,
-  lat: lat ?? _lat,
-  lng: lng ?? _lng,
-  media: media ?? _media,
-  likesCount: likesCount ?? _likesCount,
-  isLiked: isLiked ?? _isLiked,
-  commentsCount: commentsCount ?? _commentsCount,
-  date: date ?? _date,
-  createdAt: createdAt ?? _createdAt,
-);
-  num? get id => _id;
-  num? get userId => _userId;
-  String? get user => _user;
-  String? get userAvatar => _userAvatar;
-  String? get username => _username;
-  dynamic get userCityId => _userCityId;
-  String? get userCity => _userCity;
-  num? get userEducationId => _userEducationId;
-  String? get userEducation => _userEducation;
-  num? get faceId => _faceId;
-  String? get face => _face;
-  num? get faceHomeTownId => _faceHomeTownId;
-  String? get faceHomeTown => _faceHomeTown;
-  num? get faceEducationId => _faceEducationId;
-  String? get faceEducation => _faceEducation;
-  num? get faceJobId => _faceJobId;
-  String? get faceJob => _faceJob;
-  String? get faceBirthdate => _faceBirthdate;
-  String? get faceGender => _faceGender;
-  String? get faceAvatar => _faceAvatar;
-  num? get faceRating => _faceRating;
-  String? get faceKnownFor => _faceKnownFor;
-  String? get title => _title;
-  String? get text => _text;
-  String? get type => _type;
-  num? get lat => _lat;
-  num? get lng => _lng;
-  String? get media => _media;
-  num? get likesCount => _likesCount;
-  bool? get isLiked => _isLiked;
-  num? get commentsCount => _commentsCount;
-  String? get date => _date;
-  String? get createdAt => _createdAt;
 
   Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = _id;
-    map['userId'] = _userId;
-    map['user'] = _user;
-    map['userAvatar'] = _userAvatar;
-    map['username'] = _username;
-    map['userCityId'] = _userCityId;
-    map['userCity'] = _userCity;
-    map['userEducationId'] = _userEducationId;
-    map['userEducation'] = _userEducation;
-    map['faceId'] = _faceId;
-    map['face'] = _face;
-    map['faceHomeTownId'] = _faceHomeTownId;
-    map['faceHomeTown'] = _faceHomeTown;
-    map['faceEducationId'] = _faceEducationId;
-    map['faceEducation'] = _faceEducation;
-    map['faceJobId'] = _faceJobId;
-    map['faceJob'] = _faceJob;
-    map['faceBirthdate'] = _faceBirthdate;
-    map['faceGender'] = _faceGender;
-    map['faceAvatar'] = _faceAvatar;
-    map['faceRating'] = _faceRating;
-    map['faceKnownFor'] = _faceKnownFor;
-    map['title'] = _title;
-    map['text'] = _text;
-    map['type'] = _type;
-    map['lat'] = _lat;
-    map['lng'] = _lng;
-    map['media'] = _media;
-    map['likesCount'] = _likesCount;
-    map['isLiked'] = _isLiked;
-    map['commentsCount'] = _commentsCount;
-    map['date'] = _date;
-    map['createdAt'] = _createdAt;
-    return map;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['userId'] = this.userId;
+    data['user'] = this.user;
+    data['userAvatar'] = this.userAvatar;
+    data['username'] = this.username;
+    data['userCityId'] = this.userCityId;
+    data['userCity'] = this.userCity;
+    data['userEducationId'] = this.userEducationId;
+    data['userEducation'] = this.userEducation;
+    data['faceId'] = this.faceId;
+    data['face'] = this.face;
+    data['faceHomeTownId'] = this.faceHomeTownId;
+    data['faceHomeTown'] = this.faceHomeTown;
+    data['faceEducationId'] = this.faceEducationId;
+    data['faceEducation'] = this.faceEducation;
+    data['faceJobId'] = this.faceJobId;
+    data['faceJob'] = this.faceJob;
+    data['faceBirthdate'] = this.faceBirthdate;
+    data['faceGender'] = this.faceGender;
+    data['faceAvatar'] = this.faceAvatar;
+    data['faceRating'] = this.faceRating;
+    data['faceKnownFor'] = this.faceKnownFor;
+    data['title'] = this.title;
+    data['text'] = this.text;
+    data['type'] = this.type;
+    data['lat'] = this.lat;
+    data['lng'] = this.lng;
+    data['locationAddress'] = this.locationAddress;
+    data['media'] = this.media;
+    data['likesCount'] = this.likesCount;
+    data['isLiked'] = this.isLiked;
+    data['commentsCount'] = this.commentsCount;
+    data['date'] = this.date;
+    data['createdAt'] = this.createdAt;
+    return data;
   }
-
 }

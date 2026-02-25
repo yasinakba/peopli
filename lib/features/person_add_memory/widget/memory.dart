@@ -1,12 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:test_test_test/features/person_screen/person_screen.dart';
 import '../../../config/app_colors/app_colors_light.dart';
 import '../../../config/app_icons/app_assets_jpg.dart';
 import '../../../config/app_icons/app_assets_png.dart';
-import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
 
 
