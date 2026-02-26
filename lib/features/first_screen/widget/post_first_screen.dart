@@ -36,6 +36,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
       },
       builder: (controller) {
         return Container(
+          margin: EdgeInsetsDirectional.symmetric(vertical: 3),
           alignment: AlignmentDirectional.topStart,
           width: 345.w,
           // height: 450.h,
@@ -97,7 +98,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                       child: Column(
                         children: [
                           CircleAvatar(
-                            radius: 42,
+                            radius: 35,
                             backgroundImage: NetworkImage(
                               "$baseImageURL/${widget.memory.faceAvatar ?? 'noavatar.png'}",
                             ),
@@ -319,7 +320,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                           onTap: () {
                             // getMemoryShared(id: widget.memory.id);
                             final link =
-                                'peopli:///memory/shared/${widget.memory.id}';
+                                '$baseURL/memories/share/${widget.memory.id}';
                             Share.share('Check this memory: $link');
                           },
                           child: SizedBox(

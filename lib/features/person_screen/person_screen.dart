@@ -177,12 +177,12 @@ class FirstWidget extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(
-                        width: 70.w,
-                        child: Text(
-                          "Add a memory",
-                          style: appThemeData.textTheme.bodyLarge,
-                        ),
+                      Text(
+                        "Add a memory",
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                        style: appThemeData.textTheme.bodyLarge,
                       ),
                     ],
                   ),
