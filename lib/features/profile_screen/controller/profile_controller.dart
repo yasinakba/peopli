@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/config/app_string/app_key_local_storage.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/profile_screen/entity/comment_entity.dart';
 import 'package:test_test_test/features/profile_screen/entity/user_entity.dart';
@@ -59,7 +60,7 @@ class ProfileController extends GetxController {
   Future<void> getCurrentAccount() async {
     try {
       final preferences = await SharedPreferences.getInstance();
-      final token = preferences.getString('token');
+      final token = preferences.getString(AppKeyLocalStorage.keyToken);
 
       if (token == null || token.isEmpty) {
         doesNotAuth = true;

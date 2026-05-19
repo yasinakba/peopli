@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:test_test_test/config/app_string/app_key_string_ternationalization.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
@@ -77,11 +78,10 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                           Row(
                             children: [
                               InkWell(
-                                onTap: () {
-                                  controller.updateLanguage(0);
-                                },
+                                onTap: () =>
+                                  controller.updateLanguage(0),
                                 child: Text(
-                                  "EN",
+                                  AppKeyLocalization.label43,
                                   style: controller.textStyleEn(0),
                                 ),
                               ),
@@ -93,22 +93,20 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                                 child: Text("|"),
                               ),
                               InkWell(
-                                onTap: () {
-                                  controller.updateLanguage(1);
-                                },
+                                onTap: () =>
+                                  controller.updateLanguage(1),
                                 child: Text(
-                                  "FA",
+                                  AppKeyLocalization.label44,
                                   style: controller.textStyleEn(1),
                                 ),
                               ),
                             ],
                           ),
                           InkWell(
-                            onTap: () {
-                              Get.find<UploadController>().uploadImage();
-                            },
+                            onTap: () =>
+                              Get.find<UploadController>().uploadImage(),
                             child: Text(
-                              "Add Photos",
+                              AppKeyLocalization.label45,
                               style: appThemeData.textTheme.bodyLarge,
                             ),
                           ),
@@ -123,21 +121,21 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                           Padding(
                             padding: const EdgeInsets.only(top: 10),
                             child: TextFieldCreate(
-                              labelText: 'userName',
+                              labelText: AppKeyLocalization.label49,
                               controller: controller.nameController,
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 5),
                             child: TextFieldCreate(
-                              labelText: 'family name',
+                              labelText:  AppKeyLocalization.label52,
                               controller: controller.familyNameController,
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 5),
                             child: TextFieldCreate(
-                              labelText: 'Known as',
+                              labelText:  AppKeyLocalization.label50,
                               controller: controller.knowAsController,
                             ),
                           ),

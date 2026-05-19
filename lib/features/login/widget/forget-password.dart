@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/config/app_string/app_key_string_ternationalization.dart';
 import 'package:test_test_test/config/widgets/customButton.dart';
 import 'package:test_test_test/features/login/controller/login_controller.dart';
 
@@ -42,7 +43,7 @@ class ForgetPassword extends StatelessWidget {
                   border: Border.all(width: 1, color: AppLightColor.fillButton),
                 ),
                 child: CustomTextFormField(
-                  title: 'Enter old password',
+                  title: AppKeyLocalization.label32,
                   controller: controller.oldPasswordController,
                 ),
               ),
@@ -53,7 +54,7 @@ class ForgetPassword extends StatelessWidget {
                   border: Border.all(width: 1, color: AppLightColor.fillButton),
                 ),
                 child: CustomTextFormField(
-                  title: 'Enter new password',
+                  title: AppKeyLocalization.label33,
                   controller: controller.newPasswordController,
                 ),
               ),
@@ -64,10 +65,8 @@ class ForgetPassword extends StatelessWidget {
                 height: 40.h,
                 width: 300.w,
                 onPressed: () => controller.changePassword(),
-                title: "Send",
+                title: AppKeyLocalization.label34,
               ),
-
-              //Richtext
             ],
           );
         },

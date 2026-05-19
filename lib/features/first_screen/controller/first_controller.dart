@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/config/app_string/app_key_local_storage.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
@@ -59,7 +60,7 @@ class FirstController extends GetxController {
     if (pageKey <= totalPage) {
       try {
         final preferences = await SharedPreferences.getInstance();
-        final token = preferences.getString('token');
+        final token = preferences.getString(AppKeyLocalStorage.keyToken);
 
         final response = await dio.get(
           '$baseURL/Api/Memories',
@@ -92,7 +93,7 @@ class FirstController extends GetxController {
       isLoadingFaces = true;
       try {
         final preferences = await SharedPreferences.getInstance();
-        final token = preferences.getString('token');
+        final token = preferences.getString(AppKeyLocalStorage.keyToken);
 
         if (token == null) {
           debugPrint("⚠️ No token found in SharedPreferences");

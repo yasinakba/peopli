@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart' hide FormData;
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/config/app_string/app_key_local_storage.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 
 
@@ -53,7 +54,7 @@ class LoginController extends GetxController{
       if (response.statusCode == 200 && response.data['status'] == 'ok') {
         loading=false;
         SharedPreferences preferences = await SharedPreferences.getInstance();
-        preferences.setString('token', response.data['data']);
+        preferences.setString(AppKeyLocalStorage.keyToken, response.data['data']);
         Get.find<ProfileController>().getCurrentAccount();
         update();
         Get.toNamed(NamedRoute.routeHomeScreen);
@@ -70,7 +71,7 @@ class LoginController extends GetxController{
   }
   Future<void> changePassword() async {
     final pref = await SharedPreferences.getInstance();
-    var token = pref.getString('token');
+    var token = pref.getString(AppKeyLocalStorage.keyToken);
     loading = true;
     update();
 

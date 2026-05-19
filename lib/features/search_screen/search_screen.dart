@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
+import 'package:test_test_test/config/app_string/app_key_string_ternationalization.dart';
 import 'package:test_test_test/features/search_screen/widget/bottom_search_screen.dart';
 import 'package:test_test_test/features/search_screen/widget/search_information_location.dart';
 import 'package:test_test_test/features/search_screen/widget/text_field_search.dart';
@@ -58,7 +59,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                     controller.updateIndexButton(0),
                                 style: controller.textColorCustomButton(0),
                                 color: controller.colorCustomButton(0),
-                                title: 'Item',
+                                title: AppKeyLocalization.label1,
                                 height: 22.h,
                                 width: 103.w,
                               ),
@@ -68,7 +69,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                     controller.updateIndexButton(1),
                                 style: controller.textColorCustomButton(1),
                                 color: controller.colorCustomButton(1),
-                                title: 'Map',
+                                title: AppKeyLocalization.label3,
                                 height: 22.h,
                                 width: 103.h,
                               ),
@@ -84,7 +85,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                     controller.updateIndexButtonItem(0),
                                 style: controller.textColorCustomButtonItem(0),
                                 color: controller.colorCustomButtonItem(0),
-                                title: 'Newest',
+                                title: AppKeyLocalization.label2,
                                 height: 22.h,
                                 width: 84.w,
                               ),
@@ -93,7 +94,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                     controller.updateIndexButtonItem(1),
                                 style: controller.textColorCustomButtonItem(1),
                                 color: controller.colorCustomButtonItem(1),
-                                title: 'Oldest',
+                                title: AppKeyLocalization.label4,
                                 height: 22.h,
                                 width: 84.w,
                               ),
@@ -102,7 +103,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                     controller.updateIndexButtonItem(2),
                                 style: controller.textColorCustomButtonItem(2),
                                 color: controller.colorCustomButtonItem(2),
-                                title: 'Popular',
+                                title: AppKeyLocalization.label5,
                                 height: 22.h,
                                 width: 84.w,
                               ),
@@ -122,7 +123,7 @@ class SearchScreen extends GetView<SearchBottomController> {
                                       controller.searchFace(-1);
                                     },
                                     controller: controller.displayNameController,
-                                    labelText: 'Name & Family',
+                                    labelText: AppKeyLocalization.label10,
                                   ),
                                 ],
                               ),

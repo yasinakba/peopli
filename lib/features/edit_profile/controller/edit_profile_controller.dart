@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/config/app_string/app_key_local_storage.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
@@ -98,7 +99,7 @@ class EditProfileController extends GetxController {
 
       // 3️⃣ Proceed with API call
       SharedPreferences preferences = await SharedPreferences.getInstance();
-      final t = preferences.get('token');
+      final t = preferences.get(AppKeyLocalStorage.keyToken);
       if (t == null) {
         Get.showSnackbar(
           GetSnackBar(

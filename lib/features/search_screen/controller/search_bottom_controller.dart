@@ -5,6 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/config/app_string/app_key_local_storage.dart';
+import 'package:test_test_test/config/app_string/app_key_string_ternationalization.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 
@@ -53,7 +55,7 @@ class SearchBottomController extends GetxController {
     update();
     try {
       final preferences = await SharedPreferences.getInstance();
-      final token = preferences.getString('token');
+      final token = preferences.getString(AppKeyLocalStorage.keyToken);
 
       final requestData = {
         'sortBy': sortBy,
@@ -95,11 +97,11 @@ class SearchBottomController extends GetxController {
 
   updateIndexButtonItem(index) {
     index == 1
-        ? sortBy == 'Oldest'
+        ? sortBy == AppKeyLocalization.label4
         : index == 2
-        ? sortBy == 'Popular'
+        ? sortBy == AppKeyLocalization.label5
         : index == 0
-        ? sortBy == 'Newest'
+        ? sortBy == AppKeyLocalization.label2
         : index;
     selectedItem = index;
     update();
@@ -155,7 +157,7 @@ class SearchBottomController extends GetxController {
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
             title: Text(
-              "Educations",
+              AppKeyLocalization.label8,
               style: appThemeData.textTheme.headlineSmall,
             ),
             backgroundColor: AppLightColor.backgoundPost,
@@ -176,7 +178,7 @@ class SearchBottomController extends GetxController {
                             color: AppLightColor.fillButton,
                           ),
                           subtitle: Text(
-                            "Please select the desired degree",
+                            AppKeyLocalization.label36,
                             style: appThemeData.textTheme.bodyMedium,
                           ),
                           onTap: () {
@@ -235,7 +237,10 @@ class SearchBottomController extends GetxController {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
         ),
-        title: Text("Location", style: appThemeData.textTheme.headlineSmall),
+        title: Text(
+          AppKeyLocalization.label37,
+          style: appThemeData.textTheme.headlineSmall,
+        ),
         backgroundColor: AppLightColor.backgoundPost,
         actions: [
           GetBuilder<LocationController>(
@@ -273,7 +278,7 @@ class SearchBottomController extends GetxController {
                         showSearchBox: true,
                         searchFieldProps: TextFieldProps(
                           decoration: InputDecoration(
-                            hintText: "search country",
+                            hintText: AppKeyLocalization.label38,
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey),
                               borderRadius: BorderRadius.circular(20),
@@ -314,7 +319,7 @@ class SearchBottomController extends GetxController {
                         showSearchBox: true,
                         searchFieldProps: TextFieldProps(
                           decoration: InputDecoration(
-                            hintText: "search country",
+                            hintText: AppKeyLocalization.label38,
                             helperStyle: appThemeData.textTheme.bodySmall,
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey),
@@ -400,7 +405,7 @@ class SearchBottomController extends GetxController {
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 ),
                 title: Text(
-                  "Jobs",
+                  AppKeyLocalization.label39,
                   style: appThemeData.textTheme.headlineSmall,
                 ),
                 backgroundColor: AppLightColor.backgoundPost,
@@ -421,7 +426,7 @@ class SearchBottomController extends GetxController {
                                 color: AppLightColor.fillButton,
                               ),
                               subtitle: Text(
-                                "Please select the desired degree",
+                                AppKeyLocalization.label36,
                                 style: appThemeData.textTheme.bodyMedium,
                               ),
                               onTap: () {

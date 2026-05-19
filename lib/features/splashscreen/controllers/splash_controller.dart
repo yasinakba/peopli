@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_test_test/config/app_string/app_key_local_storage.dart';
 import '../../../config/app_string/constant.dart';
 
 import '../../../config/app_route/route_names.dart';
@@ -37,7 +38,7 @@ class SplashController extends GetxController {
     await Future.delayed(const Duration(seconds: 3));
 
     final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token') ?? '';
+    final token = preferences.getString(AppKeyLocalStorage.keyToken) ?? '';
 
     if (token.isEmpty) {
       Get.offAllNamed(NamedRoute.routeLoginScreen);

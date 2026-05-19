@@ -9,6 +9,7 @@ import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/edit_person/widget/edit_gender_person.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 import 'package:test_test_test/features/edit_person/widget/textField_create.dart';
+import '../../config/app_string/app_key_string_ternationalization.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/customButton.dart';
 import '../../config/widgets/date_picker_widget.dart';
@@ -140,33 +141,31 @@ class EditPersonScreen extends StatelessWidget {
         },
         builder: (controller) => Column(
           children: [
-            Padding(
+            Container(
+              alignment: Alignment.center,
               padding: const EdgeInsets.only(top: 10, bottom: 5),
-              child: Align(
-                alignment: Alignment.center,
-                child: GetBuilder<UploadController>(
-                  builder: (logic) {
-                    return Container(
-                      height: 90.h,
-                      width: 100.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppLightColor.elipsFill,
-                        image: logic.pickedFile == null
-                            ? DecorationImage(
-                                image: NetworkImage(
-                                  "$baseImageURL/${controller.face.avatar}",
-                                ),
-                                fit: BoxFit.cover,
-                              )
-                            : DecorationImage(
-                                image: FileImage(File(logic.pickedFile!.path)),
-                                fit: BoxFit.cover,
+              child: GetBuilder<UploadController>(
+                builder: (logic) {
+                  return Container(
+                    height: 90.h,
+                    width: 100.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppLightColor.elipsFill,
+                      image: logic.pickedFile == null
+                          ? DecorationImage(
+                              image: NetworkImage(
+                                "$baseImageURL/${controller.face.avatar}",
                               ),
-                      ),
-                    );
-                  },
-                ),
+                              fit: BoxFit.cover,
+                            )
+                          : DecorationImage(
+                              image: FileImage(File(logic.pickedFile!.path)),
+                              fit: BoxFit.cover,
+                            ),
+                    ),
+                  );
+                },
               ),
             ),
             SizedBox(
@@ -185,7 +184,7 @@ class EditPersonScreen extends StatelessWidget {
                                 controller.updateLanguage(0);
                               },
                               child: Text(
-                                "EN",
+                                AppKeyLocalization.label43,
                                 style: controller.textStyleEn(0),
                               ),
                             ),
@@ -198,7 +197,7 @@ class EditPersonScreen extends StatelessWidget {
                                 controller.updateLanguage(1);
                               },
                               child: Text(
-                                "FA",
+                                AppKeyLocalization.label44,
                                 style: controller.textStyleEn(1),
                               ),
                             ),
@@ -209,7 +208,7 @@ class EditPersonScreen extends StatelessWidget {
                             Get.find<UploadController>().uploadImage();
                           },
                           child: Text(
-                            "Add Photos",
+                            AppKeyLocalization.label45,
                             style: appThemeData.textTheme.bodyLarge,
                           ),
                         ),
@@ -231,14 +230,14 @@ class EditPersonScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 5),
                           child: TextFieldCreate(
-                            labelText: 'family name',
+                            labelText: AppKeyLocalization.label10,
                             controller: controller.familyNameController,
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 5),
                           child: TextFieldCreate(
-                            labelText: 'Known as',
+                            labelText: AppKeyLocalization.label50,
                             controller: controller.knowAsController,
                           ),
                         ),
@@ -273,9 +272,8 @@ class EditPersonScreen extends StatelessWidget {
                                           ),
                                     ),
                                     IconButton(
-                                      onPressed: () {
-                                        controller.pickDateTime(context);
-                                      },
+                                      onPressed: () =>
+                                          controller.pickDateTime(context),
                                       icon: const Icon(
                                         Icons.calendar_today,
                                         size: 15,
@@ -304,22 +302,18 @@ class EditPersonScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomElevatedButton(
-                          onPressed: () {
-                            Get.back();
-                          },
+                          onPressed: () => Get.back(),
                           textColor: AppLightColor.textBoldColor,
                           color: AppLightColor.cancelButtonFill,
-                          title: "Cancel",
+                          title: AppKeyLocalization.label19,
                           height: 29.h,
                           width: 90.w,
                         ),
                         CustomElevatedButton(
-                          onPressed: () {
-                            controller.openDialogPerson(context);
-                          },
+                          onPressed: () => controller.openDialogPerson(context),
                           textColor: AppLightColor.withColor,
                           color: AppLightColor.saveButton,
-                          title: "Save",
+                          title: AppKeyLocalization.label18,
                           height: 29.h,
                           width: 90.w,
                         ),

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_route/route_names.dart';
+import 'package:test_test_test/config/app_string/app_key_local_storage.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/person_screen/person_screen.dart';
@@ -65,7 +66,7 @@ class EditPersonController extends GetxController {
   Future<void> editFace(id) async {
     try {
       final preferences = await SharedPreferences.getInstance();
-      String? token = preferences.getString('token');
+      String? token = preferences.getString(AppKeyLocalStorage.keyToken);
       if (nameController.text.isEmpty ||
           familyNameController.text.isEmpty ||
           knowAsController.text.isEmpty ||
@@ -134,7 +135,7 @@ class EditPersonController extends GetxController {
     if (pageKey < facePage) {
       try {
         final preferences = await SharedPreferences.getInstance();
-        final token = preferences.getString('token');
+        final token = preferences.getString(AppKeyLocalStorage.keyToken);
 
         if (CreateAccountController.selectedCity.id == null ||
             CreateAccountController.selectedEducation.id == null ||

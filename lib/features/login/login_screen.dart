@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/config/app_string/app_key_string_ternationalization.dart';
 import 'package:test_test_test/config/widgets/customButton.dart';
 import 'package:test_test_test/config/widgets/custom_text_form_field.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
@@ -53,7 +54,6 @@ class LoginView extends StatelessWidget {
                 ),
                 child:CustomTextFormFieldPassword(controller: controller.passwordController, title: 'password',),
               ),
-
               controller.loading
                   ? LoadingWidget()
                   : CustomElevatedButton(
@@ -76,11 +76,11 @@ class LoginView extends StatelessWidget {
                   },
                   child: RichText(
                     text: TextSpan(
-                      text: "Don't have an Account? ",
+                      text: AppKeyLocalization.label35,
                       style: appThemeData.textTheme.headlineLarge,
                       children: [
                         TextSpan(
-                          text: " Signup ",
+                          text: AppKeyLocalization.label25,
                           style: appThemeData.textTheme.headlineLarge!.copyWith(
                             color: AppLightColor.textBlueColor,
                           ),
@@ -102,7 +102,7 @@ class LoginView extends StatelessWidget {
                     );
                   },
                   child: Text(
-                    " Forgot your password? ",
+                    AppKeyLocalization.label26,
                     style: appThemeData.textTheme.headlineLarge!.copyWith(
                       color: AppLightColor.textBlueColor,
                     ),
@@ -126,16 +126,16 @@ class LoginScreen extends StatelessWidget {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         Get.defaultDialog(
-          title: 'Pay attention',
+          title: AppKeyLocalization.label27,
           titleStyle: TextStyle(fontSize: 18, color: Colors.black),
-          middleText: 'Are you sure you want to exit the app?',
+          middleText: AppKeyLocalization.label28,
           middleTextStyle: TextStyle(fontSize: 16, color: Colors.grey.shade900),
           backgroundColor: Colors.blueGrey[100],
           radius: 15,
-          textCancel: 'Cancel',
+          textCancel: AppKeyLocalization.label19,
           cancelTextColor: Colors.black,
           onCancel: () {},
-          textConfirm: 'Confirm',
+          textConfirm: AppKeyLocalization.label29,
           confirmTextColor: Colors.white,
           onConfirm: () {
             SystemNavigator.pop();

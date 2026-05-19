@@ -7,6 +7,7 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:test_test_test/config/widgets/custom_appbar.dart';
 import 'package:test_test_test/features/first_screen/first_screen.dart';
 
+import '../../config/app_string/app_key_string_ternationalization.dart';
 import '../create_person/create_person.dart';
 import '../heart/heart.dart';
 import '../profile_screen/profile_screen.dart';
@@ -25,16 +26,16 @@ class HomeScreen extends GetView<HomeController> {
             canPop: true,
             onPopInvokedWithResult: (didPop, result) async {
               Get.defaultDialog(
-              title: 'Pay attention',
+              title: AppKeyLocalization.label27,
               titleStyle: TextStyle(fontSize: 18, color: Colors.black),
-              middleText: 'Are you sure you want to exit the app?',
+              middleText: AppKeyLocalization.label59,
               middleTextStyle: TextStyle(fontSize: 16, color: Colors.grey.shade900),
               backgroundColor: Colors.blueGrey[100],
               radius: 15,
-              textCancel: 'Cancel',
+              textCancel: AppKeyLocalization.label19,
               cancelTextColor: Colors.black,
               onCancel: () {},
-              textConfirm: 'Confirm',
+              textConfirm: AppKeyLocalization.label29,
               confirmTextColor: Colors.white,
               onConfirm: () {
               SystemNavigator.pop();

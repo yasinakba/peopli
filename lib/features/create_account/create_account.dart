@@ -13,6 +13,7 @@ import 'package:test_test_test/features/feature_job_and_education/controller/edu
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
 
 import '../../config/app_colors/app_colors_light.dart';
+import '../../config/app_string/app_key_string_ternationalization.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/customButton.dart';
 import '../../config/widgets/date_picker_widget.dart';
@@ -39,22 +40,30 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                     children: [
                       Align(
                         alignment: Alignment.center,
-                        child: GetBuilder<UploadController>(builder: (controller) {
-                          return Container(
-                            height: 130.h,
-                            width: 100.w,
-                            decoration: BoxDecoration(
-                              color: AppLightColor.elipsFill,
-                              image: controller.pickedFile == null
-                                  ? DecorationImage(image: NetworkImage(
-                                  '$baseImageURL/noavatar.png',))
-                                  : DecorationImage(image: FileImage(
-                                  File(controller.pickedFile!.path,),),
-                                fit: BoxFit.cover,
-                              ), shape: BoxShape.circle,
-                            ),
-                          );
-                        }),
+                        child: GetBuilder<UploadController>(
+                          builder: (controller) {
+                            return Container(
+                              height: 130.h,
+                              width: 100.w,
+                              decoration: BoxDecoration(
+                                color: AppLightColor.elipsFill,
+                                image: controller.pickedFile == null
+                                    ? DecorationImage(
+                                        image: NetworkImage(
+                                          '$baseImageURL/noavatar.png',
+                                        ),
+                                      )
+                                    : DecorationImage(
+                                        image: FileImage(
+                                          File(controller.pickedFile!.path),
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
+                                shape: BoxShape.circle,
+                              ),
+                            );
+                          },
+                        ),
                       ),
                       SizedBox(
                         width: 292.w,
@@ -63,9 +72,12 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                             //En && AddPhotoes
                             Padding(
                               padding: const EdgeInsets.only(
-                                  right: 20, left: 20),
+                                right: 20,
+                                left: 20,
+                              ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -74,7 +86,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                           controller.updateLAnguage(0);
                                         },
                                         child: Text(
-                                          "EN",
+                                          AppKeyLocalization.label43,
                                           style: controller.textStyleEn(0),
                                         ),
                                       ),
@@ -90,7 +102,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                           controller.updateLAnguage(1);
                                         },
                                         child: Text(
-                                          "FA",
+                                          AppKeyLocalization.label44,
                                           style: controller.textStyleEn(1),
                                         ),
                                       ),
@@ -98,10 +110,11 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      Get.find<UploadController>().uploadImage();
+                                      Get.find<UploadController>()
+                                          .uploadImage();
                                     },
                                     child: Text(
-                                      "Add Photos",
+                                      AppKeyLocalization.label45,
                                       style: appThemeData.textTheme.bodyLarge,
                                     ),
                                   ),
@@ -116,51 +129,51 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 10),
                                     child: TextFieldCreateAccount(
-                                      labelText: 'name',
+                                      labelText: 'Name',
                                       controller: controller.nameController,
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: TextFieldCreateAccount(
-                                      labelText: 'family',
+                                      labelText: 'Family',
                                       controller: controller.familyController,
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: TextFieldCreateAccount(
-                                      labelText: 'UserNAme',
-                                      controller: controller
-                                          .userNameController,
+                                      labelText: AppKeyLocalization.label49,
+                                      controller: controller.userNameController,
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: TextFieldCreateAccount(
                                       labelText: 'Password',
-                                      controller: controller
-                                          .passwordController,
+                                      controller: controller.passwordController,
                                       obsecure: true,
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: TextFieldCreateAccount(
-                                      labelText: 'Confirm Password',
-                                      controller: controller
-                                          .confirmPasswordController,
+                                      labelText: AppKeyLocalization.label53,
+                                      controller:
+                                          controller.confirmPasswordController,
                                       obsecure: true,
                                     ),
                                   ),
                                   Padding(
                                     padding: EdgeInsetsDirectional.only(
-                                        top: 10),
+                                      top: 10,
+                                    ),
                                     child: Container(
                                       width: 360.w,
                                       height: 32.h,
                                       padding: EdgeInsetsDirectional.only(
-                                          start: 10.w),
+                                        start: 10.w,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(25),
@@ -169,19 +182,21 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                       child: GetBuilder<DateController>(
                                         builder: (controller) {
                                           // Safely handle null controller or date
-                                          final safeDate = controller
-                                              .selectedDate;
+                                          final safeDate =
+                                              controller.selectedDate;
                                           final formattedDate = DateFormat(
-                                              'yyyy/MM/dd').format(
-                                              safeDate);
+                                            'yyyy/MM/dd',
+                                          ).format(safeDate);
                                           return Row(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
                                                 formattedDate,
-                                                style: appThemeData.textTheme
-                                                    .bodySmall ??
+                                                style:
+                                                    appThemeData
+                                                        .textTheme
+                                                        .bodySmall ??
                                                     const TextStyle(
                                                       color: Colors.grey,
                                                       fontSize: 14,
@@ -189,7 +204,9 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                               ),
                                               IconButton(
                                                 onPressed: () async {
-                                                  controller.pickDateTime(context);
+                                                  controller.pickDateTime(
+                                                    context,
+                                                  );
                                                 },
                                                 icon: const Icon(
                                                   Icons.calendar_today,
@@ -214,16 +231,18 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                   width: double.infinity,
                                   child: Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 30, left: 10),
+                                      top: 30,
+                                      left: 10,
+                                    ),
                                     child: Text(
-                                      "Home Location :",
+                                      "${AppKeyLocalization.label7} :",
                                       style: appThemeData.textTheme.bodyLarge,
                                     ),
                                   ),
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     SizedBox(
                                       width: 220.w,
@@ -233,33 +252,28 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                           top: 5,
                                         ),
                                         child: Text(
-                                          "${CreateAccountController
-                                              .selectedCountry
-                                              .name ??
-                                              ''} ${CreateAccountController
-                                              .selectedCity.name ??
-                                              "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France"}",
+                                          "${CreateAccountController.selectedCountry.name ?? ''} ${CreateAccountController.selectedCity.name ?? "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France"}",
                                           maxLines: 2,
-                                          style: appThemeData.textTheme
-                                              .bodySmall,
+                                          style:
+                                              appThemeData.textTheme.bodySmall,
                                         ),
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 10),
+                                      padding: const EdgeInsets.only(right: 10),
                                       child: InkWell(
-                                        onTap: () {
-                                          CreateAccountController
-                                              .openDialogLocation(context);
-                                        },
+                                        onTap: () =>
+                                            CreateAccountController.openDialogLocation(
+                                              context,
+                                            ),
                                         child: Text(
-                                          'Add',
-                                          style: appThemeData.textTheme
+                                          AppKeyLocalization.label6,
+                                          style: appThemeData
+                                              .textTheme
                                               .labelLarge!
                                               .copyWith(
-                                            color: AppLightColor.fillButton,
-                                          ),
+                                                color: AppLightColor.fillButton,
+                                              ),
                                         ),
                                       ),
                                     ),
@@ -269,55 +283,58 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                   width: double.infinity,
                                   child: Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 30, left: 10),
+                                      top: 30,
+                                      left: 10,
+                                    ),
                                     child: Text(
-                                      "Education",
+                                      AppKeyLocalization.label8,
                                       style: appThemeData.textTheme.bodyLarge,
                                     ),
                                   ),
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     GetBuilder<EducationController>(
-                                        builder: (logic) {
-                                          return SizedBox(
-                                            width: 220.w,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 15,
-                                                top: 5,
-                                              ),
-                                              child: Text(
-                                                CreateAccountController
-                                                    .selectedEducation
-                                                    .name ??
-                                                    "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France",
-                                                maxLines: 2,
-                                                style: appThemeData.textTheme
-                                                    .bodySmall,
-                                              ),
+                                      builder: (logic) {
+                                        return SizedBox(
+                                          width: 220.w,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                              left: 15,
+                                              top: 5,
                                             ),
-                                          );
-                                        }),
+                                            child: Text(
+                                              CreateAccountController
+                                                      .selectedEducation
+                                                      .name ??
+                                                  "(2005-now) Avenue 13, Bond Pavilion, Mercury St., Paris, France",
+                                              maxLines: 2,
+                                              style: appThemeData
+                                                  .textTheme
+                                                  .bodySmall,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
                                     Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 10),
+                                      padding: const EdgeInsets.only(right: 10),
                                       child: InkWell(
                                         onTap: () {
-                                          CreateAccountController
-                                              .openDialogEducation(
+                                          CreateAccountController.openDialogEducation(
                                             context,
                                           );
                                         },
                                         child: Text(
-                                          'Add',
-                                          style: appThemeData.textTheme
+                                          AppKeyLocalization.label6,
+                                          style: appThemeData
+                                              .textTheme
                                               .labelLarge!
                                               .copyWith(
-                                            color: AppLightColor.fillButton,
-                                          ),
+                                                color: AppLightColor.fillButton,
+                                              ),
                                         ),
                                       ),
                                     ),
@@ -325,17 +342,19 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 10,),
-                            controller.loading? LoadingWidget(): CustomElevatedButton(
-                              onPressed: () {
-                                controller.signUp();
-                              },
-                              textColor: AppLightColor.withColor,
-                              color: Colors.indigo,
-                              title: "Create",
-                              height: 40.h,
-                              width: 300.w,
-                            ),
+                            SizedBox(height: 10),
+                            controller.loading
+                                ? LoadingWidget()
+                                : CustomElevatedButton(
+                                    onPressed: () {
+                                      controller.signUp();
+                                    },
+                                    textColor: AppLightColor.withColor,
+                                    color: Colors.indigo,
+                                    title: AppKeyLocalization.label54,
+                                    height: 40.h,
+                                    width: 300.w,
+                                  ),
                           ],
                         ),
                       ),

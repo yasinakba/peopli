@@ -12,6 +12,7 @@ import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/first_screen/widget/post_first_screen.dart';
 import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_route/route_names.dart';
+import '../../config/app_string/app_key_string_ternationalization.dart';
 import '../../config/app_theme/app_theme.dart';
 import '../../config/widgets/customButton.dart';
 import '../create_person/entity/face_entity.dart';
@@ -178,7 +179,7 @@ class FirstWidget extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "Add a memory",
+                        AppKeyLocalization.label46,
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.fade,
                         softWrap: false,
@@ -273,7 +274,7 @@ class SecondWidget extends StatelessWidget {
                             color: Colors.indigoAccent,
                           ),
                           child: Text(
-                            'vote⭐',
+                            '${AppKeyLocalization.label60}⭐',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 12.sp,
@@ -297,28 +298,28 @@ class SecondWidget extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('Works: ', style: customStyle),
+                        Text('${AppKeyLocalization.label61}: ', style: customStyle),
                         Text(face.job ?? '', style: customStyle2),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('Lives: ', style: customStyle),
+                        Text('${AppKeyLocalization.label62}: ', style: customStyle),
                         Text(face.homeTown ?? '', style: customStyle2),
                       ],
                     ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Has born in: ', style: customStyle),
+                        Text('${AppKeyLocalization.label63}: ', style: customStyle),
                         Text(face.birthdate.toString(), style: customStyle2),
                       ],
                     ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('Education: ', style: customStyle),
+                        Text('${AppKeyLocalization.label8}: ', style: customStyle),
                         Text(face.education ?? '', style: customStyle2),
                       ],
                     ),
@@ -344,7 +345,7 @@ class SecondWidget extends StatelessWidget {
                     color: Colors.indigoAccent,
                   ),
                   child: Text(
-                    'Edit 🧑️',
+                    '${AppKeyLocalization.label64}🧑️',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12,

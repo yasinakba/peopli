@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:test_test_test/config/app_string/app_key_string_ternationalization.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
@@ -76,7 +77,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                             controller.updateLanguage(0);
                                           },
                                           child: Text(
-                                            "EN",
+                                            AppKeyLocalization.label43,
                                             style: controller.textStyleEn(0),
                                           ),
                                         ),
@@ -92,7 +93,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                             controller.updateLanguage(1);
                                           },
                                           child: Text(
-                                            "FA",
+                                            AppKeyLocalization.label44,
                                             style: controller.textStyleEn(1),
                                           ),
                                         ),
@@ -105,7 +106,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                             .uploadImage();
                                       },
                                       child: Text(
-                                        "Add Photos",
+                                        AppKeyLocalization.label45,
                                         style: appThemeData.textTheme.bodyLarge,
                                       ),
                                     ),
@@ -128,20 +129,20 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                     Padding(
                                       padding: const EdgeInsets.only(top: 5),
                                       child: TextFieldCreateAccount(
-                                        labelText: 'UserNAme',
+                                        labelText: AppKeyLocalization.label49,
                                         controller: controller
                                             .userNameController,),
                                     ), Padding(
                                       padding: const EdgeInsets.only(top: 5),
                                       child: TextFieldCreateAccount(
-                                        labelText: 'Email',
+                                        labelText: AppKeyLocalization.label55,
                                         controller: controller
                                             .emailController,),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 5),
                                       child: TextFieldCreateAccount(
-                                        labelText: 'Password',
+                                        labelText: AppKeyLocalization.label24,
                                         controller: controller
                                             .passwordController,
                                         obSecure: true,),
@@ -182,10 +183,9 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                                       ),
                                                 ),
                                                 IconButton(
-                                                  onPressed: () async {
+                                                  onPressed: () async =>
                                                     controller.pickDateTime(
-                                                        context);
-                                                  },
+                                                        context),
                                                   icon: const Icon(
                                                     Icons.calendar_today,
                                                     size: 15,
@@ -219,7 +219,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                         Row(
                                           children: [
                                             Text(
-                                              "Home Location :",
+                                              "${AppKeyLocalization.label7} :",
                                               style: appThemeData.textTheme
                                                   .bodyLarge,
                                             ),
@@ -228,13 +228,12 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                               padding: const EdgeInsets.only(
                                                   right: 10),
                                               child: InkWell(
-                                                onTap: () {
+                                                onTap: () =>
                                                   CreateAccountController
                                                       .openDialogLocation(
-                                                      context);
-                                                },
+                                                      context),
                                                 child: Text(
-                                                  'Add',
+                                                  AppKeyLocalization.label6,
                                                   style: appThemeData.textTheme
                                                       .labelLarge!
                                                       .copyWith(
@@ -273,7 +272,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                     padding: const EdgeInsets.only(
                                         top: 5, left: 10),
                                     child: Text(
-                                      "Education :",
+                                      "${AppKeyLocalization.label8} :",
                                       style: appThemeData.textTheme.bodyLarge,
                                     ),
                                   ),
@@ -303,12 +302,11 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                   Padding(
                                     padding: const EdgeInsets.only(right: 10),
                                     child: InkWell(
-                                      onTap: () {
+                                      onTap: () =>
                                         CreateAccountController
-                                            .openDialogEducation(context);
-                                      },
+                                            .openDialogEducation(context),
                                       child: Text(
-                                        'Add',
+                                        AppKeyLocalization.label6,
                                         style: appThemeData.textTheme
                                             .labelLarge!
                                             .copyWith(
@@ -323,9 +321,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 30),
                                 child: CustomElevatedButton(
-                                  onPressed: () {
-                                    controller.editProfile();
-                                  },
+                                  onPressed: () =>controller.editProfile(),
                                   textColor: AppLightColor.withColor,
                                   color: AppLightColor.textBlueColor,
                                   title: "Create",

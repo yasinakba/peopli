@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_route/route_names.dart';
+import 'package:test_test_test/config/app_string/app_key_local_storage.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
@@ -103,7 +104,7 @@ class AddMemoryController extends GetxController {
   final dio = Dio();
   Future<void> setLocation({required longitude,required latitude,})async{
     final preferences = await SharedPreferences.getInstance();
-    final token = preferences.getString('token');
+    final token = preferences.getString(AppKeyLocalStorage.keyToken);
 
     final response = await dio.post('$baseURL/Api/set-location?token=$token&lng=$longitude&lat=$latitude',);
     print(response.data);
@@ -112,7 +113,7 @@ class AddMemoryController extends GetxController {
   UploadController uploadController = Get.put( UploadController());
   void addMemory(faceId) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-   String? token =  preferences.getString('token');
+   String? token =  preferences.getString(AppKeyLocalStorage.keyToken);
     if (subjectController.text.isEmpty||textController.text.isEmpty||selectedRadioValue == '') {
       Get.snackbar('Error', 'Subject cannot be empty');
       return;

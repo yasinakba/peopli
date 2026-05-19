@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/config/app_string/app_key_string_ternationalization.dart';
 import 'package:test_test_test/config/widgets/customButton.dart';
 import 'package:test_test_test/config/widgets/four_digit_code_input.dart';
 import 'package:test_test_test/features/login/controller/login_controller.dart';
@@ -29,7 +30,7 @@ class VerifyLoginScreen extends StatelessWidget {
               width: double.infinity,
               height: 50,
               child: Text(
-                "Please Enter Code",
+                AppKeyLocalization.label30,
                 style: appThemeData.textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
@@ -44,7 +45,7 @@ class VerifyLoginScreen extends StatelessWidget {
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeIn,
               );
-            }, textColor: Colors.white, color: Colors.indigo, title: 'Verify-Login', height: 40.h, width: 300.w,),
+            }, textColor: Colors.white, color: Colors.indigo, title: AppKeyLocalization.label31, height: 40.h, width: 300.w,),
 
           ],
         );

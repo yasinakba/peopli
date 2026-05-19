@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:test_test_test/config/app_colors/app_colors_light.dart';
+import 'package:test_test_test/config/app_string/app_key_string_ternationalization.dart';
 import 'package:test_test_test/config/app_theme/app_theme.dart';
 import 'package:test_test_test/features/search_screen/controller/search_bottom_controller.dart';
 import 'package:get/get.dart';
@@ -60,7 +61,7 @@ class SearchInformationLocation extends StatelessWidget {
                               .deepPurpleAccent
                               .shade200,))
                         : Text(
-                      'Add',
+                      AppKeyLocalization.label6,
                       style: appThemeData
                           .textTheme
                           .labelLarge!
@@ -91,7 +92,7 @@ class SearchInformationLocation extends StatelessWidget {
               ),
               width: double.infinity,
               child: Text(
-                "Education :",
+                "${AppKeyLocalization.label8} :",
                 style: appThemeData.textTheme.bodyLarge,
               ),
             ),
@@ -130,7 +131,7 @@ class SearchInformationLocation extends StatelessWidget {
                           color: Colors.deepPurpleAccent
                               .shade200,))
                         : Text(
-                      'Add',
+                      AppKeyLocalization.label6,
                       style: appThemeData
                           .textTheme
                           .labelLarge!
@@ -150,7 +151,7 @@ class SearchInformationLocation extends StatelessWidget {
               margin: EdgeInsets.only(top: 5.h),
               width: double.infinity,
               child: Text(
-                "Job :",
+                "${AppKeyLocalization.label9} :",
                 style: appThemeData.textTheme.bodyLarge,
               ),
             ),
@@ -189,7 +190,7 @@ class SearchInformationLocation extends StatelessWidget {
                           color: Colors.deepPurpleAccent
                               .shade200,))
                         : Text(
-                      'Add',
+                      AppKeyLocalization.label6,
                       style: appThemeData
                           .textTheme
                           .labelLarge!

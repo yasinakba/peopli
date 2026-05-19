@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:test_test_test/config/app_string/app_key_string_ternationalization.dart';
 
 class LocationScreen extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class _LocationScreenState extends State<LocationScreen> {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         setState(() {
-          location = "Location permission denied";
+          location = AppKeyLocalization.label56;
         });
         return;
       }
@@ -41,14 +42,12 @@ class _LocationScreenState extends State<LocationScreen> {
           "${place.locality}, ${place.administrativeArea}, ${place.country}";
     });
 
-    print("Latitude: ${position.latitude}, Longitude: ${position.longitude}");
-    print("Address: $location");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("User Location")),
+      appBar: AppBar(title: Text(AppKeyLocalization.label57)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -57,7 +56,7 @@ class _LocationScreenState extends State<LocationScreen> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: getUserLocation,
-              child: Text("Get Current Location"),
+              child: Text(AppKeyLocalization.label58),
             ),
           ],
         ),
