@@ -19,7 +19,7 @@ import '../../create_person/widget/listTile_create.dart';
 import '../../feature_upload/upload_controller.dart';
 
 class EditPersonController extends GetxController {
-  FaceEntity face = Get.arguments;
+  FaceEntity? face;
   int selectedRadio = 0;
   int selectedLanguage = 0;
   File? pickedFile;
@@ -37,12 +37,12 @@ class EditPersonController extends GetxController {
   }
 
   void fill()async{
-    nameController.text = face.name ?? '';
-    familyNameController.text = face.lastName ?? '';
-    displayNameController.text = '${face.name}${face.lastName}';
-    knowAsController.text = face.knownFor ?? '';
-    locationController.text = face.homeTown ?? '';
-    dateTimeController.text = face.birthdate ?? '';
+    nameController.text = face?.name ?? '';
+    familyNameController.text = face?.lastName ?? '';
+    displayNameController.text = '${face?.name??''}${face?.lastName??''}';
+    knowAsController.text = face?.knownFor ?? '';
+    locationController.text = face?.homeTown ?? '';
+    dateTimeController.text = face?.birthdate ?? '';
 
   }
   TextEditingController displayNameController = TextEditingController();
@@ -283,7 +283,7 @@ class EditPersonController extends GetxController {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () => editFace(face.id),
+                  onPressed: () => editFace(face?.id??''),
                   child: Text(
                     'Edit',
                     style: theme.textTheme.labelMedium!.copyWith(),

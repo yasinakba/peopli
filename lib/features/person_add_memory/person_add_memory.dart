@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:test_test_test/features/add_memory/add_memory_screen.dart';
 import 'package:test_test_test/features/person_add_memory/widget/memory.dart';
 import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_icons/app_assets_jpg.dart';
@@ -92,7 +93,7 @@ class PersonAddScreen extends GetView<PersonController> {
                                 ),
                                 child: InkWell(
                                     onTap: (){
-                                      Get.toNamed(NamedRoute.routeAddMemoryScreen);
+                                      // Navigator.push(context, MaterialPageRoute(builder: (context) => AddMemoryScreen(face: face,),));
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.only(top: 5),

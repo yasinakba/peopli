@@ -303,7 +303,7 @@ class MorePerson extends GetView<PersonController> {
                   padding: const EdgeInsets.only(),
                   child: InkWell(
                       onTap: (){
-                        Get.toNamed(NamedRoute.routePersonEditScreen);
+                        // Get.toNamed(NamedRoute.routePersonEditScreen);
                       },
                       child: Text("Edit",style: appThemeData.textTheme.titleLarge,)),
                 ),

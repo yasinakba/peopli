@@ -9,7 +9,7 @@ import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/features/create_person/entity/face_entity.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
-import 'package:test_test_test/features/share_feature/shared_memory_controller.dart';
+import 'package:test_test_test/features/share_feature/controller/shared_memory_controller.dart';
 
 import '../../feature_location/controller/location_controller.dart';
 import '../../profile_screen/entity/comment_entity.dart';

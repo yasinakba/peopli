@@ -11,6 +11,7 @@ import 'package:test_test_test/features/create_account/controller/create_account
 import 'package:test_test_test/features/feature_job_and_education/controller/education_cotnroller.dart';
 import 'package:test_test_test/features/feature_location/controller/location_controller.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
+import 'package:test_test_test/features/profile_screen/entity/user_entity.dart';
 
 import '../../config/app_colors/app_colors_light.dart';
 
@@ -20,6 +21,10 @@ import '../create_account/widget/custom_textField.dart';
 import 'controller/edit_profile_controller.dart';
 
 class EditProfileScreen extends GetView<EditProfileController> {
+  final UserEntity currentUser;
+
+  EditProfileScreen({required this.currentUser});
+
   final EditProfileController editProfileController = Get.put(
     EditProfileController(),
   );
@@ -31,12 +36,17 @@ class EditProfileScreen extends GetView<EditProfileController> {
         child: ListView(
           children: [
             GetBuilder<EditProfileController>(
-              builder: (controller) =>
-                  Padding(
-                    padding: const EdgeInsets.only(top: 100),
-                    child: Column(
-                      children: [
-                        GetBuilder<UploadController>(builder: (logic) {
+              initState: (state) {
+                Get.lazyPut(() => EditProfileController(),);
+              },
+              builder: (controller) {
+                controller.fillProperties(currentUser);
+                return Padding(
+                  padding: const EdgeInsets.only(top: 100),
+                  child: Column(
+                    children: [
+                      GetBuilder<UploadController>(
+                        builder: (logic) {
                           return Align(
                             alignment: Alignment.center,
                             child: Container(
@@ -44,202 +54,216 @@ class EditProfileScreen extends GetView<EditProfileController> {
                               width: 100.w,
                               decoration: BoxDecoration(
                                 color: AppLightColor.elipsFill,
-                                image: logic.pickedFile == null ? DecorationImage(image: NetworkImage(
-                                    "$baseImageURL/${controller.currentUser
-                                        .avatar}"), fit: BoxFit.cover)
+                                image: logic.pickedFile == null
+                                    ? DecorationImage(
+                                        image: NetworkImage(
+                                          "$baseImageURL/${currentUser.avatar}",
+                                        ),
+                                        fit: BoxFit.cover,
+                                      )
                                     : DecorationImage(
-                                  image: FileImage(File(logic.pickedFile!
-                                      .path)),
-                                  fit: BoxFit.cover,
-                                ),
+                                        image: FileImage(
+                                          File(logic.pickedFile!.path),
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
                                 borderRadius: BorderRadius.all(
-                                    Radius.circular(100)),
+                                  Radius.circular(100),
+                                ),
                               ),
                             ),
                           );
-                        }),
-                        SizedBox(
-                          width: 292.w,
-                          child: Column(
-                            children: [
-                              //En && AddPhotoes
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    right: 20, left: 20),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            controller.updateLanguage(0);
-                                          },
-                                          child: Text(
-                                            AppKeyLocalization.label43,
-                                            style: controller.textStyleEn(0),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            left: 5,
-                                            right: 5,
-                                          ),
-                                          child: Text("|"),
-                                        ),
-                                        InkWell(
-                                          onTap: () {
-                                            controller.updateLanguage(1);
-                                          },
-                                          child: Text(
-                                            AppKeyLocalization.label44,
-                                            style: controller.textStyleEn(1),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        Get
-                                            .find<UploadController>()
-                                            .uploadImage();
-                                      },
-                                      child: Text(
-                                        AppKeyLocalization.label45,
-                                        style: appThemeData.textTheme.bodyLarge,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                        },
+                      ),
+                      SizedBox(
+                        width: 292.w,
+                        child: Column(
+                          children: [
+                            //En && AddPhotoes
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                right: 20,
+                                left: 20,
                               ),
-                              //textField
-                              SizedBox(
-                                height: 200.h,
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 10),
-                                      child: TextFieldCreateAccount(
-                                        labelText: 'name',
-                                        controller: controller
-                                            .displayController,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          controller.updateLanguage(0);
+                                        },
+                                        child: Text(
+                                          AppKeyLocalization.label43,
+                                          style: controller.textStyleEn(0),
+                                        ),
                                       ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 5,
+                                          right: 5,
+                                        ),
+                                        child: Text("|"),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          controller.updateLanguage(1);
+                                        },
+                                        child: Text(
+                                          AppKeyLocalization.label44,
+                                          style: controller.textStyleEn(1),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Get.find<UploadController>()
+                                          .uploadImage();
+                                    },
+                                    child: Text(
+                                      AppKeyLocalization.label45,
+                                      style: appThemeData.textTheme.bodyLarge,
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 5),
-                                      child: TextFieldCreateAccount(
-                                        labelText: AppKeyLocalization.label49,
-                                        controller: controller
-                                            .userNameController,),
-                                    ), Padding(
-                                      padding: const EdgeInsets.only(top: 5),
-                                      child: TextFieldCreateAccount(
-                                        labelText: AppKeyLocalization.label55,
-                                        controller: controller
-                                            .emailController,),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            //textField
+                            SizedBox(
+                              height: 200.h,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: TextFieldCreateAccount(
+                                      labelText: 'name',
+                                      controller: controller.displayController,
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 5),
-                                      child: TextFieldCreateAccount(
-                                        labelText: AppKeyLocalization.label24,
-                                        controller: controller
-                                            .passwordController,
-                                        obSecure: true,),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 5),
+                                    child: TextFieldCreateAccount(
+                                      labelText: AppKeyLocalization.label49,
+                                      controller: controller.userNameController,
                                     ),
-                                    Padding(
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 5),
+                                    child: TextFieldCreateAccount(
+                                      labelText: AppKeyLocalization.label55,
+                                      controller: controller.emailController,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 5),
+                                    child: TextFieldCreateAccount(
+                                      labelText: AppKeyLocalization.label24,
+                                      controller: controller.passwordController,
+                                      obSecure: true,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.only(
+                                      top: 10,
+                                    ),
+                                    child: Container(
+                                      width: 360.w,
+                                      height: 32.h,
                                       padding: EdgeInsetsDirectional.only(
-                                          top: 10),
-                                      child: Container(
-                                        width: 360.w,
-                                        height: 32.h,
-                                        padding: EdgeInsetsDirectional.only(
-                                            start: 10.w),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(
-                                              25),
-                                          border: Border.all(
-                                              color: Colors.black),
-                                        ),
-                                        child: GetBuilder<DateController>(
-                                          builder: (controller) {
-                                            final safeDate = controller
-                                                .selectedDate;
-                                            final formattedDate = DateFormat(
-                                                'yyyy/MM/dd').format(
-                                                safeDate);
-                                            return Row(
-                                              mainAxisAlignment: MainAxisAlignment
-                                                  .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  formattedDate,
-                                                  style: appThemeData.textTheme
-                                                      .bodySmall ??
-                                                      const TextStyle(
-                                                        color: Colors.grey,
-                                                        fontSize: 14,
-                                                      ),
-                                                ),
-                                                IconButton(
-                                                  onPressed: () async =>
+                                        start: 10.w,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(25),
+                                        border: Border.all(color: Colors.black),
+                                      ),
+                                      child: GetBuilder<DateController>(
+                                        builder: (controller) {
+                                          final safeDate =
+                                              controller.selectedDate;
+                                          final formattedDate = DateFormat(
+                                            'yyyy/MM/dd',
+                                          ).format(safeDate);
+                                          return Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                formattedDate,
+                                                style:
+                                                    appThemeData
+                                                        .textTheme
+                                                        .bodySmall ??
+                                                    const TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 14,
+                                                    ),
+                                              ),
+                                              IconButton(
+                                                onPressed: () async =>
                                                     controller.pickDateTime(
-                                                        context),
-                                                  icon: const Icon(
-                                                    Icons.calendar_today,
-                                                    size: 15,
-                                                    color: Colors.grey,
-                                                  ),
+                                                      context,
+                                                    ),
+                                                icon: const Icon(
+                                                  Icons.calendar_today,
+                                                  size: 15,
+                                                  color: Colors.grey,
                                                 ),
-                                              ],
-                                            );
-                                          },
-                                        ),
+                                              ),
+                                            ],
+                                          );
+                                        },
                                       ),
                                     ),
-
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
+                            ),
 
-
-                              //location
-                              GetBuilder<LocationController>(builder: (
-                                  controller) {
+                            //location
+                            GetBuilder<LocationController>(
+                              builder: (controller) {
                                 return SizedBox(
                                   width: double.infinity,
                                   child: Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 5, left: 10),
+                                      top: 5,
+                                      left: 10,
+                                    ),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
                                             Text(
                                               "${AppKeyLocalization.label7} :",
-                                              style: appThemeData.textTheme
+                                              style: appThemeData
+                                                  .textTheme
                                                   .bodyLarge,
                                             ),
                                             Spacer(),
                                             Padding(
                                               padding: const EdgeInsets.only(
-                                                  right: 10),
+                                                right: 10,
+                                              ),
                                               child: InkWell(
                                                 onTap: () =>
-                                                  CreateAccountController
-                                                      .openDialogLocation(
-                                                      context),
+                                                    CreateAccountController.openDialogLocation(
+                                                      context,
+                                                    ),
                                                 child: Text(
                                                   AppKeyLocalization.label6,
-                                                  style: appThemeData.textTheme
+                                                  style: appThemeData
+                                                      .textTheme
                                                       .labelLarge!
                                                       .copyWith(
-                                                    color: AppLightColor
-                                                        .fillButton,
-                                                  ),
+                                                        color: AppLightColor
+                                                            .fillButton,
+                                                      ),
                                                 ),
                                               ),
                                             ),
@@ -247,94 +271,96 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                         ),
                                         Text(
                                           textAlign: TextAlign.start,
-                                          "${CreateAccountController
-                                              .selectedCountry
-                                              .name} ${CreateAccountController
-                                              .selectedCity.name ??
-                                              'No Selected sitll'}",
-                                          style: appThemeData.textTheme
+                                          "${CreateAccountController.selectedCountry.name} ${CreateAccountController.selectedCity.name ?? 'No Selected sitll'}",
+                                          style: appThemeData
+                                              .textTheme
                                               .labelLarge!
                                               .copyWith(
-                                            color: AppLightColor.fillButton,
-                                          ),
+                                                color: AppLightColor.fillButton,
+                                              ),
                                         ),
                                       ],
                                     ),
                                   ),
                                 );
-                              }),
-                              SizedBox(height: 5.h,),
-                              GetBuilder<EducationController>(builder: (
-                                  controller) {
+                              },
+                            ),
+                            SizedBox(height: 5.h),
+                            GetBuilder<EducationController>(
+                              builder: (controller) {
                                 return SizedBox(
                                   width: double.infinity,
                                   child: Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 5, left: 10),
+                                      top: 5,
+                                      left: 10,
+                                    ),
                                     child: Text(
                                       "${AppKeyLocalization.label8} :",
                                       style: appThemeData.textTheme.bodyLarge,
                                     ),
                                   ),
                                 );
-                              }),
+                              },
+                            ),
 
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    width: 220.w,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 15,
-                                        top: 5,
-                                      ),
-                                      child: Text(
-                                        CreateAccountController
-                                            .selectedEducation.name ??
-                                            "No selectedEducation",
-                                        maxLines: 2,
-                                        style: appThemeData.textTheme.bodySmall,
-                                      ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: 220.w,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 15,
+                                      top: 5,
+                                    ),
+                                    child: Text(
+                                      CreateAccountController
+                                              .selectedEducation
+                                              .name ??
+                                          "No selectedEducation",
+                                      maxLines: 2,
+                                      style: appThemeData.textTheme.bodySmall,
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: InkWell(
-                                      onTap: () =>
-                                        CreateAccountController
-                                            .openDialogEducation(context),
-                                      child: Text(
-                                        AppKeyLocalization.label6,
-                                        style: appThemeData.textTheme
-                                            .labelLarge!
-                                            .copyWith(
-                                          color: AppLightColor.fillButton,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              Padding(
-                                padding: const EdgeInsets.only(top: 30),
-                                child: CustomElevatedButton(
-                                  onPressed: () =>controller.editProfile(),
-                                  textColor: AppLightColor.withColor,
-                                  color: AppLightColor.textBlueColor,
-                                  title: "Create",
-                                  height: 40.h,
-                                  width: 300.w,
                                 ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: InkWell(
+                                    onTap: () =>
+                                        CreateAccountController.openDialogEducation(
+                                          context,
+                                        ),
+                                    child: Text(
+                                      AppKeyLocalization.label6,
+                                      style: appThemeData.textTheme.labelLarge!
+                                          .copyWith(
+                                            color: AppLightColor.fillButton,
+                                          ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.only(top: 30),
+                              child: CustomElevatedButton(
+                                onPressed: () => controller.editProfile(context: context),
+                                textColor: AppLightColor.withColor,
+                                color: AppLightColor.textBlueColor,
+                                title: "Create",
+                                height: 40.h,
+                                width: 300.w,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                );
+              },
             ),
           ],
         ),

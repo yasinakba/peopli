@@ -13,79 +13,78 @@ import '../../first_screen/widget/post_first_screen.dart';
 
 class TabBarShowPost extends StatelessWidget {
    TabBarShowPost({Key? key}) : super(key: key);
-  List likeCount = [];
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(length: 2,
         initialIndex: 0,
         child: Scaffold(
           backgroundColor: AppLightColor.withColor,
-          body: Column(
-            children: [
-              Container(
-                height: 30.h,
-                width: 375.w,
-                child: TabBar(
-                  unselectedLabelColor: AppLightColor.elipsFill,
-                  labelColor: AppLightColor.textBoldColor,
-                  indicatorColor: AppLightColor.withColor,
-                  tabs: [
-                    Container(
-                        width: 112.w,
-                        height: 16.h,
-                        child: Icon(Icons.list)
-                    ),
-                    Container(
-                        width: 112.w,
-                        height: 16.h,
-                        child: Icon(Icons.border_all)
-                    ),
-                  ],
+          body: Expanded(
+            child: Column(
+              children: [
+                Container(
+                  height: 30.h,
+                  width: 375.w,
+                  child: TabBar(
+                    unselectedLabelColor: AppLightColor.elipsFill,
+                    labelColor: AppLightColor.textBoldColor,
+                    indicatorColor: AppLightColor.withColor,
+                    tabs: [
+                      Container(
+                          width: 112.w,
+                          height: 16.h,
+                          child: Icon(Icons.list)
+                      ),
+                      Container(
+                          width: 112.w,
+                          height: 16.h,
+                          child: Icon(Icons.border_all)
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                height: 600.h,
-                color: AppLightColor.withColor,
-                child: TabBarView(
-                  children: [
-                    GetBuilder<ProfileController>(
-                        initState: (state) {
-                          Get.lazyPut(() => FirstController(),);
-                        },
-                        builder: (controller) {
-                      return PagingListener(
-                        controller: controller.pagingMemoryController,
-                        builder: (context, state, fetchNextPage) =>
-                            PagedListView<int, dynamic>(
-                              state: state,
-                              fetchNextPage: fetchNextPage,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 10.w,
-                                vertical: 10.h,
+                Container(
+                  height: 500.h,
+                  color: AppLightColor.withColor,
+                  child: TabBarView(
+                    children: [
+                      GetBuilder<ProfileController>(
+                          initState: (state) {
+                            Get.lazyPut(() => FirstController(),);
+                          },
+                          builder: (controller) {
+                        return PagingListener(
+                          controller: controller.pagingMemoryController,
+                          builder: (context, state, fetchNextPage) =>
+                              PagedListView<int, dynamic>(
+                                state: state,
+                                fetchNextPage: fetchNextPage,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10.w,
+                                  vertical: 10.h,
+                                ),
+                                builderDelegate: PagedChildBuilderDelegate<dynamic>(
+                                  itemBuilder: (context, memory, index) {
+                                      return PostFirstScreen(
+                                    memory,
+                                    index,
+                                  );
+                                  },
+                                  firstPageProgressIndicatorBuilder: (context) => LoadingWidget(),
+                                  newPageProgressIndicatorBuilder: (context) => LoadingWidget(),
+                                  noItemsFoundIndicatorBuilder: (context) => NotFoundWidget(),
+                                ),
                               ),
-                              builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                                itemBuilder: (context, memory, index) {
-                                  likeCount.add(memory.likesCount?.toInt()??0);
-                                return PostFirstScreen(
-                                  memory,
-                                  index,
-                                  likeCount,
-                                );
-                                },
-                                firstPageProgressIndicatorBuilder: (context) => LoadingWidget(),
-                                newPageProgressIndicatorBuilder: (context) => LoadingWidget(),
-                                noItemsFoundIndicatorBuilder: (context) => NotFoundWidget(),
-                              ),
-                            ),
-                      );
-                    }),
-                    Center(
-                        child: PostProfile2(),
-                    ),
-                  ],
+                        );
+                      }),
+                      Center(
+                          child: PostProfile2(),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ));
   }

@@ -9,6 +9,7 @@ import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/create_account/controller/create_account_controller.dart';
 import 'package:test_test_test/features/feature_job_and_education/controller/education_cotnroller.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
+import 'package:test_test_test/features/login/login_screen.dart';
 import 'package:test_test_test/features/profile_screen/entity/comment_entity.dart';
 import 'package:test_test_test/features/profile_screen/entity/user_entity.dart';
 
@@ -17,14 +18,13 @@ import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
 
 class EditProfileController extends GetxController {
-  UserEntity currentUser = Get.arguments;
 
   @override
   void onInit() {
     super.onInit();
     
     Get.lazyPut(() => DateController(),);
-    fillProperties();
+
   }
 
   TextEditingController displayController = TextEditingController();
@@ -38,7 +38,7 @@ class EditProfileController extends GetxController {
   String jobs = "";
   final dio = Dio();
 
-  fillProperties() {
+  fillProperties(UserEntity currentUser) {
     Get.lazyPut(() => CreateAccountController());
     Get.lazyPut(() => EducationController());
 
@@ -60,14 +60,12 @@ class EditProfileController extends GetxController {
       if (selected != null) {
         CreateAccountController.selectedEducation = selected;
       }
-
-      update();
       Future.delayed(Duration.zero, () {
         Get.find<CreateAccountController>().update();
         Get.find<EducationController>().update();
       });
   }
-  Future<void> editProfile() async {
+  Future<void> editProfile({required context}) async {
       // 1️⃣ Input validation
       if (userNameController.text.isEmpty ||
           displayController.text.isEmpty ||
@@ -132,7 +130,7 @@ class EditProfileController extends GetxController {
 
       print(response.data);
       if (response.statusCode == 200 && response.data['status'] == 'ok') {
-        Get.toNamed(NamedRoute.routeLoginScreen);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
       } else {
         Get.showSnackbar(
           GetSnackBar(

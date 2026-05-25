@@ -38,6 +38,7 @@ class PostProfile2 extends StatelessWidget {
                 final userAvatar =  logic.currentUser?.avatar??'';
 
                 return Container(
+                  height: 500.h,
                   padding: EdgeInsets.all(8),
                   child: Stack(
                     alignment: Alignment.topRight,

@@ -1,7 +1,14 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_string/app_key_local_storage.dart';
-import '../../../config/app_string/constant.dart';
+import 'package:test_test_test/features/home_screen/controller/home_controller.dart';
+import 'package:test_test_test/features/home_screen/home_screen.dart';
+import 'package:test_test_test/features/login/controller/login_controller.dart';
+import 'package:test_test_test/features/login/login_screen.dart';
+import 'package:test_test_test/features/person_screen/controller/person_controller.dart';
 
 import '../../../config/app_route/route_names.dart';
 import '../../feature_job_and_education/controller/education_cotnroller.dart';
@@ -13,7 +20,6 @@ class SplashController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     Get.lazyPut<LocationController>(() => LocationController());
     Get.lazyPut<JobDropDownController>(() => JobDropDownController());
     Get.lazyPut<EducationController>(() => EducationController());
@@ -24,7 +30,6 @@ class SplashController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    splashRoute();
   }
 
   void _loadInitialData() {
@@ -34,17 +39,21 @@ class SplashController extends GetxController {
     Get.find<EducationController>().getEducation();
   }
 
-  Future<void> splashRoute() async {
+  Future<void> splashRoute({context}) async {
     await Future.delayed(const Duration(seconds: 3));
 
     final preferences = await SharedPreferences.getInstance();
     final token = preferences.getString(AppKeyLocalStorage.keyToken) ?? '';
 
     if (token.isEmpty) {
-      Get.offAllNamed(NamedRoute.routeLoginScreen);
+      Get.lazyPut(() => LoginController());
+      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
     } else {
+      Get.lazyPut(() => ProfileController());
+      Get.lazyPut(() => HomeController());
+      Get.lazyPut(() => PersonController());
       Get.find<ProfileController>().getCurrentAccount();
-      Get.offAllNamed(NamedRoute.routeHomeScreen);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
     }
   }
 }

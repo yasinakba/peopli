@@ -1,16 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide FormData;
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_string/app_key_local_storage.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
-
+import 'package:test_test_test/features/home_screen/home_screen.dart';
 
 import '../../../config/app_route/route_names.dart';
 import '../../profile_screen/controller/profile_controller.dart';
 
-class LoginController extends GetxController{
+class LoginController extends GetxController {
   PageController pageController = PageController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -23,9 +24,10 @@ class LoginController extends GetxController{
   share() async {
     await Share.share("com.example.peopli");
   }
+
   final dio = Dio();
 
-  Future<void> signIn() async {
+  Future<void> signIn({required context}) async {
     loading = true;
     update();
     final username = userNameController.text.trim();
@@ -33,60 +35,73 @@ class LoginController extends GetxController{
 
     if (username.isEmpty || password.isEmpty) {
       loading = false;
-      Get.snackbar("Error","Username or password is empty");
+      Get.snackbar("Error", "Username or password is empty");
       update();
       return;
     }
 
     try {
-
       final response = await dio.post(
         "$baseURL/Api/login",
-        queryParameters: {
-          "username": username,
-          "password": password,
-        },
+        queryParameters: {"username": username, "password": password},
         options: Options(
-          contentType: Headers.formUrlEncodedContentType, // crucial for .NET backend
+          contentType:
+              Headers.formUrlEncodedContentType, // crucial for .NET backend
         ),
       );
 
       if (response.statusCode == 200 && response.data['status'] == 'ok') {
-        loading=false;
+        loading = false;
         SharedPreferences preferences = await SharedPreferences.getInstance();
-        preferences.setString(AppKeyLocalStorage.keyToken, response.data['data']);
+        preferences.setString(
+          AppKeyLocalStorage.keyToken,
+          response.data['data'],
+        );
         Get.find<ProfileController>().getCurrentAccount();
         update();
-        Get.toNamed(NamedRoute.routeHomeScreen);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
       } else {
-        loading=false;
+        loading = false;
         update();
-        Get.showSnackbar(GetSnackBar(title: 'Error',message: response.data['data'],duration: Duration(seconds: 2)));
+        Get.showSnackbar(
+          GetSnackBar(
+            title: 'Error',
+            message: response.data['data'],
+            duration: Duration(seconds: 2),
+          ),
+        );
       }
     } on DioException catch (e) {
-      loading=false;
+      loading = false;
       update();
-      Get.snackbar("Error","POST error: ${e.response?.statusCode} - ${e.message}");
+      Get.snackbar(
+        "Error",
+        "POST error: ${e.response?.statusCode} - ${e.message}",
+      );
     }
   }
+
   Future<void> changePassword() async {
     final pref = await SharedPreferences.getInstance();
     var token = pref.getString(AppKeyLocalStorage.keyToken);
     loading = true;
     update();
 
-    if(token == null){
+    if (token == null) {
       Get.snackbar('Error', 'Please register first');
     }
-    if (oldPasswordController.text.isEmpty || newPasswordController.text.isEmpty ) {
+    if (oldPasswordController.text.isEmpty ||
+        newPasswordController.text.isEmpty) {
       loading = false;
-      Get.snackbar("Error","Username or password is empty");
+      Get.snackbar("Error", "Username or password is empty");
       update();
       return;
     }
 
     try {
-
       final response = await dio.post(
         "$baseURL/Api/change-password",
         queryParameters: {
@@ -95,7 +110,8 @@ class LoginController extends GetxController{
           "newPassword": newPasswordController.text,
         },
         options: Options(
-          contentType: Headers.formUrlEncodedContentType, // crucial for .NET backend
+          contentType:
+              Headers.formUrlEncodedContentType, // crucial for .NET backend
         ),
       );
 
@@ -103,17 +119,23 @@ class LoginController extends GetxController{
         pageController.jumpToPage(0);
         update();
       } else {
-        loading=false;
+        loading = false;
         update();
-        Get.showSnackbar(GetSnackBar(title: 'Error',message: response.data['data'],duration: Duration(seconds: 2)));
+        Get.showSnackbar(
+          GetSnackBar(
+            title: 'Error',
+            message: response.data['data'],
+            duration: Duration(seconds: 2),
+          ),
+        );
       }
     } on DioException catch (e) {
-      loading=false;
+      loading = false;
       update();
-      Get.snackbar("Error","POST error: ${e.response?.statusCode} - ${e.message}");
+      Get.snackbar(
+        "Error",
+        "POST error: ${e.response?.statusCode} - ${e.message}",
+      );
     }
   }
-
-
-
 }

@@ -8,8 +8,11 @@ import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/cross_fade_widget_global.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
 import 'package:test_test_test/config/widgets/not_found_widget.dart';
+import 'package:test_test_test/features/add_memory/add_memory_screen.dart';
+import 'package:test_test_test/features/edit_person/edit_person.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 import 'package:test_test_test/features/first_screen/widget/post_first_screen.dart';
+import 'package:test_test_test/features/home_screen/home_screen.dart';
 import '../../config/app_colors/app_colors_light.dart';
 import '../../config/app_route/route_names.dart';
 import '../../config/app_string/app_key_string_ternationalization.dart';
@@ -20,7 +23,6 @@ import '../edit_person/controller/edit_person_controller.dart';
 import 'controller/person_controller.dart';
 
 class PersonScreen extends GetView<PersonController> {
-  List likeCount = [];
 
   @override
   Widget build(BuildContext context){
@@ -37,7 +39,7 @@ class PersonScreen extends GetView<PersonController> {
         ),
         leading: IconButton(
           onPressed: () {
-            Get.toNamed(NamedRoute.routeHomeScreen);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
           },
           icon: Icon(Icons.arrow_back_ios_new),
           color: AppLightColor.rectangleBold,
@@ -81,8 +83,7 @@ class PersonScreen extends GetView<PersonController> {
                         newPageProgressIndicatorBuilder: (context) => LoadingWidget(),
                         noItemsFoundIndicatorBuilder: (context) =>NotFoundWidget(),
                         itemBuilder: (context, item, index) {
-                          likeCount.add(item.likesCount?.toInt()??0);
-                          return PostFirstScreen(item, index,likeCount);
+                          return PostFirstScreen(item, index,);
                         },
                       ),
                     );
@@ -169,11 +170,7 @@ class FirstWidget extends StatelessWidget {
                         child: Center(
                           child: IconButton(
                             alignment: Alignment.center,
-                            onPressed: () =>
-                                Get.toNamed(
-                                  NamedRoute.routeAddMemoryScreen,
-                                  arguments: face,
-                                ),
+                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddMemoryScreen(face: face,),)),
                             icon: Icon(IconsaxPlusBold.add_square,),
                           ),
                         ),
@@ -328,10 +325,7 @@ class SecondWidget extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  Get.toNamed(
-                    NamedRoute.routePersonEditScreen,
-                    arguments: face,
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => EditPersonScreen(face: face,),));
                   Get.lazyPut(() => EditPersonController());
                   Get.find<EditPersonController>().fill();
                 },

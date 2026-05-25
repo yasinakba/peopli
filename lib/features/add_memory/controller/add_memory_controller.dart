@@ -11,6 +11,7 @@ import 'package:test_test_test/config/app_string/app_key_local_storage.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/features/feature_upload/upload_controller.dart';
+import 'package:test_test_test/features/home_screen/home_screen.dart';
 
 class AddMemoryController extends GetxController {
   TextEditingController subjectController = TextEditingController();
@@ -111,7 +112,7 @@ class AddMemoryController extends GetxController {
   }
   DateController dateController = Get.put( DateController());
   UploadController uploadController = Get.put( UploadController());
-  void addMemory(faceId) async {
+  void addMemory({faceId, context}) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
    String? token =  preferences.getString(AppKeyLocalStorage.keyToken);
     if (subjectController.text.isEmpty||textController.text.isEmpty||selectedRadioValue == '') {
@@ -142,7 +143,7 @@ class AddMemoryController extends GetxController {
       if (response.statusCode == 200) {
         subjectController.clear();
         textController.clear();
-        Get.toNamed(NamedRoute.routeHomeScreen);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
         Get.snackbar('Success', 'Memory added successfully');
       } else {
         Get.snackbar('Error', 'Failed to add memory');

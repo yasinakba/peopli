@@ -3,14 +3,14 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/features/first_screen/entity/memory_entity.dart';
 
-import '../../config/app_string/constant.dart';
+import '../../../config/app_string/constant.dart';
 
 class SharedMemoryController extends GetxController {
   final Dio dio = Dio();
   bool loading = false;
   List<MemoryEntity> memoryList = [];
 
-  Future<void> readMemoryId({required id}) async {
+  Future<void> readMemoryShared({required id}) async {
     final preferences = await SharedPreferences.getInstance();
     final token = preferences.getString('token');
 

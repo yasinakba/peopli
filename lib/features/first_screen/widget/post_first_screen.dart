@@ -15,12 +15,11 @@ import '../../../config/app_theme/app_theme.dart';
 import 'comment_post.dart';
 
 class PostFirstScreen extends StatefulWidget {
-  final MemoryEntity memory;
-  final int index;
-  final List likeCount;
+  final MemoryEntity? memory;
+  final int? index;
   IconData? iconLike;
   Color? iconColor;
-  PostFirstScreen(this.memory, this.index, this.likeCount);
+  PostFirstScreen(this.memory, this.index,);
 
   @override
   State<PostFirstScreen> createState() => _PostFirstScreenState();
@@ -60,7 +59,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: Text(
-                              widget.memory.username ?? 'null',
+                              widget.memory?.username ?? 'null',
                               style: appThemeData.textTheme.headlineLarge,
                               textAlign: TextAlign.start,
                             ),
@@ -68,7 +67,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: Text(
-                              widget.memory.text ?? '',
+                              widget.memory?.text ?? '',
                               style: appThemeData.textTheme.bodyLarge,
                               textAlign: TextAlign.start,
                             ),
@@ -76,7 +75,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: Text(
-                              "${widget.memory.faceBirthdate.toString().substring(0, 4)} -now",
+                              "${widget.memory?.faceBirthdate.toString().substring(0, 4)} -now",
                               style: appThemeData.textTheme.bodyLarge,
                               textAlign: TextAlign.start,
                             ),
@@ -100,7 +99,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                           CircleAvatar(
                             radius: 35,
                             backgroundImage: NetworkImage(
-                              "$baseImageURL/${widget.memory.faceAvatar ?? 'noavatar.png'}",
+                              "$baseImageURL/${widget.memory?.faceAvatar ?? 'noavatar.png'}",
                             ),
                           ),
                           Ink(
@@ -127,7 +126,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                     child: CircleAvatar(
                       radius: 42,
                       backgroundImage: NetworkImage(
-                        "$baseImageURL/${widget.memory.userAvatar ?? 'noavatar.png'}",
+                        "$baseImageURL/${widget.memory?.userAvatar ?? 'noavatar.png'}",
                       ),
                     ),
                   ),
@@ -138,7 +137,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                         SizedBox(
                           width: 130.w,
                           child: Text(
-                            widget.memory.face ?? 'null',
+                            widget.memory?.face ?? 'null',
                             style: appThemeData.textTheme.labelMedium,
                             textAlign: TextAlign.start,
                           ),
@@ -166,7 +165,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                   vertical: 3,
                 ),
                 child: AutoSizeText(
-                  widget.memory.title ?? 'null',
+                  widget.memory?.title ?? 'null',
                   maxLines: 3,
                   style: appThemeData.textTheme.headlineLarge,
                   textAlign: TextAlign.start,
@@ -203,7 +202,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                   vertical: 3,
                 ),
                 child: AutoSizeText(
-                  widget.memory.text ?? 'null',
+                  widget.memory?.text ?? 'null',
                   maxLines: 3,
                   style: appThemeData.textTheme.headlineLarge,
                   textAlign: TextAlign.start,
@@ -214,7 +213,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                 width: 370.w,
                 height: 141.h,
                 child: Image.network(
-                  '$baseImageURL/${widget.memory.media ?? 'usericon.png'}',
+                  '$baseImageURL/${widget.memory?.media ?? 'usericon.png'}',
                   fit: BoxFit.fitWidth,
                 ),
               ),
@@ -229,7 +228,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                       children: [
                         InkWell(
                           onTap: () {
-                            controller.readComment(widget.memory.id);
+                            controller.readComment(widget.memory?.id);
                             showModalBottomSheet(
                               isScrollControlled: true,
                               context: context,
@@ -242,7 +241,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                                   ),
                                   height: 450,
                                   child: CommentPost(
-                                    memoryEntity: widget.memory,
+                                    memoryEntity: widget?.memory??MemoryEntity(),
                                     isFromProfile: false,
                                   ),
                                 );
@@ -261,7 +260,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                         Padding(
                           padding: const EdgeInsets.only(left: 4),
                           child: Text(
-                            widget.memory.commentsCount.toString(),
+                            widget.memory?.commentsCount.toString() ?? '',
                             style: appThemeData.textTheme.bodyMedium,
                           ),
                         ),
@@ -278,20 +277,18 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                               //     widget.memory.id?.toInt() ?? -1;
                               if (widget.iconColor == Colors.grey.shade600 ||
                                   widget.iconColor == null) {
-                                controller.addLike(memoryId: widget.memory.id);
+                                controller.addLike(memoryId: widget.memory?.id??'');
                                 setState(() {
-                                  widget.likeCount[widget.index]++;
                                   widget.iconColor = Colors.green.shade400;
                                   widget.iconLike = IconsaxPlusBold.heart;
                                 });
                               } else if (widget.iconColor ==
                                   Colors.green.shade400) {
                                 controller.removeLike(
-                                  memoryId: widget.memory.id,
+                                  memoryId: widget.memory?.id ?? '',
                                 );
                                 controller.isLiked = false;
                                 setState(() {
-                                  widget.likeCount[widget.index]--;
                                   widget.iconLike = IconsaxPlusLinear.heart;
                                   widget.iconColor = Colors.grey.shade600;
                                 });
@@ -304,13 +301,12 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4),
-                          child: Text(
-                            widget.likeCount[widget.index].toString(),
-                            style: appThemeData.textTheme.bodyMedium,
-                          ),
-                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 4),
+                        //   child: Text(
+                        //     style: appThemeData.textTheme.bodyMedium,
+                        //   ),
+                        // ),
                       ],
                     ),
                     //share
@@ -320,7 +316,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                           onTap: () {
                             // getMemoryShared(id: widget.memory.id);
                             final link =
-                                '$baseURL/memories/share/${widget.memory.id}';
+                                '$baseURL/memories/share/${widget.memory?.id ?? ''}';
                             Share.share('Check this memory: $link');
                           },
                           child: SizedBox(
@@ -341,7 +337,7 @@ class _PostFirstScreenState extends State<PostFirstScreen> {
                         Padding(
                           padding: const EdgeInsets.only(left: 4),
                           child: Text(
-                            widget.memory.createdAt.toString(),
+                            widget.memory?.createdAt.toString() ?? '',
                             style: appThemeData.textTheme.bodyMedium,
                           ),
                         ),

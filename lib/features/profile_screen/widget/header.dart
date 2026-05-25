@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
+import 'package:test_test_test/features/edit_profile/edit_profile_Screen.dart';
+import 'package:test_test_test/features/login/login_screen.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
@@ -90,12 +92,9 @@ class HeaderProfile extends StatelessWidget {
             CustomElevatedButton(
                       onPressed: () {
                         if(controller.doesNotAuth){
-                          Get.toNamed(NamedRoute.routeLoginScreen);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
                         }else{
-                        Get.toNamed(
-                          NamedRoute.routeEditProfileScreen,
-                          arguments: controller.currentUser,
-                        );
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfileScreen(currentUser: controller.currentUser,),),);
                         }
                       },
                       textColor: AppLightColor.strokePositive,

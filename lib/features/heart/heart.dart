@@ -18,61 +18,68 @@ class HeartScreen extends StatefulWidget {
 }
 
 class _HeartScreenState extends State<HeartScreen> {
-  List likeCount = [];
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        GetBuilder<HeartController>(
-          initState: (state) {
-            Get.lazyPut(() => DateController());
-            Get.lazyPut(() => HeartController());
-            Get.lazyPut(() => FirstController());
-          },
-          builder: (controller) {
-            return SizedBox(
-              height: Get.height *.91,
-              width: Get.width,
-              child: PagingListener(
-                controller: controller.pagingMemoryController,
-                builder: (context, state, fetchNextPage) =>
-                    PagedListView<int, dynamic>(
-                      state: state,
-                      fetchNextPage: fetchNextPage,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 10.w,
-                        vertical: 10.h,
-                      ),
-                      builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                        itemBuilder: (context, memory, index) {
-                          likeCount.add(memory.likesCount?.toInt()??0);
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: 10.h),
-                            child: PostFirstScreen(memory, index,likeCount),
-                          );
-                        },
-                        // Optional placeholders for better UX
-                        firstPageProgressIndicatorBuilder: (context) =>
-                            LoadingWidget(),
-                        newPageProgressIndicatorBuilder: (context) =>
-                            LoadingWidget(),
-                        noItemsFoundIndicatorBuilder: (context) => Center(
-                          child: Text(
-                            "No memories found.",
-                            style: TextStyle(
-                              fontSize: 17.sp,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.black45,
+    Get.lazyPut(() => HeartController());
+
+    return SizedBox(
+      height: 480.h,
+      width: 360.w,
+      child: Column(
+        children: [
+          GetBuilder<HeartController>(
+            initState: (state) {
+              Get.lazyPut(() => DateController());
+              Get.lazyPut(() => FirstController());
+            },
+            builder: (controller) {
+              return SizedBox(
+                height: 420.h,
+                width: 365.w,
+                child: PagingListener(
+                  controller: controller.pagingMemoryController,
+                  builder: (context, state, fetchNextPage) =>
+                      PagedListView<int, dynamic>(
+                        state: state,
+                        fetchNextPage: fetchNextPage,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10.w,
+                          vertical: 10.h,
+                        ),
+                        builderDelegate: PagedChildBuilderDelegate<dynamic>(
+                          itemBuilder: (context, memory, index) {
+                            return SizedBox(
+                              height: 200.h,
+                              child: Padding(
+                                padding: EdgeInsets.only(bottom: 8.h),
+                                child: PostFirstScreen(memory, index,),
+                              ),
+                            );
+                          },
+                          // Optional placeholders for better UX
+                          firstPageProgressIndicatorBuilder: (context) =>
+                              LoadingWidget(),
+                          newPageProgressIndicatorBuilder: (context) =>
+                              LoadingWidget(),
+                          noItemsFoundIndicatorBuilder: (context) => Center(
+                            child: Text(
+                              "No memories found.",
+                              style: TextStyle(
+                                fontSize: 17.sp,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black45,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-              ),
-            );
-          },
-        ),
-      ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
+    // return Container();
   }
 }

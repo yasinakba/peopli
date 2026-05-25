@@ -6,6 +6,7 @@ import 'package:test_test_test/config/app_string/app_key_string_ternationalizati
 import 'package:test_test_test/config/widgets/customButton.dart';
 import 'package:test_test_test/config/widgets/custom_text_form_field.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
+import 'package:test_test_test/features/create_account/create_account.dart';
 import 'package:test_test_test/features/login/controller/login_controller.dart';
 import 'package:test_test_test/features/login/widget/forget-password.dart';
 import 'package:test_test_test/features/login/widget/verify_login.dart';
@@ -63,7 +64,7 @@ class LoginView extends StatelessWidget {
                       height: 40.h,
                       width: 300.w,
                       onPressed: () {
-                        controller.signIn();
+                        controller.signIn(context: context);
                       },
                     ),
               //Richtext
@@ -72,7 +73,7 @@ class LoginView extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: InkWell(
                   onTap: () {
-                    Get.toNamed(NamedRoute.routeAccountScreen);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CreateAccountScreen(),));
                   },
                   child: RichText(
                     text: TextSpan(

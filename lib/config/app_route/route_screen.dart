@@ -5,6 +5,7 @@ import 'package:test_test_test/config/app_route/binding/heart_binding.dart';
 import 'package:test_test_test/config/app_route/binding/upload_binding.dart';
 import 'package:test_test_test/config/app_route/route_names.dart';
 import 'package:test_test_test/features/search_screen/search_screen.dart';
+import 'package:test_test_test/main.dart';
 import '../../features/add_memory/add_memory_screen.dart';
 import '../../features/create_account/create_account.dart';
 import '../../features/edit_person/edit_person.dart';
@@ -17,7 +18,7 @@ import '../../features/login/widget/forget-password.dart';
 import '../../features/login/widget/verify_login.dart';
 import '../../features/person_add_memory/person_add_memory.dart';
 import '../../features/person_screen/person_screen.dart';
-import '../../features/share_feature/shared_memory_screen.dart';
+import '../../features/share_feature/page/shared_memory_screen.dart';
 import '../../features/splashscreen/splashscreen.dart';
 import 'binding/account_binding.dart';
 import 'binding/add_memory_binding.dart';
@@ -36,19 +37,6 @@ import 'binding/splash_binding.dart';
 
 class Pages{
   static List<GetPage<dynamic>>pages=[
-    GetPage(name:NamedRoute.routeSplashScreen, page: () =>SplashScreen(),binding:SplashBinding()),
-    GetPage(name: NamedRoute.routeHomeScreen, page: () =>HomeScreen(),bindings: [HomeBinding(),FirstBinding(),SearchBinding(),CreatePersonBinding(),ProfileBinding(),HeartBinding(),PersonBinding(),]),
-    GetPage(name: NamedRoute.routePersonEditScreen, page: () =>EditPersonScreen(),bindings: [PersonEditBinding(),PersonBinding(),UploadBinding()]),
-    GetPage(name: NamedRoute.routeAddMemoryScreen, page: () =>AddMemoryScreen(),bindings: [AddMemoryBinding(),DatePickerBinding(),UploadBinding()]),
-    GetPage(name: NamedRoute.routePersonAddScreen, page: () =>PersonAddScreen(),bindings: [PersonAddBinding(),DatePickerBinding(),UploadBinding()]),
-    GetPage(name: NamedRoute.routeLoginScreen, page: () =>LoginScreen(),binding: LoginBinding()),
-    GetPage(name: NamedRoute.routeVerifyLoginScreen, page: () =>VerifyLoginScreen(),binding: LoginBinding()),
-    GetPage(name: NamedRoute.routeAccountScreen, page: () =>CreateAccountScreen(),bindings: [AccountBinding(),DatePickerBinding(),UploadBinding()],curve: Curves.fastLinearToSlowEaseIn,transition: Transition.leftToRight,),
-    GetPage(name: NamedRoute.routeHeartScreen, page: () =>HeartScreen()),
-    GetPage(name: NamedRoute.routeEditProfileScreen, page: () =>EditProfileScreen(),bindings: [EditProfileBinding(),DatePickerBinding(),UploadBinding()]),
-    GetPage(name: NamedRoute.routeForgetPassword, page: () =>ForgetPassword(),binding: LoginBinding()),
-    GetPage(name: NamedRoute.routeSharedMemory, page: () =>SharedMemoryScreen(),binding: LoginBinding()),
-    GetPage(name: NamedRoute.routeSearchScreen, page: () =>SearchScreen(),bindings:[ SearchBinding(),UploadBinding(),DatePickerBinding()]),
 
 
   ];

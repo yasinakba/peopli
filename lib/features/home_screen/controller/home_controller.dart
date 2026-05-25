@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import 'package:get_storage/get_storage.dart';
 import 'package:test_test_test/features/first_screen/first_screen.dart';
+import 'package:test_test_test/features/search_screen/search_screen.dart';
 
 class HomeController extends GetxController{
   Widget body = FirstScreen();

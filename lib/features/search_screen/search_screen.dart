@@ -15,8 +15,10 @@ class SearchScreen extends GetView<SearchBottomController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GetBuilder<SearchBottomController>(
+    return GetBuilder<SearchBottomController>(
+      initState: (state) {
+        Get.lazyPut(() => SearchBottomController(),);
+      },
         builder: (controller) {
           return  SafeArea(
             child: SingleChildScrollView(
@@ -27,10 +29,10 @@ class SearchScreen extends GetView<SearchBottomController> {
                   Center(
                     child: Container(
                       alignment: Alignment.topCenter,
-                    padding:  EdgeInsets.symmetric(
-                        horizontal: 10.w,
-                      vertical: 10.h
-                    ), margin: EdgeInsets.all(10.h),
+                      padding:  EdgeInsets.symmetric(
+                          horizontal: 10.w,
+                          vertical: 10.h
+                      ), margin: EdgeInsets.all(10.h),
                       width: 360.w,
                       // constraints: BoxConstraints(
                       //   // maxHeight: 500.h,
@@ -107,41 +109,40 @@ class SearchScreen extends GetView<SearchBottomController> {
                                 height: 22.h,
                                 width: 84.w,
                               ),
-            
+
                             ],
                           ),
-                              SizedBox(height: 10,),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceAround,
-                                children: [
-                                  IconButton(onPressed: () {
-                                    controller.searchFace(-1);
-                                  }, icon: Icon(IconsaxPlusBold.search_normal_1)),
-                                  TextFieldSearch(
-                                    onChange: (value) {
-                                      controller.searchFace(-1);
-                                    },
-                                    controller: controller.displayNameController,
-                                    labelText: AppKeyLocalization.label10,
-                                  ),
-                                ],
+                          SizedBox(height: 10,),
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceAround,
+                            children: [
+                              IconButton(onPressed: () {
+                                controller.searchFace(-1);
+                              }, icon: Icon(IconsaxPlusBold.search_normal_1)),
+                              TextFieldSearch(
+                                onChange: (value) {
+                                  controller.searchFace(-1);
+                                },
+                                controller: controller.displayNameController,
+                                labelText: AppKeyLocalization.label10,
                               ),
-            
+                            ],
+                          ),
+
                           SearchInformationLocation(),
                           //location
-            
+
                         ],
                       ),
                     ),
                   ), //searchListTile
-                 BottomSearchScreen(),
+                  BottomSearchScreen(),
                 ],
               ),
             ),
           );
         }
-      ),
     );
   }
 }

@@ -20,7 +20,7 @@ class ProfileScreen extends GetView<ProfileController> {
           SliverToBoxAdapter(child: HeaderProfile()),
           SliverToBoxAdapter(
             child: SizedBox(
-              height: 650.h,
+              height: 600.h,
               width: 375.w,
               child: PostComment(),
             ),

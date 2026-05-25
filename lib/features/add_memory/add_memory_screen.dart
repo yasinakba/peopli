@@ -18,7 +18,8 @@ import '../create_person/entity/face_entity.dart';
 import 'controller/add_memory_controller.dart';
 
 class AddMemoryScreen extends GetView<AddMemoryController> {
-  final FaceEntity face = Get.arguments;
+  final FaceEntity face;
+  const AddMemoryScreen({required this.face});
 
   @override
   Widget build(BuildContext context) {
@@ -340,7 +341,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                     alignment: Alignment.centerRight,
                     child: CustomElevatedButton(
                       onPressed: () {
-                        controller.addMemory(face.id);
+                        controller.addMemory(faceId:face.id,context:context);
                       },
                       textColor: AppLightColor.withColor,
                       color: AppLightColor.textBlueColor,

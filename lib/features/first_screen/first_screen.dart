@@ -13,15 +13,16 @@ import 'package:test_test_test/features/first_screen/widget/post_first_screen.da
 import '../../config/app_colors/app_colors_light.dart';
 
 class FirstScreen extends StatelessWidget {
-  List likeCount = [];
+  // Using a local list to keep track of likes if needed,
+  // though it's better to manage this in the controller.
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<FirstController>(
+      initState: (state) {
+        Get.lazyPut(()=> FirstController());
+      },
       builder: (controller) {
-        // if (controller.isLoadingMemories) {
-        //   return LoadingWidget();
-        // }
-
         return Column(
           children: [
             CustomAppBar(),
@@ -30,21 +31,17 @@ class FirstScreen extends StatelessWidget {
               height: 1,
               color: AppLightColor.cancelButtonFill,
             ),
-
             Container(
               padding: const EdgeInsets.all(8.0),
-                width: double.infinity,
-                height: 120.h,
-                child: ListViewProfile(),
-              ),
-
+              width: double.infinity,
+              height: 120.h,
+              child: ListViewProfile(),
+            ),
             Container(
               width: double.infinity,
               height: 1,
               color: AppLightColor.cancelButtonFill,
             ),
-
-            /// ✅ Use Expanded instead of fixed height
             Expanded(
               child: PagingListener(
                 controller: controller.pagingMemoryController,
@@ -52,19 +49,22 @@ class FirstScreen extends StatelessWidget {
                   return PagedListView<int, MemoryEntity>(
                     state: state,
                     fetchNextPage: fetchNextPage,
-                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                      vertical: 10.h,
                     ),
                     builderDelegate: PagedChildBuilderDelegate<MemoryEntity>(
                       itemBuilder: (context, memory, index) {
-                       likeCount.add(memory.likesCount?.toInt()??0);
+                        // Ensure we don't duplicate entries if the builder is called multiple times
+
                         return Padding(
                           padding: EdgeInsets.only(bottom: 10.h),
-                          child: PostFirstScreen(memory, index,likeCount),
+                          child: PostFirstScreen(memory, index),
                         );
                       },
                       firstPageProgressIndicatorBuilder: (context) => LoadingWidget(),
                       newPageProgressIndicatorBuilder: (context) => LoadingWidget(),
-                      noItemsFoundIndicatorBuilder: (context) =>NotFoundWidget(),
+                      noItemsFoundIndicatorBuilder: (context) => NotFoundWidget(),
                     ),
                   );
                 },
@@ -76,4 +76,3 @@ class FirstScreen extends StatelessWidget {
     );
   }
 }
-
