@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:test_test_test/features/share_feature/controller/shared_memory_controller.dart';
 import 'package:test_test_test/features/share_feature/page/shared_memory_screen.dart';
 import 'package:flutter/foundation.dart';
 
@@ -10,6 +11,7 @@ import 'config/app_route/route_names.dart';
 import 'config/app_route/route_screen.dart';
 import 'config/app_string/constant.dart';
 import 'config/app_theme/app_theme.dart';
+import 'features/feature_upload/upload_controller.dart';
 import 'features/home_screen/controller/home_controller.dart';
 import 'features/splashscreen/splashscreen.dart';
 import 'package:flutter/material.dart';
@@ -38,16 +40,16 @@ final router = GoRouter(
   redirect: (context, state) {
     // If the user opens the app normally (path is '/'), redirect to splash
     // Just return the path string. GoRouter will handle the navigation.
-    if (state.uri.path == '/') {
-      return '/SplashScreen';
+    if (state.uri.path == '/memories/share/:id') {
+      return '/memories/share/:id';
     }
-    return '/memories/share/:id'; // Return null to let GoRouter handle the current path normally
+    return '/'; // Return null to let GoRouter handle the current path normally
   },
 
   routes: [
     // 2. Splash Screen Route
     GoRoute(
-      path: '/SplashScreen',
+      path: '/',
       builder: (context, state) => const SplashScreen(),
     ),
 
@@ -77,7 +79,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // Initialize HomeController once at the root
     Get.put(HomeController());
-
+    Get.lazyPut(() => SharedMemoryController(),);
+    Get.lazyPut(() => UploadController(),);
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,

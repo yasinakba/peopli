@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
+import 'package:test_test_test/config/widgets/not_found_widget.dart';
 import 'package:test_test_test/features/feature_job_and_education/entity/education_entity.dart';
 import 'package:test_test_test/features/feature_job_and_education/entity/job_entity.dart';
 import 'package:test_test_test/features/feature_location/entity/city_entity.dart';
@@ -51,7 +52,7 @@ class CreateAccountController extends GetxController {
         Get.find<UploadController>().selectedImage.value == '' ||
         Get.find<DateController>().selectedDate.timeZoneName == '' ||
         selectedCity.id == null ||
-        selectedEducation.id == null ) {
+        selectedEducation.id == null) {
       loading = false;
       Get.showSnackbar(
         const GetSnackBar(
@@ -62,7 +63,7 @@ class CreateAccountController extends GetxController {
       );
       return; // Stop execution if validation fails
     }
-    if(confirmPasswordController.text != passwordController.text){
+    if (confirmPasswordController.text != passwordController.text) {
       Get.showSnackbar(
         const GetSnackBar(
           title: 'Validation Error',
@@ -165,6 +166,8 @@ class CreateAccountController extends GetxController {
                   shrinkWrap: true,
                   itemCount: controller.educationList.length,
                   itemBuilder: (BuildContext context, int index) {
+                    if (controller.educationList.isEmpty)
+                      return NotFoundWidget();
                     return Column(
                       children: [
                         ListTile(
@@ -211,156 +214,180 @@ class CreateAccountController extends GetxController {
     );
   }
 
-  static CountryEntity selectedCountry = CountryEntity(id: 12,name: '',citiesCount: 0,createdAt: '');
-  static CityEntity selectedCity = CityEntity(id: 12,name: '',country: '',createdAt: '');
+  static CountryEntity selectedCountry = CountryEntity(
+    id: 12,
+    name: '',
+    citiesCount: 0,
+    createdAt: '',
+  );
+  static CityEntity selectedCity = CityEntity(
+    id: 12,
+    name: '',
+    country: '',
+    createdAt: '',
+  );
 
   //location
   static openDialogLocation(context) {
+    Get.lazyPut(() => LocationController());
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-        ),
-        title: Text("Location", style: appThemeData.textTheme.headlineSmall),
-        backgroundColor: AppLightColor.backgoundPost,
-        actions: [
-          GetBuilder<LocationController>(
-            id: 'country',
-            initState: (state) {
-              selectedCountry = Get.find<LocationController>().countryList[0];
-            },
-            builder: (controller) {
-              return Container(
-                height: 100.h,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: DropdownSearch<CountryEntity>(
-                      items: controller.countryList,
-                      selectedItem: selectedCountry,
-                      itemAsString: (CountryEntity? country) =>
-                          country?.name ?? "",
-                      compareFn: (CountryEntity? a, CountryEntity? b) =>
-                          a?.id == b?.id,
-                      onChanged: (value) {
-                        selectedCountry = value!;
-                        Get.lazyPut(() => LocationController());
-                        Get.find<LocationController>().getCity(
-                          selectedCountry.id,
-                        );
-                        controller.update(['createPersonLocation']);
-                        controller.update();
-                        Get.lazyPut(() => CreateAccountController());
-                        Get.find<CreateAccountController>().update();
-                      },
-                      popupProps: PopupProps.menu(
-                        showSelectedItems: true,
-                        showSearchBox: true,
-                        searchFieldProps: TextFieldProps(
-                          decoration: InputDecoration(
-                            hintText: "search country",
+      builder: (context) {
+        if (Get.find<LocationController>().countryList.isEmpty)
+          return NotFoundWidget();
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+          ),
+          title: Text("Location", style: appThemeData.textTheme.headlineSmall),
+          backgroundColor: AppLightColor.backgoundPost,
+          actions: [
+            GetBuilder<LocationController>(
+              id: 'country',
+              initState: (state) {
+                selectedCountry = Get.find<LocationController>().countryList[0];
+              },
+              builder: (controller) {
+                return Container(
+                  height: 100.h,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: DropdownSearch<CountryEntity>(
+                        items: controller.countryList,
+                        selectedItem: selectedCountry,
+                        itemAsString: (CountryEntity? country) =>
+                            country?.name ?? "",
+                        compareFn: (CountryEntity? a, CountryEntity? b) =>
+                            a?.id == b?.id,
+                        onChanged: (value) {
+                          selectedCountry = value!;
+                          Get.lazyPut(() => LocationController());
+                          Get.find<LocationController>().getCity(
+                            selectedCountry.id,
+                          );
+                          controller.update(['createPersonLocation']);
+                          controller.update();
+                          Get.lazyPut(() => CreateAccountController());
+                          Get.find<CreateAccountController>().update();
+                        },
+                        popupProps: PopupProps.menu(
+                          showSelectedItems: true,
+                          showSearchBox: true,
+                          searchFieldProps: TextFieldProps(
+                            decoration: InputDecoration(
+                              hintText: "search country",
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                          ),
+                        ),
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          // 👈 must be here, not inside searchFieldProps
+                          dropdownSearchDecoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            border: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey),
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
                         ),
                       ),
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        // 👈 must be here, not inside searchFieldProps
-                        dropdownSearchDecoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                      ),
                     ),
                   ),
-                ),
-              );
-            },
-          ),
-          GetBuilder<LocationController>(
-            id: 'city',
-            builder: (controller) {
-              return controller.loading
-                  ? LoadingWidget()
-                  : Container(
-                      height: 100.h,
-                      child: Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: DropdownSearch<CityEntity>(
-                            popupProps: PopupProps.menu(
-                              showSelectedItems: true,
-                              showSearchBox: true,
-                              searchFieldProps: TextFieldProps(
-                                decoration: InputDecoration(
-                                  hintText: "search country",
-                                  helperStyle: appThemeData.textTheme.bodySmall,
+                );
+              },
+            ),
+            GetBuilder<LocationController>(
+              id: 'city',
+              builder: (controller) {
+                if(LocationController.cityList.isEmpty) return NotFoundWidget();
+                return controller.loading
+                    ? LoadingWidget()
+                    : Container(
+                        height: 100.h,
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: DropdownSearch<CityEntity>(
+                              popupProps: PopupProps.menu(
+                                showSelectedItems: true,
+                                showSearchBox: true,
+                                searchFieldProps: TextFieldProps(
+                                  decoration: InputDecoration(
+                                    hintText: "search country",
+                                    helperStyle:
+                                        appThemeData.textTheme.bodySmall,
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.grey,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              items: LocationController.cityList,
+                              onChanged: (value) {
+                                print;
+                                selectedCity = value!;
+                                controller.update();
+                                Get.lazyPut(() => CreateAccountController());
+                                Get.find<CreateAccountController>().update();
+                              },
+                              selectedItem: selectedCity,
+                              itemAsString: (CityEntity? city) =>
+                                  city!.name ?? '',
+                              compareFn: (CityEntity? a, CityEntity? b) =>
+                                  a?.id == b?.id,
+                              dropdownDecoratorProps: DropDownDecoratorProps(
+                                dropdownSearchDecoration: InputDecoration(
                                   enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  border: OutlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                 ),
                               ),
                             ),
-                            items: LocationController.cityList,
-                            onChanged: (value) {
-                              print;
-                              selectedCity = value!;
-                              controller.update();
-                              Get.lazyPut(() => CreateAccountController());
-                              Get.find<CreateAccountController>().update();
-                            },
-                            selectedItem: selectedCity,
-                            itemAsString: (CityEntity? city) =>
-                                city!.name ?? '',
-                            compareFn: (CityEntity? a, CityEntity? b) =>
-                                a?.id == b?.id,
-                            dropdownDecoratorProps: DropDownDecoratorProps(
-                              dropdownSearchDecoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
-                            ),
                           ),
                         ),
-                      ),
-                    );
-            },
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: CustomElevatedButton(
-              onPressed: () {
-                Get.back();
+                      );
               },
-              textColor: AppLightColor.withColor,
-              color: AppLightColor.textBlueColor,
-              title: "Save",
-              height: 40.h,
-              width: 120.w,
             ),
-          ),
-        ],
-      ),
+            Align(
+              alignment: Alignment.center,
+              child: CustomElevatedButton(
+                onPressed: () {
+                  Get.back();
+                },
+                textColor: AppLightColor.withColor,
+                color: AppLightColor.textBlueColor,
+                title: "Save",
+                height: 40.h,
+                width: 120.w,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  static JobEntity selectedJob = JobEntity(createdAt: '',name: '',id: -1,icon: '');
+  static JobEntity selectedJob = JobEntity(
+    createdAt: '',
+    name: '',
+    id: -1,
+    icon: '',
+  );
 
   static openDialogJob(context) {
     showDialog(
@@ -379,6 +406,8 @@ class CreateAccountController extends GetxController {
               selectedJob = Get.find<JobDropDownController>().jobList[0];
             },
             builder: (controller) {
+              if (controller.jobList.isEmpty) return NotFoundWidget();
+
               return AlertDialog(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),

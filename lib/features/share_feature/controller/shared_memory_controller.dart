@@ -13,6 +13,8 @@ class SharedMemoryController extends GetxController {
   Future<void> readMemoryShared({required id}) async {
     final preferences = await SharedPreferences.getInstance();
     final token = preferences.getString('token');
+    loading = true;
+    update();
 
     final response = await dio.get(
       '$baseURL/Api/Memories/$id',

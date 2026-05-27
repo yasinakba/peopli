@@ -7,7 +7,6 @@ import 'package:test_test_test/features/login/login_screen.dart';
 import 'package:test_test_test/features/profile_screen/controller/profile_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
-import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../../../config/widgets/customButton.dart';
 

@@ -38,6 +38,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
             GetBuilder<EditProfileController>(
               initState: (state) {
                 Get.lazyPut(() => EditProfileController(),);
+                Get.lazyPut(() => UploadController(),);
               },
               builder: (controller) {
                 controller.fillProperties(currentUser);

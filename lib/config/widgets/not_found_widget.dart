@@ -7,13 +7,19 @@ class NotFoundWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(
-        textAlign: TextAlign.center,
-        'Does not exist😣',
-        style: TextStyle(
-          color: Colors.purpleAccent,
-          fontWeight: FontWeight.w700,
-          fontSize: 18.sp,
+      child: Container(
+        decoration: BoxDecoration(
+        color: Colors.white,
+          borderRadius: BorderRadius.circular(12)
+        ),
+        child: Text(
+          textAlign: TextAlign.center,
+          'Does not exist😣',
+          style: TextStyle(
+            color: Colors.purpleAccent,
+            fontWeight: FontWeight.w700,
+            fontSize: 18.sp,
+          ),
         ),
       ),
     );

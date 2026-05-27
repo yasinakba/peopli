@@ -7,12 +7,18 @@ import 'package:test_test_test/config/app_theme/app_theme.dart';
 import 'package:test_test_test/features/search_screen/controller/search_bottom_controller.dart';
 import 'package:get/get.dart';
 
+import '../../create_account/controller/create_account_controller.dart';
+
 
 class SearchInformationLocation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SearchBottomController>(builder: (controller) {
+    return GetBuilder<CreateAccountController>(
+        initState: (state) {
+          Get.lazyPut(() => CreateAccountController(),);
+        },
+        builder: (controller) {
       return Container(
         margin: EdgeInsetsDirectional.symmetric(
           horizontal: 23.w,
@@ -41,17 +47,17 @@ class SearchInformationLocation extends StatelessWidget {
                   ),
                   child: InkWell(
                     onTap: () {
-                      controller.searchWithLocation =
+                      Get.find<SearchBottomController>().searchWithLocation =
                       true;
-                      controller.openDialogLocation(
+                      CreateAccountController.openDialogLocation(
                         context,
                       );
                       controller.update();
                     },
-                    child: controller
+                    child:  Get.find<SearchBottomController>()
                         .searchWithLocation
                         ? IconButton(onPressed: () {
-                      controller.searchWithLocation =
+                      Get.find<SearchBottomController>().searchWithLocation =
                       false;
                       controller.update();
                     },
@@ -74,9 +80,9 @@ class SearchInformationLocation extends StatelessWidget {
                 ),
               ],
             ),
-            controller.searchWithLocation ? Text(
+            Get.find<SearchBottomController>().searchWithLocation ? Text(
               textAlign: TextAlign.start,
-              "${controller.selectedCountry.name} ${ controller.selectedCity
+              "${CreateAccountController.selectedCountry.name} ${ CreateAccountController.selectedCity
                   .name}",
               style: appThemeData
                   .textTheme
@@ -107,8 +113,8 @@ class SearchInformationLocation extends StatelessWidget {
                   ),
                   width: 220.w,
                   child: Text(
-                    controller.searchWithEducation
-                        ? controller.selectedEducation
+                    Get.find<SearchBottomController>().searchWithEducation
+                        ? CreateAccountController.selectedEducation
                         .name ?? '' : '',
                     maxLines: 2,
                     style: appThemeData.textTheme.bodySmall,
@@ -118,13 +124,13 @@ class SearchInformationLocation extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 10),
                   child: InkWell(
                     onTap: () {
-                      controller.searchWithEducation = true;
-                      controller.openDialogEducation(context);
+                      Get.find<SearchBottomController>().searchWithEducation = true;
+                      CreateAccountController.openDialogEducation(context);
                       controller.update();
                     },
-                    child: controller.searchWithEducation
+                    child: Get.find<SearchBottomController>().searchWithEducation
                         ? IconButton(onPressed: () {
-                      controller.searchWithEducation = false;
+                      Get.find<SearchBottomController>().searchWithEducation = false;
                       controller.update();
                     },
                         icon: Icon(IconsaxPlusBold.tag_cross,
@@ -166,8 +172,8 @@ class SearchInformationLocation extends StatelessWidget {
                   ),
                   width: 220.w,
                   child: Text(
-                    "${controller.searchWithJob
-                        ? controller.selectedJob.name
+                    "${Get.find<SearchBottomController>().searchWithJob
+                        ? CreateAccountController.selectedJob.name
                         : ''}",
                     maxLines: 2,
                     style: appThemeData.textTheme.bodySmall,
@@ -177,13 +183,13 @@ class SearchInformationLocation extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 10),
                   child: InkWell(
                     onTap: () {
-                      controller.searchWithJob = true;
-                      controller.openDialogJob(context);
+                      Get.find<SearchBottomController>().searchWithJob = true;
+                      CreateAccountController.openDialogJob(context);
                       controller.update();
                     },
-                    child: controller.searchWithJob
+                    child: Get.find<SearchBottomController>().searchWithJob
                         ? IconButton(onPressed: () {
-                      controller.searchWithJob = false;
+                      Get.find<SearchBottomController>().searchWithJob = false;
                       controller.update();
                     },
                         icon: Icon(IconsaxPlusBold.tag_cross,
