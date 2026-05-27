@@ -26,16 +26,16 @@ class HomeScreen extends GetView<HomeController> {
             canPop: true,
             onPopInvokedWithResult: (didPop, result) async {
               Get.defaultDialog(
-              title: AppKeyLocalization.label27,
+              title: AppKeyLocalization.label27.tr,
               titleStyle: TextStyle(fontSize: 18, color: Colors.black),
-              middleText: AppKeyLocalization.label59,
+              middleText: AppKeyLocalization.label59.tr,
               middleTextStyle: TextStyle(fontSize: 16, color: Colors.grey.shade900),
               backgroundColor: Colors.blueGrey[100],
               radius: 15,
-              textCancel: AppKeyLocalization.label19,
+              textCancel: AppKeyLocalization.label19.tr,
               cancelTextColor: Colors.black,
               onCancel: () {},
-              textConfirm: AppKeyLocalization.label29,
+              textConfirm: AppKeyLocalization.label29.tr,
               confirmTextColor: Colors.white,
               onConfirm: () {
               SystemNavigator.pop();

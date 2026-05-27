@@ -97,7 +97,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                           controller.updateLanguage(0);
                                         },
                                         child: Text(
-                                          AppKeyLocalization.label43,
+                                          AppKeyLocalization.label43.tr,
                                           style: controller.textStyleEn(0),
                                         ),
                                       ),
@@ -125,7 +125,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                           .uploadImage();
                                     },
                                     child: Text(
-                                      AppKeyLocalization.label45,
+                                      AppKeyLocalization.label45.tr,
                                       style: appThemeData.textTheme.bodyLarge,
                                     ),
                                   ),
@@ -147,21 +147,21 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: TextFieldCreateAccount(
-                                      labelText: AppKeyLocalization.label49,
+                                      labelText: AppKeyLocalization.label49.tr,
                                       controller: controller.userNameController,
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: TextFieldCreateAccount(
-                                      labelText: AppKeyLocalization.label55,
+                                      labelText: AppKeyLocalization.label55.tr,
                                       controller: controller.emailController,
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: TextFieldCreateAccount(
-                                      labelText: AppKeyLocalization.label24,
+                                      labelText: AppKeyLocalization.label24.tr,
                                       controller: controller.passwordController,
                                       obSecure: true,
                                     ),

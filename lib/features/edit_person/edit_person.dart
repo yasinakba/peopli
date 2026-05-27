@@ -79,7 +79,7 @@ class EditPersonScreen extends StatelessWidget {
                                   controller.updateLanguage(0);
                                 },
                                 child: Text(
-                                  AppKeyLocalization.label43,
+                                  AppKeyLocalization.label43.tr,
                                   style: controller.textStyleEn(0),
                                 ),
                               ),
@@ -126,14 +126,14 @@ class EditPersonScreen extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(top: 5),
                             child: TextFieldCreate(
-                              labelText: AppKeyLocalization.label10,
+                              labelText: AppKeyLocalization.label10.tr,
                               controller: controller.familyNameController,
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 5),
                             child: TextFieldCreate(
-                              labelText: AppKeyLocalization.label50,
+                              labelText: AppKeyLocalization.label50.tr,
                               controller: controller.knowAsController,
                             ),
                           ),

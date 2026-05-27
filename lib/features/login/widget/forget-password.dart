@@ -43,7 +43,7 @@ class ForgetPassword extends StatelessWidget {
                   border: Border.all(width: 1, color: AppLightColor.fillButton),
                 ),
                 child: CustomTextFormField(
-                  title: AppKeyLocalization.label32,
+                  title: AppKeyLocalization.label32.tr,
                   controller: controller.oldPasswordController,
                 ),
               ),
@@ -54,7 +54,7 @@ class ForgetPassword extends StatelessWidget {
                   border: Border.all(width: 1, color: AppLightColor.fillButton),
                 ),
                 child: CustomTextFormField(
-                  title: AppKeyLocalization.label33,
+                  title: AppKeyLocalization.label33.tr,
                   controller: controller.newPasswordController,
                 ),
               ),

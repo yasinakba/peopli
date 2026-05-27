@@ -30,7 +30,7 @@ class VerifyLoginScreen extends StatelessWidget {
               width: double.infinity,
               height: 50,
               child: Text(
-                AppKeyLocalization.label30,
+                AppKeyLocalization.label30.tr,
                 style: appThemeData.textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),

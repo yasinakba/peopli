@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:test_test_test/config/app_string/app_key_string_ternationalization.dart';
 import 'package:test_test_test/features/profile_screen/widget/tabbar_show.dart';
 import 'package:test_test_test/features/profile_screen/widget/tabbar_show_comment.dart';
@@ -33,12 +34,12 @@ class PostComment extends StatelessWidget {
                 Ink(
                   width: 112.w,
                   height: 16.h,
-                  child: Text(AppKeyLocalization.label20,textAlign: TextAlign.center,),
+                  child: Text(AppKeyLocalization.label20.tr,textAlign: TextAlign.center,),
                 ),
                 Ink(
                   width: 112.w,
                   height: 16.h,
-                  child: Text(AppKeyLocalization.label21,textAlign: TextAlign.center,),
+                  child: Text(AppKeyLocalization.label21.tr,textAlign: TextAlign.center,),
                 ),
               ],
             ),

@@ -30,7 +30,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
         elevation: 0,
         backgroundColor: AppLightColor.withColor,
         title: Text(
-          AppKeyLocalization.label13,
+          AppKeyLocalization.label13.tr,
           style: appThemeData.textTheme.displayMedium,
         ),
         leading: IconButton(
@@ -128,7 +128,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                     Padding(
                       padding: const EdgeInsets.only(left: 20, top: 10),
                       child: Text(
-                        AppKeyLocalization.label46,
+                        AppKeyLocalization.label46.tr,
                         style: appThemeData.textTheme.bodyLarge,
                       ),
                     ),
@@ -144,7 +144,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                     Padding(
                       padding: const EdgeInsets.only(left: 20, top: 10),
                       child: Text(
-                        "${AppKeyLocalization.label37}: ",
+                        "${AppKeyLocalization.label37.tr}: ",
                         style: appThemeData.textTheme.bodyLarge,
                       ),
                     ),
@@ -157,7 +157,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                                   .value
                               ? SizedBox(width: 250.w, child: LoadingWidget())
                               : TextFiildMemory(
-                                  labelText: AppKeyLocalization.label37,
+                                  labelText: AppKeyLocalization.label37.tr,
                                   iconT: Icon(
                                     Icons.location_on,
                                     color: Colors.green.shade400,
@@ -180,7 +180,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                     children: [
                       Spacer(),
                       Text(
-                        '${AppKeyLocalization.label47}:',
+                        '${AppKeyLocalization.label47.tr}:',
                         style: appThemeData.textTheme.bodyLarge,
                       ),
                       Spacer(),
@@ -242,7 +242,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                     Padding(
                       padding: const EdgeInsets.only(left: 23, top: 20),
                       child: Text(
-                        "${AppKeyLocalization.label48}: ",
+                        "${AppKeyLocalization.label48.tr}: ",
                         style: appThemeData.textTheme.bodyLarge,
                       ),
                     ),
@@ -250,7 +250,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                       padding: const EdgeInsets.only(left: 20, top: 25),
                       child: InkWell(
                         child: TextFiildMemory(
-                          labelText: '${AppKeyLocalization.label48}...',
+                          labelText: '${AppKeyLocalization.label48.tr}...',
                           iconT: Icon(Icons.subject),
                           onPressed: () {},
                           controller: controller.subjectController,
@@ -300,7 +300,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  AppKeyLocalization.label41,
+                                  AppKeyLocalization.label41.tr,
                                   style: appThemeData.textTheme.bodyLarge,
                                 ),
                                 Text(
@@ -323,7 +323,7 @@ class AddMemoryScreen extends GetView<AddMemoryController> {
                                     controller.uploadImage();
                                   },
                                   child: Text(
-                                    AppKeyLocalization.label6,
+                                    AppKeyLocalization.label6.tr,
                                     style: appThemeData.textTheme.bodyLarge,
                                   ),
                                 ),

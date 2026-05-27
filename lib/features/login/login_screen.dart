@@ -77,11 +77,11 @@ class LoginView extends StatelessWidget {
                   },
                   child: RichText(
                     text: TextSpan(
-                      text: AppKeyLocalization.label35,
+                      text: AppKeyLocalization.label35.tr,
                       style: appThemeData.textTheme.headlineLarge,
                       children: [
                         TextSpan(
-                          text: AppKeyLocalization.label25,
+                          text: AppKeyLocalization.label25.tr,
                           style: appThemeData.textTheme.headlineLarge!.copyWith(
                             color: AppLightColor.textBlueColor,
                           ),
@@ -103,7 +103,7 @@ class LoginView extends StatelessWidget {
                     );
                   },
                   child: Text(
-                    AppKeyLocalization.label26,
+                    AppKeyLocalization.label26.tr,
                     style: appThemeData.textTheme.headlineLarge!.copyWith(
                       color: AppLightColor.textBlueColor,
                     ),
@@ -127,16 +127,16 @@ class LoginScreen extends StatelessWidget {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         Get.defaultDialog(
-          title: AppKeyLocalization.label27,
+          title: AppKeyLocalization.label27.tr,
           titleStyle: TextStyle(fontSize: 18, color: Colors.black),
-          middleText: AppKeyLocalization.label28,
+          middleText: AppKeyLocalization.label28.tr,
           middleTextStyle: TextStyle(fontSize: 16, color: Colors.grey.shade900),
           backgroundColor: Colors.blueGrey[100],
           radius: 15,
-          textCancel: AppKeyLocalization.label19,
+          textCancel: AppKeyLocalization.label19.tr,
           cancelTextColor: Colors.black,
           onCancel: () {},
-          textConfirm: AppKeyLocalization.label29,
+          textConfirm: AppKeyLocalization.label29.tr,
           confirmTextColor: Colors.white,
           onConfirm: () {
             SystemNavigator.pop();
