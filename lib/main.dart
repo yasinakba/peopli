@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:test_test_test/features/add_memory/controller/add_memory_controller.dart';
+import 'package:test_test_test/features/create_person/controller/create_person_controller.dart';
+import 'package:test_test_test/features/edit_person/controller/edit_person_controller.dart';
+import 'package:test_test_test/features/edit_profile/controller/edit_profile_controller.dart';
+import 'package:test_test_test/features/feature_location/controller/location_controller.dart';
 import 'package:test_test_test/features/share_feature/controller/shared_memory_controller.dart';
 import 'package:test_test_test/features/share_feature/page/shared_memory_screen.dart';
 import 'package:flutter/foundation.dart';
@@ -81,6 +86,10 @@ class MyApp extends StatelessWidget {
     Get.put(HomeController());
     Get.lazyPut(() => SharedMemoryController(),);
     Get.lazyPut(() => UploadController(),);
+    Get.lazyPut(() => CreatePersonController(),);
+    Get.lazyPut(() => EditPersonController(),);
+    Get.lazyPut(() => LocationController(),);
+    Get.lazyPut(() => AddMemoryController(),);
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
