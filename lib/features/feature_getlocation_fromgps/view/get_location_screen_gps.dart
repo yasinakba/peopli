@@ -18,7 +18,7 @@ class _LocationScreenState extends State<LocationScreen> {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         setState(() {
-          location = AppKeyLocalization.label56;
+          location = 'Location permission denied';
         });
         return;
       }
@@ -47,7 +47,7 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppKeyLocalization.label57)),
+      appBar: AppBar(title: Text('User Location')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +56,7 @@ class _LocationScreenState extends State<LocationScreen> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: getUserLocation,
-              child: Text(AppKeyLocalization.label58),
+              child: Text('Get Current Location'),
             ),
           ],
         ),

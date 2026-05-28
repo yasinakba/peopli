@@ -77,11 +77,11 @@ class LoginView extends StatelessWidget {
                   },
                   child: RichText(
                     text: TextSpan(
-                      text: AppKeyLocalization.label35.tr,
+                      text: "Don't have an Account?",
                       style: appThemeData.textTheme.headlineLarge,
                       children: [
                         TextSpan(
-                          text: AppKeyLocalization.label25.tr,
+                          text: 'Sign Up',
                           style: appThemeData.textTheme.headlineLarge!.copyWith(
                             color: AppLightColor.textBlueColor,
                           ),
@@ -103,7 +103,7 @@ class LoginView extends StatelessWidget {
                     );
                   },
                   child: Text(
-                    AppKeyLocalization.label26.tr,
+                    'Forgot your password?',
                     style: appThemeData.textTheme.headlineLarge!.copyWith(
                       color: AppLightColor.textBlueColor,
                     ),
@@ -127,16 +127,16 @@ class LoginScreen extends StatelessWidget {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
         Get.defaultDialog(
-          title: AppKeyLocalization.label27.tr,
+          title: 'Pay attention',
           titleStyle: TextStyle(fontSize: 18, color: Colors.black),
-          middleText: AppKeyLocalization.label28.tr,
+          middleText: 'Are you sure you want to exit the app?',
           middleTextStyle: TextStyle(fontSize: 16, color: Colors.grey.shade900),
           backgroundColor: Colors.blueGrey[100],
           radius: 15,
-          textCancel: AppKeyLocalization.label19.tr,
+          textCancel: 'Cancel',
           cancelTextColor: Colors.black,
           onCancel: () {},
-          textConfirm: AppKeyLocalization.label29.tr,
+          textConfirm: 'Confirm',
           confirmTextColor: Colors.white,
           onConfirm: () {
             SystemNavigator.pop();

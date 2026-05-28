@@ -79,7 +79,7 @@ class EditPersonScreen extends StatelessWidget {
                                   controller.updateLanguage(0);
                                 },
                                 child: Text(
-                                  AppKeyLocalization.label43.tr,
+                                  'EN',
                                   style: controller.textStyleEn(0),
                                 ),
                               ),
@@ -93,7 +93,7 @@ class EditPersonScreen extends StatelessWidget {
                                   controller.updateLanguage(1);
                                 },
                                 child: Text(
-                                  AppKeyLocalization.label44,
+                                  'FA',
                                   style: controller.textStyleEn(1),
                                 ),
                               ),
@@ -104,7 +104,7 @@ class EditPersonScreen extends StatelessWidget {
                               Get.find<UploadController>().uploadImage();
                             },
                             child: Text(
-                              AppKeyLocalization.label45,
+                              "Add Photos",
                               style: appThemeData.textTheme.bodyLarge,
                             ),
                           ),
@@ -126,14 +126,14 @@ class EditPersonScreen extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(top: 5),
                             child: TextFieldCreate(
-                              labelText: AppKeyLocalization.label10.tr,
+                              labelText: 'Name & Family',
                               controller: controller.familyNameController,
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 5),
                             child: TextFieldCreate(
-                              labelText: AppKeyLocalization.label50.tr,
+                              labelText: 'Known as',
                               controller: controller.knowAsController,
                             ),
                           ),
@@ -201,7 +201,7 @@ class EditPersonScreen extends StatelessWidget {
                             onPressed: () => Get.back(),
                             textColor: AppLightColor.textBoldColor,
                             color: AppLightColor.cancelButtonFill,
-                            title: AppKeyLocalization.label19,
+                            title: 'Cancel',
                             height: 29.h,
                             width: 90.w,
                           ),
@@ -210,7 +210,7 @@ class EditPersonScreen extends StatelessWidget {
                                 controller.openDialogPerson(context),
                             textColor: AppLightColor.withColor,
                             color: AppLightColor.saveButton,
-                            title: AppKeyLocalization.label18,
+                            title: 'Save',
                             height: 29.h,
                             width: 90.w,
                           ),

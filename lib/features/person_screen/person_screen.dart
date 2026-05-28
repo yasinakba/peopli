@@ -176,7 +176,7 @@ class FirstWidget extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        AppKeyLocalization.label46.tr,
+                        'Add Memory',
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.fade,
                         softWrap: false,
@@ -271,7 +271,7 @@ class SecondWidget extends StatelessWidget {
                             color: Colors.indigoAccent,
                           ),
                           child: Text(
-                            '${AppKeyLocalization.label60.tr}⭐',
+                            'vote ⭐',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 12.sp,
@@ -295,28 +295,28 @@ class SecondWidget extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('${AppKeyLocalization.label61.tr}: ', style: customStyle),
+                        Text('Works: ', style: customStyle),
                         Text(face.job ?? '', style: customStyle2),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text('${AppKeyLocalization.label62.tr}: ', style: customStyle),
+                        Text('Lives: ', style: customStyle),
                         Text(face.homeTown ?? '', style: customStyle2),
                       ],
                     ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('${AppKeyLocalization.label63.tr}: ', style: customStyle),
+                        Text('Has born In: ', style: customStyle),
                         Text(face.birthdate.toString(), style: customStyle2),
                       ],
                     ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text('${AppKeyLocalization.label8.tr}: ', style: customStyle),
+                        Text('Education : ', style: customStyle),
                         Text(face.education ?? '', style: customStyle2),
                       ],
                     ),
@@ -339,7 +339,7 @@ class SecondWidget extends StatelessWidget {
                     color: Colors.indigoAccent,
                   ),
                   child: Text(
-                    '${AppKeyLocalization.label64.tr}🧑️',
+                    'Edit🧑️',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12,

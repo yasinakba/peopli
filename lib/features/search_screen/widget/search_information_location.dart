@@ -67,7 +67,7 @@ class SearchInformationLocation extends StatelessWidget {
                               .deepPurpleAccent
                               .shade200,))
                         : Text(
-                      AppKeyLocalization.label6,
+                      'Add',
                       style: appThemeData
                           .textTheme
                           .labelLarge!
@@ -98,7 +98,7 @@ class SearchInformationLocation extends StatelessWidget {
               ),
               width: double.infinity,
               child: Text(
-                "${AppKeyLocalization.label8.tr} :",
+                "Education :",
                 style: appThemeData.textTheme.bodyLarge,
               ),
             ),
@@ -137,7 +137,7 @@ class SearchInformationLocation extends StatelessWidget {
                           color: Colors.deepPurpleAccent
                               .shade200,))
                         : Text(
-                      AppKeyLocalization.label6.tr,
+                      'Add',
                       style: appThemeData
                           .textTheme
                           .labelLarge!
@@ -157,7 +157,7 @@ class SearchInformationLocation extends StatelessWidget {
               margin: EdgeInsets.only(top: 5.h),
               width: double.infinity,
               child: Text(
-                "${AppKeyLocalization.label9.tr} :",
+                "Job :",
                 style: appThemeData.textTheme.bodyLarge,
               ),
             ),
@@ -196,7 +196,7 @@ class SearchInformationLocation extends StatelessWidget {
                           color: Colors.deepPurpleAccent
                               .shade200,))
                         : Text(
-                      AppKeyLocalization.label6,
+                      'Add',
                       style: appThemeData
                           .textTheme
                           .labelLarge!

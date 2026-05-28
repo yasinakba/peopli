@@ -93,11 +93,11 @@ class SearchBottomController extends GetxController {
 
   updateIndexButtonItem(index) {
     index == 1
-        ? sortBy == AppKeyLocalization.label4
+        ? sortBy ==  'Oldest'
         : index == 2
-        ? sortBy == AppKeyLocalization.label5
+        ? sortBy == 'Popular'
         : index == 0
-        ? sortBy == AppKeyLocalization.label2
+        ? sortBy == 'Newest'
         : index;
     selectedItem = index;
     update();

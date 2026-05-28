@@ -97,7 +97,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                           controller.updateLanguage(0);
                                         },
                                         child: Text(
-                                          AppKeyLocalization.label43.tr,
+                                          'EN',
                                           style: controller.textStyleEn(0),
                                         ),
                                       ),
@@ -113,7 +113,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                           controller.updateLanguage(1);
                                         },
                                         child: Text(
-                                          AppKeyLocalization.label44,
+                                          'FA',
                                           style: controller.textStyleEn(1),
                                         ),
                                       ),
@@ -125,7 +125,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                           .uploadImage();
                                     },
                                     child: Text(
-                                      AppKeyLocalization.label45.tr,
+                                      'Add Photos',
                                       style: appThemeData.textTheme.bodyLarge,
                                     ),
                                   ),
@@ -147,21 +147,21 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: TextFieldCreateAccount(
-                                      labelText: AppKeyLocalization.label49.tr,
+                                      labelText: 'User Name',
                                       controller: controller.userNameController,
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: TextFieldCreateAccount(
-                                      labelText: AppKeyLocalization.label55.tr,
+                                      labelText: 'Email',
                                       controller: controller.emailController,
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: TextFieldCreateAccount(
-                                      labelText: AppKeyLocalization.label24.tr,
+                                      labelText: 'Password',
                                       controller: controller.passwordController,
                                       obSecure: true,
                                     ),
@@ -241,7 +241,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                         Row(
                                           children: [
                                             Text(
-                                              "${AppKeyLocalization.label7} :",
+                                              "Home Location :",
                                               style: appThemeData
                                                   .textTheme
                                                   .bodyLarge,
@@ -257,7 +257,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                                       context,
                                                     ),
                                                 child: Text(
-                                                  AppKeyLocalization.label6,
+                                                  'Job',
                                                   style: appThemeData
                                                       .textTheme
                                                       .labelLarge!
@@ -297,7 +297,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                       left: 10,
                                     ),
                                     child: Text(
-                                      "${AppKeyLocalization.label8} :",
+                                      "Education :",
                                       style: appThemeData.textTheme.bodyLarge,
                                     ),
                                   ),
@@ -333,7 +333,7 @@ class EditProfileScreen extends GetView<EditProfileController> {
                                           context,
                                         ),
                                     child: Text(
-                                      AppKeyLocalization.label6,
+                                      'Add',
                                       style: appThemeData.textTheme.labelLarge!
                                           .copyWith(
                                             color: AppLightColor.fillButton,

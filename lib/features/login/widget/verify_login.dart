@@ -30,7 +30,7 @@ class VerifyLoginScreen extends StatelessWidget {
               width: double.infinity,
               height: 50,
               child: Text(
-                AppKeyLocalization.label30.tr,
+                "Please Enter Code",
                 style: appThemeData.textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
@@ -45,7 +45,7 @@ class VerifyLoginScreen extends StatelessWidget {
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeIn,
               );
-            }, textColor: Colors.white, color: Colors.indigo, title: AppKeyLocalization.label31, height: 40.h, width: 300.w,),
+            }, textColor: Colors.white, color: Colors.indigo, title: 'Verify-Login', height: 40.h, width: 300.w,),
 
           ],
         );

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:test_test_test/config/app_string/app_key_string_ternationalization.dart';
 import 'package:test_test_test/config/app_string/constant.dart';
 import 'package:test_test_test/config/widgets/date_picker_widget.dart';
 import 'package:test_test_test/config/widgets/loading_widget.dart';
@@ -81,7 +80,7 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                                 onTap: () =>
                                   controller.updateLanguage(0),
                                 child: Text(
-                                  AppKeyLocalization.label43,
+                                  'EN',
                                   style: controller.textStyleEn(0),
                                 ),
                               ),
@@ -96,7 +95,7 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                                 onTap: () =>
                                   controller.updateLanguage(1),
                                 child: Text(
-                                  AppKeyLocalization.label44,
+                                  'FA',
                                   style: controller.textStyleEn(1),
                                 ),
                               ),
@@ -106,7 +105,7 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                             onTap: () =>
                               Get.find<UploadController>().uploadImage(),
                             child: Text(
-                              AppKeyLocalization.label45,
+                              'Upload Image',
                               style: appThemeData.textTheme.bodyLarge,
                             ),
                           ),
@@ -121,21 +120,21 @@ class CreatePersonScreen extends GetView<CreatePersonController> {
                           Padding(
                             padding: const EdgeInsets.only(top: 10),
                             child: TextFieldCreate(
-                              labelText: AppKeyLocalization.label49,
+                              labelText: "Name",
                               controller: controller.nameController,
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 5),
                             child: TextFieldCreate(
-                              labelText:  AppKeyLocalization.label52,
+                              labelText:  'Family',
                               controller: controller.familyNameController,
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 5),
                             child: TextFieldCreate(
-                              labelText:  AppKeyLocalization.label50,
+                              labelText:  'Know As',
                               controller: controller.knowAsController,
                             ),
                           ),

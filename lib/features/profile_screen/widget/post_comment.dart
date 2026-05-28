@@ -34,12 +34,12 @@ class PostComment extends StatelessWidget {
                 Ink(
                   width: 112.w,
                   height: 16.h,
-                  child: Text(AppKeyLocalization.label20.tr,textAlign: TextAlign.center,),
+                  child: Text('Posts',textAlign: TextAlign.center,),
                 ),
                 Ink(
                   width: 112.w,
                   height: 16.h,
-                  child: Text(AppKeyLocalization.label21.tr,textAlign: TextAlign.center,),
+                  child: Text('Comments',textAlign: TextAlign.center,),
                 ),
               ],
             ),

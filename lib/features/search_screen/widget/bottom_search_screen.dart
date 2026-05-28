@@ -9,7 +9,6 @@ import 'package:test_test_test/features/person_screen/person_screen.dart';
 import 'package:test_test_test/features/search_screen/controller/search_bottom_controller.dart';
 
 import '../../../config/app_colors/app_colors_light.dart';
-import '../../../config/app_route/route_names.dart';
 import '../../../config/app_theme/app_theme.dart';
 import '../../create_person/entity/face_entity.dart';
 import '../../person_screen/controller/person_controller.dart';

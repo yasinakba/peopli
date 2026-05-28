@@ -5,30 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:test_test_test/features/add_memory/controller/add_memory_controller.dart';
 import 'package:test_test_test/features/create_person/controller/create_person_controller.dart';
 import 'package:test_test_test/features/edit_person/controller/edit_person_controller.dart';
-import 'package:test_test_test/features/edit_profile/controller/edit_profile_controller.dart';
 import 'package:test_test_test/features/feature_location/controller/location_controller.dart';
 import 'package:test_test_test/features/share_feature/controller/shared_memory_controller.dart';
 import 'package:test_test_test/features/share_feature/page/shared_memory_screen.dart';
 import 'package:flutter/foundation.dart';
 
-import 'config/app_route/binding/splash_binding.dart';
-import 'config/app_route/route_names.dart';
-import 'config/app_route/route_screen.dart';
-import 'config/app_string/constant.dart';
 import 'config/app_theme/app_theme.dart';
 import 'features/feature_upload/upload_controller.dart';
-import 'features/home_screen/controller/home_controller.dart';
-import 'features/splashscreen/splashscreen.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
-import 'package:flutter/foundation.dart';
-
-import 'config/app_route/binding/splash_binding.dart';
-import 'config/app_route/route_names.dart';
-import 'config/app_route/route_screen.dart'; // Ensure Pages is exported here
-import 'config/app_theme/app_theme.dart';
 import 'features/home_screen/controller/home_controller.dart';
 import 'features/splashscreen/splashscreen.dart';
 
@@ -104,36 +87,6 @@ class MyApp extends StatelessWidget {
           theme: appThemeData,
           darkTheme: darkAppThemeData,
           themeMode: Get.find<HomeController>().theme, // Ensure this is defined in route_screen.dart
-        );
-      },
-    );
-  }
-}
-
-class SharedMyApp extends StatelessWidget {
-  const SharedMyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // Initialize HomeController once at the root
-    Get.put(HomeController());
-
-    return ScreenUtilInit(
-      designSize: const Size(375, 812),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, child) {
-        return GetMaterialApp.router(
-          routerDelegate: router.routerDelegate,
-          routeInformationParser: router.routeInformationParser,
-          routeInformationProvider: router.routeInformationProvider,
-          debugShowCheckedModeBanner: false,
-          title: 'My App',
-          theme: appThemeData,
-          darkTheme: darkAppThemeData,
-          themeMode: Get.find<HomeController>().theme,
-          initialBinding: SplashBinding(),
-          getPages: Pages.pages, // Ensure this is defined in route_screen.dart
         );
       },
     );

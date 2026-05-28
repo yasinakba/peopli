@@ -86,7 +86,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                           controller.updateLAnguage(0);
                                         },
                                         child: Text(
-                                          AppKeyLocalization.label43,
+                                          'EN',
                                           style: controller.textStyleEn(0),
                                         ),
                                       ),
@@ -102,7 +102,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                           controller.updateLAnguage(1);
                                         },
                                         child: Text(
-                                          AppKeyLocalization.label44,
+                                          'FA',
                                           style: controller.textStyleEn(1),
                                         ),
                                       ),
@@ -114,7 +114,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                           .uploadImage();
                                     },
                                     child: Text(
-                                      AppKeyLocalization.label45,
+                                      'Add Photos',
                                       style: appThemeData.textTheme.bodyLarge,
                                     ),
                                   ),
@@ -143,7 +143,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: TextFieldCreateAccount(
-                                      labelText: AppKeyLocalization.label49,
+                                      labelText: 'UserName',
                                       controller: controller.userNameController,
                                     ),
                                   ),
@@ -158,7 +158,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5),
                                     child: TextFieldCreateAccount(
-                                      labelText: AppKeyLocalization.label53,
+                                      labelText: 'Confirm Password',
                                       controller:
                                           controller.confirmPasswordController,
                                       obsecure: true,
@@ -235,7 +235,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                       left: 10,
                                     ),
                                     child: Text(
-                                      "${AppKeyLocalization.label7} :",
+                                      "Home Location :",
                                       style: appThemeData.textTheme.bodyLarge,
                                     ),
                                   ),
@@ -267,7 +267,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                               context,
                                             ),
                                         child: Text(
-                                          AppKeyLocalization.label6,
+                                          'Add',
                                           style: appThemeData
                                               .textTheme
                                               .labelLarge!
@@ -287,7 +287,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                       left: 10,
                                     ),
                                     child: Text(
-                                      AppKeyLocalization.label8,
+                                      'Education',
                                       style: appThemeData.textTheme.bodyLarge,
                                     ),
                                   ),
@@ -328,7 +328,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                           );
                                         },
                                         child: Text(
-                                          AppKeyLocalization.label6,
+                                          'Add',
                                           style: appThemeData
                                               .textTheme
                                               .labelLarge!
@@ -351,7 +351,7 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
                                     },
                                     textColor: AppLightColor.withColor,
                                     color: Colors.indigo,
-                                    title: AppKeyLocalization.label54,
+                                    title: 'Create',
                                     height: 40.h,
                                     width: 300.w,
                                   ),
