@@ -8,6 +8,7 @@ class NotFoundWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
+        padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
         color: Colors.white,
           borderRadius: BorderRadius.circular(12)

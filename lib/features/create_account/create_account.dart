@@ -30,6 +30,12 @@ class CreateAccountScreen extends GetView<CreateAccountController> {
         child: ListView(
           children: [
             GetBuilder<CreateAccountController>(
+              initState: (state) {
+                Get.lazyPut(() =>CreateAccountController(),);
+                Get.lazyPut(() => UploadController(),);
+                Get.lazyPut(() => DateController(),);
+                Get.lazyPut(() => EducationController(),);
+              },
               builder: (controller) {
                 if (controller.loading == true) {
                   LoadingWidget();

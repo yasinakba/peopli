@@ -145,10 +145,11 @@ class CreateAccountController extends GetxController {
         id: 'education',
         initState: (state) {
           Get.lazyPut(() => EducationController());
-          selectedEducation = Get.find<EducationController>().educationList[0];
+          selectedEducation = EducationEntity();
         },
         builder: (controller) {
-          return AlertDialog(
+
+          return controller.educationList.length == 0?NotFoundWidget(): AlertDialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0)),
             ),
@@ -159,6 +160,7 @@ class CreateAccountController extends GetxController {
             backgroundColor: AppLightColor.backgoundPost,
 
             actions: [
+
               Container(
                 height: 300.0, // Change as per your requirement
                 width: 300.0, // Change as per your requirement
